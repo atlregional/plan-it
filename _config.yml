@@ -6,3 +6,4 @@ permalink: pretty
 safe: true
 lsi: false
 pygments: true
+baseurl: /plan-it
