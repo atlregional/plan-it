@@ -1,0 +1,9 @@
+paginate: 10
+
+markdown: maruku
+permalink: pretty
+
+safe: true
+lsi: false
+pygments: true
+source: site
