@@ -1,16 +1,16 @@
-function ageBucket(row, field){
-  var age = Math.abs(((new Date().getTime()) - row[field.dataSource])/1000/60/60/24);
+function modelYearBucket(row, field){
+  var year = row[field.dataSource];
   switch (true){
-    case (age < 31):
-      return '000 - 030'
-    case (age < 61):
-      return '031 - 060'
-    case (age < 91):
-      return '061 - 090'
-    case (age < 121):
-      return '091 - 120'
+    case (year < 2020):
+      return '2014-2019'
+    case (year < 2030):
+      return '2020-2029'
+    case (year < 2040):
+      return '2030-2039'
+    case (year < 2050):
+      return '2040-2049'
     default:
-      return '121+'
+      return '2014-2019'
   }
 };
 
@@ -28,7 +28,7 @@ var fields = [
     {name: 'ARCID', type: 'string', filterable: true},
     {name: 'Description', type: 'string', filterable: true},
     {name: 'Jurisdiction', type: 'string', filterable: true},
-    {name: 'ModelingNetworkYear', type: 'string', filterable: true},
+    {name: 'ModelingNetworkYear', type: 'integer', filterable: true},
     {name: 'Sponsor', type: 'string', filterable: true},
     {name: 'ExistLanes', type: 'string', filterable: true},
     {name: 'ProposedLanes', type: 'string', filterable: true},
@@ -67,6 +67,8 @@ var fields = [
     // },
     {name: 'ModelingNetworkYear', type: 'string', filterable: true, pseudo: true, columnLabelable: true,
       pseudoFunction: function(row){ return row.ModelingNetworkYear }},
+      {name: 'FiscalYear', type: 'string', filterable: true, pseudo: true, columnLabelable: true,
+      pseudoFunction: function(row){ return row.FiscalYear }},
     // {name: 'age_bucket', type: 'string', filterable: true, columnLabelable: true, pseudo: true, dataSource: 'last_payment_date', pseudoFunction: ageBucket},
 
 
