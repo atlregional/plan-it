@@ -101,7 +101,7 @@ var fields = [
 
   $(document).ready(function() {
 
-    setupPivot({url:'./data/projects.csv', fields: fields, filters: {Jurisdiction: 'City of Atlanta'}, rowLabels:['Jurisdiction', 'ModelingNetworkYear']})
+    setupPivot({url:'./data/projects.csv', fields: fields, rowLabels:['ARCID', 'Jurisdiction', 'ProjectType', 'Phase', 'Status'], summaries:["Total"]})
 
     // prevent dropdown from closing after selection
     $('.stop-propagation').click(function(event){
@@ -109,13 +109,13 @@ var fields = [
     });
 
     // **Sexy** In your console type pivot.config() to view your current internal structure (the full initialize object).  Pass it to setup and you have a canned report.
-    // $('#ar-aged-balance').click(function(event){
-    //   $('#pivot-demo').pivot_display('reprocess_display', {rowLabels:["employer"], columnLabels:["age_bucket"], summaries:["balance"]})
-    // });
+    $('#atl-project-funding').click(function(event){
+      $('#pivot-demo').pivot_display('reprocess_display', {filters:{"Jurisdiction":"City of Atlanta"}, rowLabels:["ProjectType"], columnLabels:["ModelingNetworkYear"], summaries:["Total"]})
+    });
 
-    // $('#acme-detail-report').click(function(event){
-    //   $('#pivot-demo').pivot_display('reprocess_display', {filters:{"employer":"Acme Corp"},rowLabels:["city","last_name","first_name","state","invoice_date"]})
-    // });
+    $('#acme-detail-report').click(function(event){
+      $('#pivot-demo').pivot_display('reprocess_display', {filters:{"Jurisdiction":"Cobb County"},rowLabels:["Phase","ModelingNetworkYear"], summaries:["Total"]})
+    });
 
     // $('#miami-invoice-detail').click(function(event){
     //   $('#pivot-demo').pivot_display('reprocess_display', {"filters":{"city":"Miami"},"rowLabels":["last_name","first_name","employer","invoice_date"],"summaries":["payment_amount"]})
