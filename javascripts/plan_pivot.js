@@ -42,17 +42,19 @@ var fields = [
     {name: 'PhaseStatus', type: 'string', filterable: true},
     {name: 'FiscalYear', type: 'string', filterable: true},
     {name: 'FundSource', type: 'string', filterable: true},
-    {name: 'Federal', type: 'string', filterable: true},
-    {name: 'State', type: 'string', filterable: true},
-    {name: 'Local', type: 'string', filterable: true},
-    {name: 'Bond', type: 'string', filterable: true},
-    {name: 'Total', type: 'string', filterable: true},
-    {name: 'FederalSum', type: 'string', filterable: true},
-    {name: 'StateSum', type: 'string', filterable: true},
-    {name: 'LocalSum', type: 'string', filterable: true},
-    {name: 'BondSum', type: 'string', filterable: true},
-    {name: 'TotalSum', type: 'string', filterable: true}
-    // // psuedo fields
+    // {name: 'Federal', type: 'integer', filterable: true},
+    // {name: 'State', type: 'integer', filterable: true},
+    // {name: 'Local', type: 'integer', filterable: true},
+    // {name: 'Bond', type: 'integer', filterable: true},
+    // {name: 'Total', type: 'integer', filterable: true},
+    // {name: 'FederalSum', type: 'integer', filterable: true},
+    // {name: 'StateSum', type: 'integer', filterable: true},
+    // {name: 'LocalSum', type: 'integer', filterable: true},
+    // {name: 'BondSum', type: 'integer', filterable: true},
+    // {name: 'TotalSum', type: 'integer', filterable: true},
+    
+    // psuedo fields
+    
     // {name: 'invoice_mm', type: 'string', filterable: true, pseudo: true,
     //   pseudoFunction: function(row){
     //       var date = new Date(row.invoice_date);
@@ -63,18 +65,23 @@ var fields = [
     //     var date = new Date(row.invoice_date);
     //     return date.getFullYear() + '_' + pivot.utils().padLeft((date.getMonth() + 1),2,'0')}
     // },
-    // {name: 'invoice_yyyy', type: 'string', filterable: true, pseudo: true, columnLabelable: true,
-    //   pseudoFunction: function(row){ return new Date(row.invoice_date).getFullYear() }},
+    {name: 'ModelingNetworkYear', type: 'string', filterable: true, pseudo: true, columnLabelable: true,
+      pseudoFunction: function(row){ return row.ModelingNetworkYear }},
     // {name: 'age_bucket', type: 'string', filterable: true, columnLabelable: true, pseudo: true, dataSource: 'last_payment_date', pseudoFunction: ageBucket},
 
 
     // // summary fields
-    // {name: 'billed_amount',     type: 'float',  rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}},
-    // {name: 'payment_amount',    type: 'float',  rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}},
-    // {name: 'balance', type: 'float', rowLabelable: false, pseudo: true,
-    //   pseudoFunction: function(row){ return row.billed_amount - row.payment_amount },
-    //   summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}},
-    // {name: 'last_payment_date',  type: 'date',  filterable: true}
+
+    {name: 'Federal',     type: 'integer',  rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}},
+    {name: 'State',     type: 'integer',  rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}},
+    {name: 'Local',     type: 'integer',  rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}},
+    {name: 'Bond',     type: 'integer',  rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}},
+    {name: 'Total',     type: 'integer',  rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}},
+    {name: 'FederalSum',     type: 'integer',  rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}},
+    {name: 'StateSum',     type: 'integer',  rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}},
+    {name: 'LocalSum',     type: 'integer',  rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}},
+    {name: 'BondSum',     type: 'integer',  rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}},
+    {name: 'TotalSum',     type: 'integer',  rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}}
 ]
 
   function setupPivot(input){
@@ -94,7 +101,7 @@ var fields = [
 
   $(document).ready(function() {
 
-    setupPivot({url:'./data/projects.csv', fields: fields, filters: {Jurisdiction: 'City of Atlanta'}, rowLabels:['ARCID', 'Jurisdiction', 'ModelingNetworkYear', 'Status']})
+    setupPivot({url:'./data/projects.csv', fields: fields, filters: {Jurisdiction: 'City of Atlanta'}, rowLabels:['Jurisdiction', 'ModelingNetworkYear']})
 
     // prevent dropdown from closing after selection
     $('.stop-propagation').click(function(event){
