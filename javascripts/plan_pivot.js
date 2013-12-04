@@ -101,7 +101,7 @@ var fields = [
 
   $(document).ready(function() {
 
-    setupPivot({url:'./data/projects.csv', fields: fields, rowLabels:['ARCID', 'Jurisdiction', 'ProjectType', 'Phase', 'Status'], summaries:["Total"]})
+    setupPivot({url:'./data/projects.csv', fields: fields, filters:{"FiscalYear":"2014"}, rowLabels:['ARCID', 'Jurisdiction', 'ProjectType', 'Phase', 'Status'], summaries:["Total"]})
 
     // prevent dropdown from closing after selection
     $('.stop-propagation').click(function(event){
@@ -113,11 +113,11 @@ var fields = [
       $('#pivot-demo').pivot_display('reprocess_display', {filters:{"Jurisdiction":"City of Atlanta"}, rowLabels:["ProjectType"], columnLabels:["ModelingNetworkYear"], summaries:["Total"]})
     });
 
-    $('#acme-detail-report').click(function(event){
+    $('#cobb-phase-funding').click(function(event){
       $('#pivot-demo').pivot_display('reprocess_display', {filters:{"Jurisdiction":"Cobb County"},rowLabels:["Phase","ModelingNetworkYear"], summaries:["Total"]})
     });
 
-    // $('#miami-invoice-detail').click(function(event){
-    //   $('#pivot-demo').pivot_display('reprocess_display', {"filters":{"city":"Miami"},"rowLabels":["last_name","first_name","employer","invoice_date"],"summaries":["payment_amount"]})
-    // });
+    $('#douglasville-source-funding').click(function(event){
+      $('#pivot-demo').pivot_display('reprocess_display', {filters:{"Sponsor":"City of Douglasville"},rowLabels:["ModelingNetworkYear"],summaries:["Total", "Federal", "State", "Local", "Bond"]})
+    });
   });
