@@ -25,7 +25,7 @@ var fields = [
     // {name: 'city',              type: 'string', filterable: true},
     // {name: 'invoice_date',      type: 'date',   filterable: true},
 
-    {name: 'ARCID', type: 'string', filterable: true},
+    {name: 'ARCID', type: 'string', filterable: true, summarizable: 'count'},
     {name: 'Description', type: 'string', filterable: true},
     {name: 'Jurisdiction', type: 'string', filterable: true},
     {name: 'ModelingNetworkYear', type: 'integer', filterable: true},
@@ -67,13 +67,12 @@ var fields = [
     // },
     {name: 'ModelingNetworkYear', type: 'string', filterable: true, pseudo: true, columnLabelable: true,
       pseudoFunction: function(row){ return row.ModelingNetworkYear }},
-      {name: 'FiscalYear', type: 'string', filterable: true, pseudo: true, columnLabelable: true,
+    {name: 'FiscalYear', type: 'string', filterable: true, pseudo: true, columnLabelable: true,
       pseudoFunction: function(row){ return row.FiscalYear }},
-    // {name: 'age_bucket', type: 'string', filterable: true, columnLabelable: true, pseudo: true, dataSource: 'last_payment_date', pseudoFunction: ageBucket},
+     {name: 'ModelYearBucket', type: 'string', filterable: true, columnLabelable: true, pseudo: true, dataSource: 'ModelingNetworkYear', pseudoFunction: modelYearBucket},
 
 
     // // summary fields
-
     {name: 'Federal',     type: 'integer',  rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}},
     {name: 'State',     type: 'integer',  rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}},
     {name: 'Local',     type: 'integer',  rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}},
