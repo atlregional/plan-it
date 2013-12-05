@@ -1,4 +1,3 @@
-ARCID,Description,Jurisdiction,ModelingNetworkYear,Sponsor,ExistLanes,ProposedLanes,Length,GDOTPI,Limits,Status,ProjectType,Analysis,Phase,PhaseStatus,FiscalYear,FundSource,Federal,State,Local,Bond,Total,FederalSum,StateSum,LocalSum,BondSum,TotalSum
 #!/bin/bash
 PREFIX="temprecord"
 csplit -f $PREFIX -k ../projects.csv 1 {4000}
@@ -12,7 +11,7 @@ else
 	mv "$file" "$ARCID.csv"; 
 fi
 done
-for file in *; 
+for file in *.csv; 
 do echo "ARCID,Description,Jurisdiction,ModelingNetworkYear,Sponsor,ExistLanes,ProposedLanes,Length,GDOTPI,Limits,Status,ProjectType,Analysis,Phase,PhaseStatus,FiscalYear,FundSource,Federal,State,Local,Bond,Total,FederalSum,StateSum,LocalSum,BondSum,TotalSum" | cat - $file > /tmp/out && mv /tmp/out $file; 
 done
 
