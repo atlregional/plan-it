@@ -102,7 +102,7 @@ var fields = [
 
   $(document).ready(function() {
 
-    setupPivot({url:'./data/projects.csv', fields: fields, filters:{"FiscalYear":"2014"}, rowLabels:['ARCID', 'Jurisdiction', 'ProjectType', 'Phase', 'Status'], summaries:["Total"]})
+    setupPivot({url:'./data/TIP/projects.csv', fields: fields, filters:{"FiscalYear":"2014"}, rowLabels:['ARCID', 'Jurisdiction', 'ProjectType', 'Phase', 'Status'], summaries:["Total"]})
 
     // prevent dropdown from closing after selection
     $('.stop-propagation').click(function(event){
