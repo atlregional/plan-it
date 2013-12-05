@@ -1,8 +1,9 @@
 ARCID,Description,Jurisdiction,ModelingNetworkYear,Sponsor,ExistLanes,ProposedLanes,Length,GDOTPI,Limits,Status,ProjectType,Analysis,Phase,PhaseStatus,FiscalYear,FundSource,Federal,State,Local,Bond,Total,FederalSum,StateSum,LocalSum,BondSum,TotalSum
 #!/bin/bash
-csplit -k ../projects.csv 1 {4000}
+PREFIX="temprecord"
+csplit -f $PREFIX -k ../projects.csv 1 {4000}
 
-for file in xx*; 
+for file in $PREFIX*; 
 do ARCID=$(grep -Eo '^[^ ,]+' "$file")
 if [ -f "$ARCID.csv" ]
 then 
@@ -14,3 +15,5 @@ done
 for file in *; 
 do echo "ARCID,Description,Jurisdiction,ModelingNetworkYear,Sponsor,ExistLanes,ProposedLanes,Length,GDOTPI,Limits,Status,ProjectType,Analysis,Phase,PhaseStatus,FiscalYear,FundSource,Federal,State,Local,Bond,Total,FederalSum,StateSum,LocalSum,BondSum,TotalSum" | cat - $file > /tmp/out && mv /tmp/out $file; 
 done
+
+rm $PREFIX*
