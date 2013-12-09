@@ -1,7 +1,32 @@
 ---
-layout: default
+layout: explore
 ---
         <h3>
 <a name="welcome-to-github-pages" class="anchor" href="#about"><span class="octicon octicon-link"></span></a>Data</h3>
 
 <p>Here are your raw <a href="https://github.com/landonreed/plan-it/tree/gh-pages/data">datas</a>.
+<div id="main"></div>
+<script type="text/javascript">
+	// $("#main").append("<div id=\""+data.accounts[i].account.toLowerCase()+"\" class=\"organization\"><h2>"+data.accounts[i].organization+"</h2></div>");
+	$.getJSON("https://api.github.com/repos/landonreed/plan-it/branches?callback=?", function (repo_data) {
+                                for (var j = 0; j < repo_data.data.length; j += 1) {
+                                        var appendStr = "<div class=\"branch\">";
+
+                                        // if (repo_data.data[j].language !== null) {
+                                        //         appendStr += "<span class=\"language label\">"+repo_data.data[j].language+"</span>";
+                                        // }
+
+                                        // appendStr += "<span class=\"forks\"><i class=\"icon-random\"></i> "+repo_data.data[j].forks+"</span>";
+                                        // appendStr += "<span class=\"watchers\"><i class=\"icon-eye-open\"></i> "+repo_data.data[j].watchers+"</span>";
+
+                                        appendStr += "<h3><a href=\""+repo_data.data[j].commit.url+"\">"+repo_data.data[j].name+"</a></h3>";
+
+                                        // if (repo_data.data[j].description !== null) {
+                                        //         appendStr += "<p>"+repo_data.data[j].description+"</p>";
+                                        // }
+
+                                        $("#main").append(appendStr);
+                                }
+                        });
+
+</script>
