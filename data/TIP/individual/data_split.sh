@@ -1,6 +1,6 @@
 #!/bin/bash
 PREFIX="temprecord"
-csplit -f $PREFIX -k ../../exports/TIP/10Q1.csv 1 {4000}
+csplit -f $PREFIX -k ../../exports/TIP/10Q2.csv 1 {4000}
 
 for file in $PREFIX*; 
 do ARCID=$(grep -Eo '^[^ ,]+' "$file")
