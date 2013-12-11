@@ -1,6 +1,27 @@
 ---
 
 ---
+function fiscalYearBucket(row, field){
+  var year = row[field.dataSource];
+  switch (true){
+    case (parseInt(year) < 1999):
+      return '1990-1999'
+    case (parseInt(year) < 2010):
+      return '2000-2009'
+    case (parseInt(year) < 2013):
+      return '2010-2012'
+    case (parseInt(year) == 2014):
+      return '2014'
+    case (parseInt(year) < 2018):
+      return '2015-2017'
+    case (year === 'LR 2018-2030'):
+      return 'LR 2018-2030'
+    case (year === 'LR 2031-2040'):
+      return 'LR 2031-2040'
+    default:
+      return '2014-2019'
+  }
+}
 function modelYearBucket(row, field){
   var year = row[field.dataSource];
   switch (true){
@@ -15,7 +36,7 @@ function modelYearBucket(row, field){
     default:
       return '2014-2019'
   }
-};
+}
 
 // Define the structure of fields, if this is not defined then all fields will be assumed
 // to be strings.  Name must match csv header row (which must exist) in order to parse correctly.
@@ -68,12 +89,10 @@ var fields = [
     //     var date = new Date(row.invoice_date);
     //     return date.getFullYear() + '_' + pivot.utils().padLeft((date.getMonth() + 1),2,'0')}
     // },
-    {name: 'ModelingNetworkYear', type: 'string', filterable: true, pseudo: true, columnLabelable: true,
-      pseudoFunction: function(row){ return row.ModelingNetworkYear }},
-    {name: 'FiscalYear', type: 'string', filterable: true, pseudo: true, columnLabelable: true,
-      pseudoFunction: function(row){ return row.FiscalYear }},
-     {name: 'ModelYearBucket', type: 'string', filterable: true, columnLabelable: true, pseudo: true, dataSource: 'ModelingNetworkYear', pseudoFunction: modelYearBucket},
-
+    {name: 'ModelingNetworkYear', type: 'string', filterable: true, pseudo: true, columnLabelable: true,pseudoFunction: function(row){ return row.ModelingNetworkYear }},
+    // {name: 'FiscalYear', type: 'string', filterable: true, pseudo: true, columnLabelable: true,pseudoFunction: function(row){ return row.FiscalYear }},
+     // {name: 'ModelYearBucket', type: 'string', filterable: true, columnLabelable: true, pseudo: true, dataSource: 'ModelingNetworkYear', pseudoFunction: modelYearBucket},
+     {name: 'FiscalYearBucket', type: 'string', filterable: true, columnLabelable: true, pseudo: true, dataSource: 'FiscalYear', pseudoFunction: fiscalYearBucket},
 
     // // summary fields
     {name: 'Federal',     type: 'integer',  rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}},
@@ -87,41 +106,107 @@ var fields = [
     {name: 'BondSum',     type: 'integer',  rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}},
     {name: 'TotalSum',     type: 'integer',  rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}}
 ]
-
+var dTable = null;
   function setupPivot(input){
     input.callbacks = {afterUpdateResults: function(){
-      $('#results > table').dataTable({
+      dTable = $('#results > table').dataTable({
         "sDom": "<'row'<'span6'l><'span6'f>>t<'row'<'span6'i><'span6'p>>",
-        "iDisplayLength": 25,
-        "aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
+        "iDisplayLength": 10,
+        "aLengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
         "sPaginationType": "bootstrap",
         "oLanguage": {
           "sLengthMenu": "_MENU_ records per page"
-        }
+        }//,
+        // "sScrollX": "100%",
+        // "sScrollXInner": "150%",
+        // "bScrollCollapse": true
       });
+      new FixedColumns( dTable );
     }};
     $('#pivot-demo').pivot_display('setup', input);
   };
-var someLink = window.location || window.webkiURL//window.location//'http://0.0.0.0:4000/explore/pivot/download.json' //window.location
-var formBlob = null
+  function JSON2CSV(objArray) {
+    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+
+    var str = '';
+    var line = '';
+
+    if (1){//($("#labels").is(':checked')) {
+        var head = array[0];
+        if ($("#quote").is(':checked')) {
+            for (var index in array[0]) {
+                var value = index + "";
+                line += '"' + value.replace(/"/g, '""') + '",';
+            }
+        } else {
+            for (var index in array[0]) {
+                line += index + ',';
+            }
+        }
+
+        line = line.slice(0, -1);
+        str += line + '\r\n';
+    }
+
+    for (var i = 0; i < array.length; i++) {
+        var line = '';
+
+        if (1){//($("#quote").is(':checked')) {
+            for (var index in array[i]) {
+                var value = array[i][index] + "";
+                line += '"' + value.replace(/"/g, '""') + '",';
+            }
+        } else {
+            for (var index in array[i]) {
+                line += array[i][index] + ',';
+            }
+        }
+
+        line = line.slice(0, -1);
+        str += line + '\r\n';
+    }
+    return str;
+    
+}
+
+
+  var someLink = window.location || window.webkiURL//window.location//'http://0.0.0.0:4000/explore/pivot/download.json' //window.location
+  var formBlob = null
+  var csv = ''
   function exportResults(type) {
+    var name = 'results.' + type
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    var json = pivot.results().all()
     if (type === 'json'){
       // alert('Exporting results as ' + type + '.')
-      formBlob = new Blob([JSON.stringify(pivot.results().all())], { type: 'application/json' });
+      formBlob = new Blob([JSON.stringify(json)], { type: 'octet/stream' });
 
-      someLink.href = window.URL.createObjectURL(formBlob);
+      url = window.URL.createObjectURL(formBlob);
     }
     else if (type === 'csv'){
-      alert('Exporting results as ' + type + '.')
+      // alert('Exporting results as ' + type + '.')
+      csv = JSON2CSV(json)
+      formBlob = new Blob([csv], { type: 'text/csv',filename:'MyVerySpecial.csv' });
+
+      url = window.URL.createObjectURL(formBlob);
     }
     else if (type === 'pdf'){
       alert('Exporting results as ' + type + '.')
+      // use jsPDF library!
     }
+    a.href = url;
+        a.download = name;
+        a.click();
+        window.URL.revokeObjectURL(url);
   }
+  
 
   $(document).ready(function() {
 
     setupPivot({url:'{{ site.baseurl}}/data/TIP/projects.csv', fields: fields, filters:{"FiscalYear":"2014"}, rowLabels:['ARCID', 'Jurisdiction', 'ProjectType', 'Phase', 'Status'], summaries:["Total"]})
+    
 
     // prevent dropdown from closing after selection
     $('.stop-propagation').click(function(event){
@@ -137,7 +222,7 @@ var formBlob = null
       $('#pivot-demo').pivot_display('reprocess_display', {filters:{"Jurisdiction":"Cobb County"},rowLabels:["Phase","ModelingNetworkYear"], summaries:["Total"]})
     });
 
-    $('#douglasville-source-funding').click(function(event){
-      $('#pivot-demo').pivot_display('reprocess_display', {filters:{"Sponsor":"City of Douglasville"},rowLabels:["ModelingNetworkYear"],summaries:["Total", "Federal", "State", "Local", "Bond"]})
+    $('#fy-category-funding').click(function(event){
+      $('#pivot-demo').pivot_display('reprocess_display', {rowLabels:["FundSource"],columnLabels:["FiscalYearBucket"],summaries:["Total"]})
     });
   });
