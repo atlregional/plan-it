@@ -102,6 +102,22 @@ var fields = [
     }};
     $('#pivot-demo').pivot_display('setup', input);
   };
+var someLink = window.location || window.webkiURL//window.location//'http://0.0.0.0:4000/explore/pivot/download.json' //window.location
+var formBlob = null
+  function exportResults(type) {
+    if (type === 'json'){
+      // alert('Exporting results as ' + type + '.')
+      formBlob = new Blob([JSON.stringify(pivot.results().all())], { type: 'application/json' });
+
+      someLink.href = window.URL.createObjectURL(formBlob);
+    }
+    else if (type === 'csv'){
+      alert('Exporting results as ' + type + '.')
+    }
+    else if (type === 'pdf'){
+      alert('Exporting results as ' + type + '.')
+    }
+  }
 
   $(document).ready(function() {
 
