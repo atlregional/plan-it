@@ -14,6 +14,7 @@ layout: default
 <!-- <script src="https://embed.github.com/view/geojson/landonreed/plan-it/gh-pages/data/rtp_all.geojson"></script> -->
 <div id="map"></div>
 <script type="text/javascript">
+	var ePrev = null;
 	var click = false;
 	var map = L.map('map', {
 	    center: [33.77686437792359, -84.3145751953125],
@@ -59,7 +60,8 @@ layout: default
 					"Safety",
 					"Transit",
 					"Last Mile",
-					"Roadway"]
+					"Roadway",
+					"Other"]
 	        
 
 	    // loop through our density intervals and generate a label with a colored square for each interval
@@ -74,14 +76,14 @@ layout: default
 
 	legend.addTo(map);
 	function onEachFeature (feature, layer) {
-		var popupContent = "" //+
-		// feature.geometry.type + ", but now I'm a Leaflet vector!</p>";
+		// var popupContent = "" //+
+		// // feature.geometry.type + ", but now I'm a Leaflet vector!</p>";
 
-		if (feature.properties && feature.properties.PRJ_DESC) {
-			popupContent += toTitleCase(feature.properties.PRJ_DESC);
-		}
+		// if (feature.properties && feature.properties.PRJ_DESC) {
+		// 	popupContent += toTitleCase(feature.properties.PRJ_DESC);
+		// }
 
-		layer.bindPopup(popupContent);
+		// layer.bindPopup(popupContent);
 		layer.on({
 	        mouseover: highlightFeature,
 	        mouseout: resetHighlight,
@@ -107,7 +109,9 @@ layout: default
 	function toTitleCase(str) {
 	    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 	}
-	function lineColor(type, desc) {
+	function lineColor(props) {
+		var type = props.PRJ_TYPE;
+		var desc = props.PRJ_DESC;
 		if (/bicycle/i.test(type) || /bicycle/i.test(desc)){
 			console.log("BIKE")
 			return getColor("Bicycle")
@@ -128,8 +132,10 @@ layout: default
 			console.log("ROAD")
 			return getColor("Roadway")
 		}
-		else
+		else{
+			console.log(props)
 			return getColor();
+		}
 	}
 	function getColor(d) {
 	    return d === "Bicycle" ? "#ff0000" :
@@ -140,6 +146,8 @@ layout: default
 	                     "#000000" ;
 	}
 	function highlightFeature(e) {
+		// if (ePrev && ePrev.target != e.target)
+		// 	geojson.resetStyle(ePrev.target);
 	    var layer = e.target;
 	    click = false;
 	    layer.setStyle({
@@ -155,21 +163,29 @@ layout: default
 	    info.update(layer.feature.properties);
 	}
 	function resetHighlight(e) {
-		if (!click)
+		if (!click){
 	    	geojson.resetStyle(e.target);
+	    	info.update();
+		}
 	    
-	    info.update();
+	    
 	}
 	function zoomToFeature(e) {
 	    map.fitBounds(e.target.getBounds());
 	    var layer = e.target;
-	    click = !click;
+	    if (click)
+	    	geojson.resetStyle(ePrev.target);
+	    click = true;
 	    if (click){
+	    	geojson.resetStyle(e.target);
 		    layer.setStyle({
-		        
-		        color: '#000'
+		        weight: 5,
+		        color: '#000',
+		        dashArray: ''
 		    });
 		 }
+		 info.update(layer.feature.properties);
+		 ePrev = e;
 	}
 	$(document).ready(function() {
 		$.ajax({
@@ -217,7 +233,7 @@ layout: default
 						var description = feature.properties.PRJ_DESC;
 						// console.log(feature.properties.PRJ_DESC+': '+feature.properties.PRJ_TYPE)
 						return {
-							color: lineColor(projType, description),
+							color: lineColor(feature.properties),
 							weight: 2,
 							dashArray: '3'
 						}
