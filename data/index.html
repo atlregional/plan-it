@@ -1,5 +1,5 @@
 ---
-layout: explore
+layout: default
 ---
         <h3>
 <a name="welcome-to-github-pages" class="anchor" href="#about"><span class="octicon octicon-link"></span></a>Data</h3>
@@ -13,6 +13,7 @@ layout: explore
 </div>
 <script type="text/javascript">
 	var urls = [];
+	var projects = ""
 	// $("#main").append("<div id=\""+data.accounts[i].account.toLowerCase()+"\" class=\"organization\"><h2>"+data.accounts[i].organization+"</h2></div>");
 	// $.getJSON("https://api.github.com/repos/landonreed/plan-it/branches?callback=?", function (repo_data) {
  //        for (var j = 0; j < repo_data.data.length; j += 1) {
@@ -34,6 +35,8 @@ layout: explore
  //            $("#branches").append(appendStr);
  //        }
 	// });
+var rawUrl = ""
+var apiUrl = ""
 	$.getJSON("https://api.github.com/repos/landonreed/plan-it/tags?callback=?", function (repo_data) {
         for (var j = 0; j < repo_data.data.length; j += 1) {
             var appendStr = "<div class=\"branch\">";
@@ -41,21 +44,56 @@ layout: explore
             // if (repo_data.data[j].language !== null) {
             //         appendStr += "<span class=\"language label\">"+repo_data.data[j].language+"</span>";
             // }
-
+            rawUrl = "https://raw.github.com/landonreed/plan-it/"+repo_data.data[j].name+"/data/TIP/projects.csv"
+            apiUrl = "https://api.github.com/repos/landonreed/plan-it/contents/"+repo_data.data[j].name+"/data/TIP/projects.csv"
             // appendStr += "<span class=\"forks\"><i class=\"icon-random\"></i> "+repo_data.data[j].forks+"</span>";
             // appendStr += "<span class=\"watchers\"><i class=\"icon-eye-open\"></i> "+repo_data.data[j].watchers+"</span>";
-            urls.push("https://raw.github.com/landonreed/plan-it/"+repo_data.data[j].name+"/data/TIP/projects.csv")
+            urls.push(apiUrl)
             appendStr += "<h3><a href=\"https://raw.github.com/landonreed/plan-it/"+repo_data.data[j].name+"/data/TIP/projects.csv\">"+repo_data.data[j].name+"</a></h3>";
 
             // if (repo_data.data[j].description !== null) {
             //         appendStr += "<p>"+repo_data.data[j].description+"</p>";
             // }
+				
+			//  Need to put tag name in 'ref' parameter
+			// e.g. https://api.github.com/repos/landonreed/plan-it/contents/data/TIP/projects.csv?ref=TIP-09Q3
+			// Which yields:
+			// {
+			//   "name": "projects.csv",
+			//   "path": "data/TIP/projects.csv",
+			//   "sha": "2a4f6193260c7d85ffdcd9974c13a4a8ad726a22",
+			//   "size": 1143628,
+			//   "url": "https://api.github.com/repos/landonreed/plan-it/contents/data/TIP/projects.csv?ref=TIP-09Q3",
+			//   "html_url": "https://github.com/landonreed/plan-it/blob/TIP-09Q3/data/TIP/projects.csv",
+			//   "git_url": "https://api.github.com/repos/landonreed/plan-it/git/blobs/2a4f6193260c7d85ffdcd9974c13a4a8ad726a22",
+			//   "type": "file",
+			//   "content": "",
+			//   "encoding": "base64",
+			//   "_links": {
+			//     "self": "https://api.github.com/repos/landonreed/plan-it/contents/data/TIP/projects.csv?ref=TIP-09Q3",
+			//     "git": "https://api.github.com/repos/landonreed/plan-it/git/blobs/2a4f6193260c7d85ffdcd9974c13a4a8ad726a22",
+			//     "html": "https://github.com/landonreed/plan-it/blob/TIP-09Q3/data/TIP/projects.csv"
+			//   }
+			// }
+			// Then use git_url...ugh...maybe we should just store the blob url
+			// for n tags
+			// first method yields n * 3 calls
+			// if we store tag name and blob
+			// then we get n calls
 
+   //          console.log(apiUrl)
+			// $.get(apiUrl, function(data){
+			// 	projects += data
+			// 	console.log(data)
+			// })
             $("#tags").append(appendStr);
         }
 	});
-	for (url in urls){
-		d3.csv
-	}
+	// $.each(urls, function(i, url){
+
+	// })
+	// for (url in urls){
+	// 	d3.csv
+	// }
 
 </script>

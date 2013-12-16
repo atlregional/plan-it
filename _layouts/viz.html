@@ -1,25 +1,12 @@
 ---
-
+layout: default
 ---
-<!doctype html>
-<html>
-<head>
-  <title>Pivot.js</title>
-  <!-- Twitter Bootstrap -->
-  <link rel="stylesheet" href="{{ site.baseurl}}/lib/css/bootstrap.min.css" type="text/css" />
+ 
   <script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/d3/d3.v3.min.js"></script>
-  </head>
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  </head>
-  <body>
-    <div class="wrapper">
       {{content}}
-      {% include footer.html %}
-    </div>
-
-  </body>
   <script type="text/javascript">
-  var data = null;
+  var data = [];
+  var uniqueIds = [];
   var svg = null;
   d3.csv("{{ site.baseurl}}/data/TIP/projects.csv").row(function(d) {
     return {
@@ -55,7 +42,13 @@
   console.log(rows)
   data = rows
   doThis(data)
+  $.each(data, function(i, el){
+    if($.inArray(el.ARCID, uniqueIds) === -1) uniqueIds.push(el.ARCID);
+  });
+  console.log(uniqueIds)
 });
+
+
 
 function doThis(data){
   console.log(data[0])
@@ -111,7 +104,7 @@ svg.selectAll("circle").data(data).enter()
   .append("circle")
   .attr("cx",function(d,i) {return x(data[i].ModelingNetworkYear);})
   .attr("cy",function(d,i) {return y(data[i].Federal);})
-  .attr("r",function(d,i) {return r(data[i].Total/1000000);})
+  .attr("r",function(d,i) {return r(data[i].Total/350000);})
 
   .style("fill",function(d,i) {return c(data[i].Jurisdiction);})
   .style("opacity",function(d,i) {return o(data[i].Status);})

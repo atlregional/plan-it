@@ -1,17 +1,20 @@
 ---
-
+layout: default
 ---
-<!doctype html>
-<html>
-<head>
-  <title>Pivot.js</title>
-  <!-- Twitter Bootstrap -->
-  <link rel="stylesheet" href="{{ site.baseurl}}/lib/css/bootstrap.min.css" type="text/css" />
+
+    
+
+
+      {{content}}
+        
+
+<!-- Twitter Bootstrap -->
+  <!-- <link rel="stylesheet" href="{{ site.baseurl}}/lib/css/bootstrap.min.css" type="text/css" /> -->
 
   <link rel="stylesheet" href="{{ site.baseurl}}/lib/css/subnav.css" type="text/css" />
   <link rel="stylesheet" href="{{ site.baseurl}}/lib/css/pivot.css" type="text/css" />
 
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  
   <script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/subnav.js"></script>
   <script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/accounting.min.js"></script>
   <script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/jquery.dataTables.min.js"></script>
@@ -23,14 +26,3 @@
   <script type="text/javascript" src="{{ site.baseurl}}/pivot.js"></script>
   <script type="text/javascript" src="{{ site.baseurl}}/jquery_pivot.js"></script>
   <script src="{{ site.baseurl}}/javascripts/plan_pivot.js"></script>
-  </head>
-  <body>
-    <div class="wrapper">
-      <section>
-      {{content}}
-        
-      </section>
-    </div>
-
-  </body>
-</html>

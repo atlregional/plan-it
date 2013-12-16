@@ -110,7 +110,7 @@ var dTable = null;
   function setupPivot(input){
     input.callbacks = {afterUpdateResults: function(){
       dTable = $('#results > table').dataTable({
-        "sDom": "<'row'<'span6'l><'span6'f>>t<'row'<'span6'i><'span6'p>>",
+        "sDom": "<'row'<'col-md-6'l><'col-md-6'f>>t<'row'<'col-md-6'i><'col-md-6'p>>",
         "iDisplayLength": 10,
         "aLengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
         "sPaginationType": "bootstrap",
@@ -121,7 +121,7 @@ var dTable = null;
         // "sScrollXInner": "150%",
         // "bScrollCollapse": true
       });
-      new FixedColumns( dTable );
+      //new FixedColumns( dTable );
     }};
     $('#pivot-demo').pivot_display('setup', input);
   };
