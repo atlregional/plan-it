@@ -21,7 +21,7 @@ layout: explore
             Filter Fields
             <b class="caret"></b>
           </a>
-          <ul class="dropdown-menu stop-propagation" style="overflow:auto;max-height:450px;padding:10px;">
+          <ul class="dropdown-menu stop-propagation" style="overflow:auto;max-height:450px;padding:0px;">
             <div id="filter-list"></div>
           </ul>
         </li>
@@ -66,13 +66,13 @@ layout: explore
       </ul>
     </div>
     <hr/>
-    <span style="float:right;">Export <button class="btn btn-mini" onclick="exportResults('json')" title="Download results in json">json</button> <button class="btn btn-mini" onclick="exportResults('csv')" title="Download results in csv">csv</button> <button class="btn btn-mini"  onclick="exportResults('pdf')" disabled>pdf</button></span>
+    <span style="float:right;">Export <button class="btn btn-default btn-xs" onclick="exportResults('json')" title="Download results in json">json</button> <button class="btn btn-default btn-xs" onclick="exportResults('csv')" title="Download results in csv">csv</button> <button class="btn btn-default btn-xs"  onclick="exportResults('pdf')" disabled>pdf</button></span>
     <h1>Results</h1>
     <span id="pivot-detail"></span>
 
     <hr/>
     <div id="results"></div>
   </div>
-  
+
 
 
