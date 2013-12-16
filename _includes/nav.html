@@ -36,6 +36,6 @@
   </div>
 </nav>
 <script type="text/javascript">
-var nav = window.location.href.split('/')[3]
+var nav = '{{ page.url }}'.split('/')[1]
 $('.' + nav ).addClass('active');
 </script>
