@@ -1,17 +1,29 @@
 ---
-layout: default
+layout: viz
 category: 'data'
 ---
 <h1>Data</h1>
 
 <p>Here are your raw <a href="https://github.com/landonreed/plan-it/tree/gh-pages/data">datas</a>.
-<div id="branches">
-	<h3>Branches</h3>
+<div id="projects">
+	<h3>Projects</h3>
 </div>
 <div id="tags">
 	<h3>Tags</h3>
 </div>
 <script type="text/javascript">
+	var uniqueIds = [];
+	function doDataThings(error, rows){
+		data = rows
+		console.log(data);
+		$.each(data, function(i, el){
+	    if($.inArray(el.ARCID, uniqueIds) === -1) uniqueIds.push(el.ARCID);
+			});
+		console.log(uniqueIds)
+		$.each(uniqueIds, function(i, id){
+			$("#projects").append('<h4>' +id + '</h4>&nbsp;&nbsp;&nbsp;<a href="https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/' + id + '.csv">GitHub</a> <a href="http://documents.atlantaregional.com/factsheets/' + id + '.PDF">ARC</a></br>');
+		})
+	}
 	var urls = [];
 	var projects = ""
 	// $("#main").append("<div id=\""+data.accounts[i].account.toLowerCase()+"\" class=\"organization\"><h2>"+data.accounts[i].organization+"</h2></div>");
@@ -37,7 +49,7 @@ category: 'data'
 	// });
 var rawUrl = ""
 var apiUrl = ""
-	$.getJSON("https://api.github.com/repos/landonreed/plan-it/tags?callback=?", function (repo_data) {
+	$.getJSON("https:// " + "apiWOMPERS" + ".github.com/repos/landonreed/plan-it/tags?callback=?", function (repo_data) {
         for (var j = 0; j < repo_data.data.length; j += 1) {
             var appendStr = "<div class=\"branch\">";
 

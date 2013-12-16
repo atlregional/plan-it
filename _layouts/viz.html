@@ -5,7 +5,7 @@ layout: default
       {{content}}
   <script type="text/javascript">
   var data = [];
-  var uniqueIds = [];
+  
   var svg = null;
   d3.csv("{{ site.baseurl}}/data/TIP/projects.csv").row(function(d) {
     return {
@@ -37,15 +37,7 @@ layout: default
         BondSum: +d.BondSum,
         TotalSum: +d.TotalSum
       };
-}).get(function(error, rows){
-  console.log(rows)
-  data = rows
-  doThis(data)
-  $.each(data, function(i, el){
-    if($.inArray(el.ARCID, uniqueIds) === -1) uniqueIds.push(el.ARCID);
-  });
-  console.log(uniqueIds)
-});
+}).get(doDataThings);
 
 
 
