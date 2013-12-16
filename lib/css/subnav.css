@@ -1,8 +1,8 @@
 .subnav .pull-right {float:right;}
 .subnav {
   width: 100%;
-  height: 40px;
-  background-color: #eeeeee; /* Old browsers */
+  height: 41px;
+  background-color: #ffffff; /* Old browsers */
   border: 1px solid #e5e5e5;
   -webkit-border-radius: 4px;
      -moz-border-radius: 4px;
@@ -22,7 +22,7 @@
 @media (min-width: 980px) {
   .subnav-fixed {
     position: fixed;
-    background-color: #eeeeee;
+    background-color: #ffffff;
     top: 50px;
     left: 0;
     right: 0;
