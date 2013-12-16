@@ -107,6 +107,7 @@ var fields = [
     {name: 'TotalSum',     type: 'integer',  rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}}
 ]
 var dTable = null;
+
   function setupPivot(input){
     input.callbacks = {afterUpdateResults: function(){
       dTable = $('#results > table').dataTable({

@@ -294,7 +294,7 @@ var methods = {
         result_rows;
     result_table.empty();
 
-    snip += '<table id="pivot-table" class="table table-striped table-condensed"><thead>';
+    snip += '<table id="pivot-table" class="table table-striped table-hover table-condensed"><thead>';
 
     // build columnLabel header row
     if (config.columnLabels.length > 0 && config.summaries.length > 1) {
