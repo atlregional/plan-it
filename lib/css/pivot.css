@@ -2,17 +2,24 @@ html { padding-top: 40px;}
 
 .dropdown-menu a.remove-filter-field { display: inline;}
 
+.dropdown-menu label {
+  font-weight: normal;
+}
+
 div.dataTables_length label {
   float: left;
   text-align: left;
+  font-weight: normal;
 }
 
 div.dataTables_length select {
   width: 75px;
+  font-weight: normal;
 }
 
 div.dataTables_filter label {
   float: right;
+  font-weight: normal;
 }
 
 div.dataTables_info {
