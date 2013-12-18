@@ -2,36 +2,31 @@
 layout: default
 title: Plan-It!
 ---
-
+<div class="col-md-6">
 <h1>Welcome to Plan-It.</h1>
 
 <p>This site hosts information on the Atlanta region's <a href='http://www.atlantaregional.com/transportation/transportation-improvement-program'>Transportation Improvement Program (TIP)</a>.  The TIP allocates federal funds for use in construction of the highest-priority transportation projects in the near term of the <a href='http://www.atlantaregional.com/transportation/regional-transportation-plan'>Regional Transportation Plan (RTP)</a>. The TIP must be consistent with the long-range objectives of the RTP and must be financially balanced.</p>
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Map of TIP Projects</h3>
+<h3>Looking for Raw Data?</h3>
 
-<p>The map below shows all of the current projects in the FY 2012-2017 TIP (<a href="http://www.atlantaregional.com/File%20Library/Transportation/Transportation%20Plans/tp_tiplist_112213.pdf">pdf</a>).  Zoom and click around on the map to get a better idea of some of the projects for which federal, state, and local dollars are being allocated.</p>
-<p>Want the <a href="https://raw.github.com/landonreed/plan-it/gh-pages/data/rtp_all.geojson">raw data</a>?</p>
-<!-- <script src="https://embed.github.com/view/geojson/landonreed/plan-it/gh-pages/data/rtp_all.geojson"></script> -->
-<div class="row">
+<p>Check out the <a href="https://github.com/landonreed/plan-it/tree/gh-pages/data">data folder</a> on GitHub.  For older versions of the data, navigate to a different branch (e.g., <a href="https://github.com/landonreed/plan-it/tree/2009Q2/data">2nd Quarter of 2009</a>). </p>
+<p>For those that want to dive deep into the data and discover funding trends over years or how buckets of money get spent for different project types, check out the <a href="{{ site.baseurl }}/explore/pivot">Pivot Table</a> under the Explore tab.  The tool lets you slice, dice, and even export your results.</p>
+
+<h3>For Project Sponsors</h3>
+
+<p>If you're a local sponsor and would like to comment on a project or need to propose a change, please visit the <a href="https://github.com/landonreed/plan-it/wiki/Proposing-Changes-to-Projects">Plan-It wiki</a> to learn more about this process.</p>
+</div>
 <div class="col-md-6">
+<h3>
+Map of TIP Projects<span style="float:right;"><small><a href="{{ site.baseurl }}/explore/map">see full screen <span class="glyphicon glyphicon-share-alt"></span></a></small></span></h3>
+
+
+<!-- <script src="https://embed.github.com/view/geojson/landonreed/plan-it/gh-pages/data/rtp_all.geojson"></script> -->
 <div id="map"></div>
+
+<p>The map above shows all of the current projects in the FY 2012-2017 TIP (<a href="http://www.atlantaregional.com/File%20Library/Transportation/Transportation%20Plans/tp_tiplist_112213.pdf">pdf</a>).  Zoom and click around on the map to get a better idea of some of the projects for which federal, state, and local dollars are being allocated.</p>
 </div>
-</div>
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
 
 
 <script type="text/javascript" src="{{ site.baseurl }}/javascripts/map.js"></script>
