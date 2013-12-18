@@ -21,7 +21,7 @@ category: 'data'
 			});
 		console.log(uniqueIds)
 		$.each(uniqueIds, function(i, id){
-			$("#projects").append('<h4>' +id + '</h4>&nbsp;&nbsp;&nbsp;<a href="https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/' + id + '.csv">GitHub</a> <a href="http://documents.atlantaregional.com/factsheets/' + id + '.PDF">ARC</a></br>');
+			$("#projects").append('<div class="col-md-2 col-sm-3 col-xs-6"><h4><span class="label label-default">' +id + '</h4></span>&nbsp;&nbsp;&nbsp;<a href="https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/' + id + '.csv">GitHub</a> <a href="http://documents.atlantaregional.com/factsheets/' + id + '.PDF">ARC</a></div>');
 		})
 	}
 	var urls = [];
