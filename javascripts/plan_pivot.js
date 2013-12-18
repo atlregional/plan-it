@@ -112,7 +112,7 @@ var dTable = null;
     input.callbacks = {afterUpdateResults: function(){
       dTable = $('#results > table').dataTable({
         "sDom": "<'row'<'col-md-6'l><'col-md-6'f>>t<'row'<'col-md-6'i><'col-md-6'p>>",
-        "iDisplayLength": 10,
+        "iDisplayLength": 25,
         "aLengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
         "sPaginationType": "bootstrap",
         "oLanguage": {
