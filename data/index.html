@@ -4,28 +4,50 @@ title: Data
 category: 'data'
 ---
 <script src="{{ site.baseurl}}/lib/javascripts/director.min.js"></script>
-
-<div class="col-md-6">
-	<h1>Data</h1>
-
-	<p>You can find all of the raw data related to transportation projects here:</p>
-	<ul>
-	<li><a href="https://github.com/landonreed/plan-it/tree/gh-pages/data/TIP">TIP</a></li>
-	<li><a href="https://github.com/landonreed/plan-it/tree/gh-pages/data/LR">Long-range plan</a></li>
-	</ul>
-	<div>
-		<h3>Individual Projects</h3>
+<ul id="myTab" class="nav nav-tabs">
+  <li class="active"><a href="#proj">Projects</a></li>
+  <li><a href="#data">Data</a></li>
+  <li><a href="#other">Other</a></li>
+</ul>
+<div class="tab-content">
+   <div id="proj" class="tab-pane active">
+     <div class="col-md-6 col-sm-6">
+		<h1>Individual Projects</h1>
 		<p>Here you'll find all of the data segmented by individual projects:</p>
 		<div style="height:300px; overflow:auto;">
-		<table id="projects"  class="table table-striped table-condensed"></table>
+			<table id="projects"  class="table table-striped table-condensed"></table>
 		</div>
 	</div>
-	<!-- <div id="tags">
-		<h3>Tags</h3>
-	</div> -->
+	<div id="project" class="col-md-6 col-sm-6"></div>
+   </div>
+   <div id="other" class="tab-pane">
+   	 <div class="col-md-6">
+     <h1>Other</h1>
+     </div>
+   </div>
+   <div id="data" class="tab-pane">
+		<div class="col-md-6">
+			<h1>Data</h1>
+
+			<p>You can find all of the raw data related to transportation projects here:</p>
+			<ul>
+			<li><a href="https://github.com/landonreed/plan-it/tree/gh-pages/data/TIP">TIP</a></li>
+			<li><a href="https://github.com/landonreed/plan-it/tree/gh-pages/data/LR">Long-range plan</a></li>
+			</ul>
+			
+			<!-- <div id="tags">
+				<h3>Tags</h3>
+			</div> -->
+		</div>
+	</div>
 </div>
-<div id="project"></div>
+
+
 <script type="text/javascript">
+	$('#myTab a').click(function (e) {
+	  e.preventDefault()
+	  $(this).tab('show')
+	})
 	var router = new Router().init();
 
 	var uniqueIds = [];
@@ -37,11 +59,11 @@ category: 'data'
 	    router.on('/'+el.ARCID, function () {
 	    	$('#project')
 	    		.fadeOut(250, function(){
-    				$('#project').empty().append('<h3>'+el.ARCID+'<span style="float:right; font-size:small"><a href="https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/'+el.ARCID+'.csv" class="btn btn-default" role="button">Edit</a></span></h3>'+
+    				$('#project').empty().append('<h3>'+el.ARCID+'<span style="float:right; font-size:small"><a href="https://github.com/landonreed/plan-it/edit/gh-pages/data/TIP/individual/'+el.ARCID+'.csv" class="btn btn-default" role="button">Edit</a></span></h3>'+
     											 '<p>'+el.Description+'</p>'+
     											 '<p><strong>Sponsor:</strong> '+el.Sponsor+'</p>'+
     											 '<p><strong>Jurisdiction:</strong> '+el.Jurisdiction+'</p>'+
-    											 '<p><strong>FiscalYear:</strong> '+el.FiscalYear+'</p></br></br>'+
+    											 '<p><strong>FiscalYear:</strong> '+el.FiscalYear+'</p><hr>'+
     											 '<h4>Open an issue for '+el.ARCID+':</h4>'+
     											 '<a href="https://github.com/landonreed/plan-it/issues/new?title='+el.ARCID+'" class="btn btn-sm btn-primary" role="button">General</a> <a href="https://github.com/landonreed/plan-it/issues/new?title='+el.ARCID+'&labels=delay" class="btn btn-sm btn-warning" role="button">Delay</a> <a href="https://github.com/landonreed/plan-it/issues/new?title='+el.ARCID+'&labels=delete" class="btn btn-sm btn-danger" role="button">Delete</a>  <a href="https://github.com/landonreed/plan-it/issues/new?title='+el.ARCID+'&labels=funding" class="btn btn-sm btn-success" role="button">Funding</a>'
     											 ).fadeIn(250)
