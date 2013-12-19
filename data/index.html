@@ -65,7 +65,14 @@ category: 'data'
     											 '<p><strong>Jurisdiction:</strong> '+el.Jurisdiction+'</p>'+
     											 '<p><strong>FiscalYear:</strong> '+el.FiscalYear+'</p><hr>'+
     											 '<h4>Open an issue for '+el.ARCID+':</h4>'+
-    											 '<a href="https://github.com/landonreed/plan-it/issues/new?title='+el.ARCID+'" class="btn btn-sm btn-primary" role="button">General</a> <a href="https://github.com/landonreed/plan-it/issues/new?title='+el.ARCID+'&labels=delay" class="btn btn-sm btn-warning" role="button">Delay</a> <a href="https://github.com/landonreed/plan-it/issues/new?title='+el.ARCID+'&labels=delete" class="btn btn-sm btn-danger" role="button">Delete</a>  <a href="https://github.com/landonreed/plan-it/issues/new?title='+el.ARCID+'&labels=funding" class="btn btn-sm btn-success" role="button">Funding</a>'
+    											 '<input id="issue-title" type="text" class="form-control" placeholder="'+el.ARCID+'"></br>'+
+    											 '<textarea id="issue-body" class="form-control" rows="3" placeholder="Describe issue or change here..."></textarea></br>'+
+    											 '<label>Issue Type:</label></br>'+
+    											 '<a href="https://github.com/landonreed/plan-it/issues/new?title='+el.ARCID+'&body='+$('#issue-body').val()+'" class="issue btn btn-sm btn-primary" id="general" role="button">General</a> '+
+    											 '<a href="https://github.com/landonreed/plan-it/issues/new?title='+el.ARCID+'&labels=delay" id="delay" class="issue btn btn-sm btn-warning" role="button">Delay</a> '+
+    											 '<a href="https://github.com/landonreed/plan-it/issues/new?title='+el.ARCID+'&labels=delete" id="delete" class="issue btn btn-sm btn-danger" role="button">Delete</a> '+
+    											 '<a href="https://github.com/landonreed/plan-it/issues/new?title='+el.ARCID+'&labels=funding" id="funding" class="issue btn btn-sm btn-success" role="button">Funding</a>'
+    											 
     											 ).fadeIn(250)
     			})
 	    		
