@@ -1,27 +1,52 @@
 ---
 layout: viz
+title: Data
 category: 'data'
 ---
-<h1>Data</h1>
+<script src="{{ site.baseurl}}/lib/javascripts/director.min.js"></script>
 
-<p>Here are your raw <a href="https://github.com/landonreed/plan-it/tree/gh-pages/data">datas</a>.
-<div id="projects">
-	<h3>Projects</h3>
+<div class="col-md-6">
+	<h1>Data</h1>
+
+	<p>You can find all of the raw data related to transportation projects here:</p>
+	<ul>
+	<li><a href="https://github.com/landonreed/plan-it/tree/gh-pages/data/TIP">TIP</a></li>
+	<li><a href="https://github.com/landonreed/plan-it/tree/gh-pages/data/LR">Long-range plan</a></li>
+	</ul>
+	<div id="projects">
+		<h3>Individual Projects</h3>
+		<p>Here you'll find all of the data segmented by individual projects:</p>
+	</div>
+	<div id="tags">
+		<h3>Tags</h3>
+	</div>
 </div>
-<div id="tags">
-	<h3>Tags</h3>
-</div>
+<div id="project"></div>
 <script type="text/javascript">
+	var router = new Router().init();
+
 	var uniqueIds = [];
 	function doDataThings(error, rows){
 		data = rows
+
 		console.log(data);
 		$.each(data, function(i, el){
+	    router.on('/'+el.ARCID, function () {
+	    	$('#project')
+	    		.fadeOut(250, function(){
+    				$('#project').empty().append('<h3>'+el.ARCID+'</h3>'+
+    											 '<p>'+el.Description+'</p>'+
+    											 '<p><strong>Sponsor:</strong> '+el.Sponsor+'</p>'+
+    											 '<p><strong>Jurisdiction:</strong> '+el.Jurisdiction+'</p>'+
+    											 '<p><strong>FiscalYear:</strong> '+el.FiscalYear+'</p>').fadeIn(250)
+    			})
+	    		
+	    })
 	    if($.inArray(el.ARCID, uniqueIds) === -1) uniqueIds.push(el.ARCID);
 			});
 		console.log(uniqueIds)
 		$.each(uniqueIds, function(i, id){
-			$("#projects").append('<div class="col-md-2 col-sm-3 col-xs-6"><h4><span class="label label-default">' +id + '</h4></span>&nbsp;&nbsp;&nbsp;<a href="https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/' + id + '.csv">GitHub</a> <a href="http://documents.atlantaregional.com/factsheets/' + id + '.PDF">ARC</a></div>');
+			$("#projects").append('<div class="col-md-2 col-sm-3 col-xs-6"><p><span class="label label-default">' +id + '</p></span>&nbsp;&nbsp;&nbsp;<small><a href="#/' + id + '">Data</a> | <a href="http://documents.atlantaregional.com/factsheets/' + id + '.PDF">pdf</a></small></div>');
 		})
 	}
 	var urls = [];
