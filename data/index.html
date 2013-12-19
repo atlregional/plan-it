@@ -37,11 +37,14 @@ category: 'data'
 	    router.on('/'+el.ARCID, function () {
 	    	$('#project')
 	    		.fadeOut(250, function(){
-    				$('#project').empty().append('<h3>'+el.ARCID+'<span style="float:right; font-size:small"><a href="https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/'+el.ARCID+'.csv" class="btn btn-primary" role="button">Edit</a></span></h3>'+
+    				$('#project').empty().append('<h3>'+el.ARCID+'<span style="float:right; font-size:small"><a href="https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/'+el.ARCID+'.csv" class="btn btn-default" role="button">Edit</a></span></h3>'+
     											 '<p>'+el.Description+'</p>'+
     											 '<p><strong>Sponsor:</strong> '+el.Sponsor+'</p>'+
     											 '<p><strong>Jurisdiction:</strong> '+el.Jurisdiction+'</p>'+
-    											 '<p><strong>FiscalYear:</strong> '+el.FiscalYear+'</p>').fadeIn(250)
+    											 '<p><strong>FiscalYear:</strong> '+el.FiscalYear+'</p></br></br>'+
+    											 '<h4>Open an issue for '+el.ARCID+':</h4>'+
+    											 '<a href="https://github.com/landonreed/plan-it/issues/new?title='+el.ARCID+'" class="btn btn-sm btn-primary" role="button">General</a> <a href="https://github.com/landonreed/plan-it/issues/new?title='+el.ARCID+'&labels=delay" class="btn btn-sm btn-warning" role="button">Delay</a> <a href="https://github.com/landonreed/plan-it/issues/new?title='+el.ARCID+'&labels=delete" class="btn btn-sm btn-danger" role="button">Delete</a>  <a href="https://github.com/landonreed/plan-it/issues/new?title='+el.ARCID+'&labels=funding" class="btn btn-sm btn-success" role="button">Funding</a>'
+    											 ).fadeIn(250)
     			})
 	    		
 	    })
