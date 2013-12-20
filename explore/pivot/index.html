@@ -1,7 +1,9 @@
 ---
 layout: explore
+title: Pivot Table
 category: 'explore'
 ---
+<div class="col-md-12">
     <h1>Pivot Table</h1>
     <p>Pivot tables are great way to summarize large datasets.
     <br/><br/>
@@ -66,9 +68,10 @@ category: 'explore'
       </ul>
     </div>
     <hr/>
-    <span style="float:right;">Export <button class="btn btn-default btn-xs" onclick="exportResults('json')" title="Download results in json">json</button> <button class="btn btn-default btn-xs" onclick="exportResults('csv')" title="Download results in csv">csv</button> <button class="btn btn-default btn-xs"  onclick="exportResults('pdf')" disabled>pdf</button></span>
+    <span style="float:right;">Export <button class="btn btn-default btn-xs" onclick="exportResults('json')" title="Download results as json">json</button> <button class="btn btn-default btn-xs" onclick="exportResults('csv')" title="Download results as csv">csv</button> <button class="btn btn-default btn-xs" title="Download results as pdf" onclick="exportResults('pdf')">pdf</button></span>
     <h1>Results</h1>
     <span id="pivot-detail"></span>
 
     <hr/>
     <div id="results"></div>
+    </div>
