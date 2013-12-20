@@ -10,15 +10,31 @@ category: 'data'
   <li><a href="#other">Other</a></li>
 </ul>
 <div class="tab-content">
-   <div id="proj" class="tab-pane active">
-     <div class="col-md-6 col-sm-6">
-		<h1>Individual Projects</h1>
-		<p>Here you'll find all of the data segmented by individual projects:</p>
-		<div style="height:300px; overflow:auto;">
-			<table id="projects"  class="table table-striped table-condensed"></table>
-		</div>
+	<div id="proj" class="tab-pane active">
+	<div id="project" class="col-md-6 col-sm-6 pull-right" style="display:none;">
+   		<h3><span class="arcid"></span><span style="float:right; font-size:small"><a href="https://github.com/landonreed/plan-it/edit/gh-pages/data/TIP/individual/'+el.ARCID+'.csv" class="btn btn-default" role="button">Edit</a></span></h3>
+		<p><span class="description"></span></p>
+		<p><strong>Sponsor:</strong> <span class="sponsor"></span></p>
+		<p><strong>Jurisdiction:</strong> <span class="jurisdiction"></span></p>
+		<p><strong>FiscalYear:</strong> <span class="fiscal-year"></span></p><hr>
+		<h4>Open an issue for <span class="arcid"></span>:</h4>
+		<input id="issue-title" type="text" class="form-control" placeholder=""></br>
+		<textarea id="issue-body" class="form-control" rows="3" placeholder="Describe issue or change here..."></textarea></br>
+		<label>Issue Type:</label></br>
+		<button id="general" class="issue btn btn-sm btn-primary" role="button">General</button>
+		<button id="delay" class="issue btn btn-sm btn-warning" role="button">Delay</button>
+		<button id="delete" class="issue btn btn-sm btn-danger" role="button">Delete</button>
+		<button id="funding" class="issue btn btn-sm btn-success" role="button">Funding</button><hr>
+		<!-- "https://github.com/landonreed/plan-it/issues/new?title='+el.ARCID+'&body='+$('#issue-body').val()+'" -->
 	</div>
-	<div id="project" class="col-md-6 col-sm-6"></div>
+		<div class="col-md-6 col-sm-6">
+			<h1>Individual Projects</h1>
+			<p>Here you'll find all of the data segmented by individual projects:</p>
+			<div style="height:300px; overflow:auto;">
+				<table id="projects"  class="table table-striped table-condensed"></table>
+			</div>
+	</div>
+	
    </div>
    <div id="other" class="tab-pane">
    	 <div class="col-md-6">
@@ -49,7 +65,11 @@ category: 'data'
 	  $(this).tab('show')
 	})
 	var router = new Router().init();
-
+	$('.issue').click(function(){
+		var title = ($('#issue-title').val()) ? $('#issue-title').val() : $('#issue-title').attr('placeholder')
+		var body = ($('#issue-body').val()) ? $('#issue-body').val() : ''
+		window.location='https://github.com/landonreed/plan-it/issues/new?title='+title+'&body='+body+'&labels='+this.id
+	})
 	var uniqueIds = [];
 	function doDataThings(error, rows){
 		data = rows
@@ -59,21 +79,13 @@ category: 'data'
 	    router.on('/'+el.ARCID, function () {
 	    	$('#project')
 	    		.fadeOut(250, function(){
-    				$('#project').empty().append('<h3>'+el.ARCID+'<span style="float:right; font-size:small"><a href="https://github.com/landonreed/plan-it/edit/gh-pages/data/TIP/individual/'+el.ARCID+'.csv" class="btn btn-default" role="button">Edit</a></span></h3>'+
-    											 '<p>'+el.Description+'</p>'+
-    											 '<p><strong>Sponsor:</strong> '+el.Sponsor+'</p>'+
-    											 '<p><strong>Jurisdiction:</strong> '+el.Jurisdiction+'</p>'+
-    											 '<p><strong>FiscalYear:</strong> '+el.FiscalYear+'</p><hr>'+
-    											 '<h4>Open an issue for '+el.ARCID+':</h4>'+
-    											 '<input id="issue-title" type="text" class="form-control" placeholder="'+el.ARCID+'"></br>'+
-    											 '<textarea id="issue-body" class="form-control" rows="3" placeholder="Describe issue or change here..."></textarea></br>'+
-    											 '<label>Issue Type:</label></br>'+
-    											 '<a href="https://github.com/landonreed/plan-it/issues/new?title='+el.ARCID+'&body='+$('#issue-body').val()+'" class="issue btn btn-sm btn-primary" id="general" role="button">General</a> '+
-    											 '<a href="https://github.com/landonreed/plan-it/issues/new?title='+el.ARCID+'&labels=delay" id="delay" class="issue btn btn-sm btn-warning" role="button">Delay</a> '+
-    											 '<a href="https://github.com/landonreed/plan-it/issues/new?title='+el.ARCID+'&labels=delete" id="delete" class="issue btn btn-sm btn-danger" role="button">Delete</a> '+
-    											 '<a href="https://github.com/landonreed/plan-it/issues/new?title='+el.ARCID+'&labels=funding" id="funding" class="issue btn btn-sm btn-success" role="button">Funding</a>'
-    											 
-    											 ).fadeIn(250)
+	    			$('#issue-title').attr('placeholder', el.ARCID)
+    				$('.arcid').empty().append(el.ARCID)
+    				$('.sponsor').empty().append(el.Sponsor)
+    				$('.jurisdiction').empty().append(el.Jurisdiction)
+    				$('.description').empty().append(el.Description)
+    				$('.fiscal-year').empty().append(el.FiscalYear)
+    				$('#project').fadeIn(250)
     			})
 	    		
 	    })
