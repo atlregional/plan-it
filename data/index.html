@@ -84,6 +84,8 @@ category: 'data'
 		var value = $('.fiscal-year').val()
 		var id = $('#issue-title').attr('placeholder')
 		$('#issue-title').attr('placeholder', id + ': change fiscal year from ' + previous + ' to ' + value)
+		$('.issue').attr("disabled", true)
+		$('#delay').attr('disabled', false)
 	})
 	$('.issue').click(function(){
 		var title = ($('#issue-title').val()) ? $('#issue-title').val() : $('#issue-title').attr('placeholder')
