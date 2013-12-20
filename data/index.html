@@ -74,7 +74,7 @@ category: 'data'
 	  $(this).tab('show')
 	})
 	var previous;
-
+	var id;
     $("select").focus(function () {
         // Store the current value on focus and on change
         previous = this.value;
@@ -82,7 +82,7 @@ category: 'data'
 	var router = new Router().init();
 	$('.fiscal-year').change(function(){
 		var value = $('.fiscal-year').val()
-		var id = $('#issue-title').attr('placeholder')
+		
 		$('#issue-title').attr('placeholder', id + ': change fiscal year from ' + previous + ' to ' + value)
 		$('.issue').attr("disabled", true)
 		$('#delay').attr('disabled', false)
@@ -108,6 +108,7 @@ category: 'data'
     				$('.description').empty().append(el.Description)
     				$('.fiscal-year').val(el.FiscalYear)
     				$('#project').fadeIn(250)
+    				id = el.ARCID
     			})
 	    		
 	    })
