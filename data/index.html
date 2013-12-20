@@ -82,10 +82,16 @@ category: 'data'
 	var router = new Router().init();
 	$('.fiscal-year').change(function(){
 		var value = $('.fiscal-year').val()
-		
-		$('#issue-title').attr('placeholder', id + ': change fiscal year from ' + previous + ' to ' + value)
-		$('.issue').attr("disabled", true)
-		$('#delay').attr('disabled', false)
+		if (value != previous){
+			$('#issue-title').attr('placeholder', id + ': change fiscal year from ' + previous + ' to ' + value)
+			$('.issue').attr("disabled", true)
+			$('#delay').attr('disabled', false)
+		}
+		else{
+			$('#issue-title').attr('placeholder', id)
+			$('.issue').attr("disabled", false)
+		}
+
 	})
 	$('.issue').click(function(){
 		var title = ($('#issue-title').val()) ? $('#issue-title').val() : $('#issue-title').attr('placeholder')
