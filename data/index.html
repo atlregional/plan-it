@@ -16,7 +16,16 @@ category: 'data'
 		<p><span class="description"></span></p>
 		<p><strong>Sponsor:</strong> <span class="sponsor"></span></p>
 		<p><strong>Jurisdiction:</strong> <span class="jurisdiction"></span></p>
-		<p><strong>FiscalYear:</strong> <span class="fiscal-year"></span></p><hr>
+		<p><strong>FiscalYear:</strong> 
+		<span><select class="fiscal-year" >
+			  <option>2013</option>
+			  <option>2014</option>
+			  <option>2015</option>
+			  <option>2016</option>
+			  <option>2017</option>
+			</select>
+		</span>
+		</p><hr>
 		<h4>Open an issue for <span class="arcid"></span>:</h4>
 		<input id="issue-title" type="text" class="form-control" placeholder=""></br>
 		<textarea id="issue-body" class="form-control" rows="3" placeholder="Describe issue or change here..."></textarea></br>
@@ -65,6 +74,11 @@ category: 'data'
 	  $(this).tab('show')
 	})
 	var router = new Router().init();
+	$('.fiscal-year').change(function(){
+		var value = $('.fiscal-year').val()
+		var id = $('#issue-title').attr('placeholder')
+		$('#issue-title').attr('placeholder', id + ": change fiscal year to " + value)
+	})
 	$('.issue').click(function(){
 		var title = ($('#issue-title').val()) ? $('#issue-title').val() : $('#issue-title').attr('placeholder')
 		var body = ($('#issue-body').val()) ? $('#issue-body').val() : ''
@@ -84,7 +98,7 @@ category: 'data'
     				$('.sponsor').empty().append(el.Sponsor)
     				$('.jurisdiction').empty().append(el.Jurisdiction)
     				$('.description').empty().append(el.Description)
-    				$('.fiscal-year').empty().append(el.FiscalYear)
+    				$('.fiscal-year').val(el.FiscalYear)
     				$('#project').fadeIn(250)
     			})
 	    		
