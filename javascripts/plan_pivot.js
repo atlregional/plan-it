@@ -169,7 +169,11 @@ var dTable = null;
     return str;
     
 }
-
+var specialElementHandlers = {
+  '#editor': function(element, renderer){
+    return true;
+  }
+};
 
   var someLink = window.location || window.webkiURL//window.location//'http://0.0.0.0:4000/explore/pivot/download.json' //window.location
   var formBlob = null
@@ -194,7 +198,15 @@ var dTable = null;
       url = window.URL.createObjectURL(formBlob);
     }
     else if (type === 'pdf'){
-      alert('Exporting results as ' + type + '.')
+      // alert('Exporting results as ' + type + '.')
+      var table = $('#pivot-table');
+      var doc = new jsPDF();
+      doc.fromHTML($('#pivot-table').get(0), 15, 15, {
+        'width': 170,
+        'elementHandlers': specialElementHandlers
+      });
+      console.log(doc)
+      doc.save("results.pdf")
       // use jsPDF library!
     }
     a.href = url;
@@ -226,4 +238,6 @@ var dTable = null;
     $('#fy-category-funding').click(function(event){
       $('#pivot-demo').pivot_display('reprocess_display', {rowLabels:["FundSource"],columnLabels:["FiscalYearBucket"],summaries:["Total"]})
     });
+
+
   });
