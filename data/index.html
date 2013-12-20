@@ -73,11 +73,17 @@ category: 'data'
 	  e.preventDefault()
 	  $(this).tab('show')
 	})
+	var previous;
+
+    $("select").focus(function () {
+        // Store the current value on focus and on change
+        previous = this.value;
+    })
 	var router = new Router().init();
 	$('.fiscal-year').change(function(){
 		var value = $('.fiscal-year').val()
 		var id = $('#issue-title').attr('placeholder')
-		$('#issue-title').attr('placeholder', id + ": change fiscal year to " + value)
+		$('#issue-title').attr('placeholder', id + ': change fiscal year from ' + previous + ' to ' + value)
 	})
 	$('.issue').click(function(){
 		var title = ($('#issue-title').val()) ? $('#issue-title').val() : $('#issue-title').attr('placeholder')
