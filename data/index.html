@@ -4,6 +4,7 @@ title: Data
 category: 'data'
 ---
 <script src="{{ site.baseurl}}/lib/javascripts/director.min.js"></script>
+<script src="{{ site.baseurl}}/lib/javascripts/json-to-table.js"></script>
 <ul id="myTab" class="nav nav-tabs">
   <li class="active"><a href="#proj">Projects</a></li>
   <li><a href="#data">Data</a></li>
@@ -14,8 +15,14 @@ category: 'data'
 	<div id="project" class="col-md-6 col-sm-6 pull-right" style="display:none; z-index:1000;">
    		<h3><span class="arcid"></span><span style="float:right; font-size:small"><button class="btn btn-default" id="edit" role="button">Edit</button></span></h3>
 		<p><span class="description"></span></p>
-		<p><strong>Sponsor:</strong> <span class="sponsor"></span></p>
-		<p><strong>Jurisdiction:</strong> <span class="jurisdiction"></span></p>
+		<p>
+			<strong>Sponsor:</strong> <span class="sponsor"></span>&nbsp;&nbsp;&nbsp;
+			<strong>Jurisdiction:</strong> <span class="jurisdiction"></span>&nbsp;&nbsp;&nbsp;
+			<strong>Status:</strong> <span class="status"></span>
+		</p>
+		<p>
+			<strong>Analysis Level:</strong> <span class="analysis"></span>&nbsp;&nbsp;&nbsp;
+		</p>
 		<p><strong>FiscalYear:</strong> 
 		<span><select class="fiscal-year" >
 			  <option>2013</option>
@@ -25,7 +32,9 @@ category: 'data'
 			  <option>2017</option>
 			</select>
 		</span>
-		</p><hr>
+		</p>
+		<div id="js-table"></div>
+		<hr>
 		<h4>Open an issue for <span class="arcid"></span>:</h4>
 		<input id="issue-title" type="text" class="form-control" placeholder=""></br>
 		<textarea id="issue-body" class="form-control" rows="3" placeholder="Describe issue or change here..."></textarea></br>
@@ -75,6 +84,7 @@ category: 'data'
 	})
 	var previous;
 	var id;
+	var record;
     $("select").focus(function () {
         // Store the current value on focus and on change
         previous = this.value;
@@ -98,35 +108,86 @@ category: 'data'
 		var body = ($('#issue-body').val()) ? $('#issue-body').val() : ''
 		window.location='https://github.com/landonreed/plan-it/issues/new?title='+title+'&body='+body+'&labels='+this.id
 	})
+	
 	$('#edit').click(function(){
 		window.location='https://github.com/landonreed/plan-it/edit/gh-pages/data/TIP/individual/'+ $('.arcid').html() +'.csv'
 	})
 	href="https://github.com/landonreed/plan-it/edit/gh-pages/data/TIP/individual/'+el.ARCID+'.csv"
 	var uniqueIds = [];
+	var jsonHtmlTable;
 	function doDataThings(error, rows){
 		data = rows
 
 		console.log(data);
 		$.each(data, function(i, el){
 	    router.on('/'+el.ARCID, function () {
-	    	$('#project')
-	    		.fadeOut(250, function(){
-	    			$('#issue-title').attr('placeholder', el.ARCID)
-    				$('.arcid').empty().append(el.ARCID)
-    				$('.sponsor').empty().append(el.Sponsor)
-    				$('.jurisdiction').empty().append(el.Jurisdiction)
-    				$('.description').empty().append(el.Description)
-    				$('.fiscal-year').val(el.FiscalYear)
-    				$('#project').fadeIn(250)
-    				id = el.ARCID
+	    	d3.csv("{{ site.baseurl}}/data/TIP/individual/"+el.ARCID+".csv")
+	    	.row(function(d) {
+		    return {
+		        // ARCID: d.ARCID,
+		        // Description: d.Description,
+		        // Jurisdiction: d.Jurisdiction,
+		        // ModelingNetworkYear: d.ModelingNetworkYear,
+		        // Sponsor: d.Sponsor,
+		        // ExistLanes: d.ExistLanes,
+		        // ProposedLanes: d.ProposedLanes,
+		        // Length: d.Length,
+		        // GDOTPI: d.GDOTPI,
+		        // Limits: d.Limits,
+		        // Status: d.Status,
+		        // ProjectType: d.ProjectType,
+		        // Analysis: d.Analysis,
+		        Phase: d.Phase,
+		        PhaseStatus: d.PhaseStatus,
+		        FiscalYear: d.FiscalYear,
+		        // FundSource: d.FundSource,
+		        Federal: d.Federal,
+		        State: d.State,
+		        Local: d.Local,
+		        Bond: d.Bond,
+		        Total: d.Total
+		        // FederalSum: d.FederalSum,
+		        // StateSum: d.StateSum,
+		        // LocalSum: d.LocalSum,
+		        // BondSum: d.BondSum,
+		        // TotalSum: d.TotalSum
+		      };
+		})
+	    	.get(function(error, rows){
+	    		record = rows;
+	    		jsonHtmlTable = ConvertJsonToTable(record, 'json-table', 'table table-condensed', 'Download');
+				console.log(rows)
+				$('#project')
+		    		.fadeOut(250, function(){
+		    			$('#issue-title').attr('placeholder', el.ARCID)
+	    				$('.arcid').empty().append(el.ARCID)
+	    				$('.sponsor').empty().append(el.Sponsor)
+	    				$('.jurisdiction').empty().append(el.Jurisdiction)
+	    				$('.status').empty().append(el.Status)
+	    				$('.analysis').empty().append(el.Analysis)
+	    				$('.description').empty().append(el.Description)
+	    				$('.fiscal-year').val(el.FiscalYear)
+	    				$('#js-table').html(jsonHtmlTable)
+	    				$('#project').fadeIn(250)
+
+	    				id = el.ARCID
     			})
+		});
+	    	
 	    		
 	    })
 	    if($.inArray(el.ARCID, uniqueIds) === -1) uniqueIds.push(el.ARCID);
 			});
 		console.log(uniqueIds)
 		$.each(uniqueIds, function(i, id){
-			$("#projects").append('<tr><td>' +id + '</td><td><a href="#/' + id + '" class="btn btn-default btn-xs" role="button">View</a></td><td><a href="http://documents.atlantaregional.com/factsheets/' + id + '.PDF" class="btn btn-default btn-xs" role="button">Fact Sheet</a></td></tr>');
+			$("#projects").append('<tr id="' + id + '-row" class="view-row"><td>' +id + '</td><td><a href="#/' + id + '" class="btn btn-default btn-xs view" role="button">View</a></td><td><a href="http://documents.atlantaregional.com/factsheets/' + id + '.PDF" class="btn btn-default btn-xs" role="button">Fact Sheet</a></td></tr>');
+			// $('.view-row').click(function(){
+				
+			// 	// $(this).siblings().each(function() {
+			// 	// 	$('.active').remove()
+			// 	// })
+			// 	$(this).addClass('active')
+			// })
 		})
 	}
 	var urls = [];
