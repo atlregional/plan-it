@@ -33,7 +33,7 @@ category: 'data'
 					
 				</div>
 				<div id="home" class="tab-pane pill active">
-					<p><span class="description"></span></p>
+					<p id="description"><span class="description"></span></p>
 					<p>
 						<strong>Sponsor:</strong> <span class="sponsor"></span>&nbsp;&nbsp;&nbsp;
 						<strong>Jurisdiction:</strong> <span class="jurisdiction"></span>&nbsp;&nbsp;&nbsp;
@@ -71,6 +71,7 @@ category: 'data'
 		<div class="col-md-4 col-sm-5">
 			<h1>Individual Projects</h1>
 			<p>Here you'll find all of the data segmented by individual projects:</p>
+			<input id="searchInput" placeholder="Type To Filter">
 			<div class="table-responsive" style="height:300px; overflow:auto;">
 				<table id="projects"  class="table table-hover table-condensed"></table>
 			</div>
@@ -107,8 +108,9 @@ category: 'data'
 		var hash = url.split('/')[5]
 		console.log(hash)
 		$('#' + hash + '-row').addClass('active')
+		runFilter()
+		
 	})
-	// $(document).live()
 	$('#myTab a').click(function (e) {
 		e.preventDefault()
 		$(this).tab('show')
@@ -167,7 +169,7 @@ category: 'data'
 			$.each(branches, function(i, branch){
 				$.get('https://api.github.com/repos/landonreed/plan-it/contents/data/TIP/individual/'+id+'.csv?ref='+branch, function (file) {
 					console.log(file.content)
-					$("#history").append('<h4><a href="' + file._links.html + '">' + branch + '' + '</a></h4><table class="table">'+populateTable(d3.csv.parse(Base64.decode(file.content), function(rows){
+					$("#history").append('<h4><a href="' + file._links.html + '">' + branch + '' + '</a></h4><div class="table-responsive"><table class="table">'+populateTable(d3.csv.parse(Base64.decode(file.content), function(rows){
 						delete rows.ARCID
 				        delete rows.Description
 				        delete rows.Jurisdiction
@@ -202,7 +204,7 @@ category: 'data'
 						//         Total: d.Total
 						//     }
 						// })
-					)+'</table>');
+					)+'</table></div>');
 				});
 			})
 		historyClick = true;
@@ -212,6 +214,7 @@ category: 'data'
 	$('.view').live('click', function(){
 		var color = 'active'
 		$(this).closest('tr').addClass(color).siblings().removeClass(color);
+		// runFilter();
 	})
 	$('#edit').click(function(){
 		window.location='https://github.com/landonreed/plan-it/edit/gh-pages/data/TIP/individual/'+ $('.arcid').html() +'.csv'
@@ -219,6 +222,41 @@ category: 'data'
 	href="https://github.com/landonreed/plan-it/edit/gh-pages/data/TIP/individual/'+el.ARCID+'.csv"
 	var uniqueIds = [];
 	var jsonHtmlTable;
+	function runFilter(){
+		$("#searchInput").keyup(function () {
+	    //split the current value of searchInput
+	    var data = this.value.split(" ");
+	    //create a jquery object of the rows
+	    var jo = $("#projects").find("tr");
+	    if (this.value == "") {
+	        jo.show();
+	        return;
+	    }
+	    //hide all the rows
+	    jo.hide();
+
+	    //Recusively filter the jquery object to get results.
+		jo.filter(function (i, v) {
+		    var $t = $(this);
+		    var matched = true;
+		    for (var d = 0; d < data.length; ++d) {
+		        if (data[d].match(/^\s*$/)) {
+		            continue;
+		        }
+
+		        var regex = new RegExp(data[d].toLowerCase());
+		        if ($t.children('.arcid').text().toLowerCase().replace(/(manual|auto)/g,"").match(regex) === null) {
+		            matched = false;
+		        }
+		    }
+		    return matched;
+		})
+
+		//show the rows that match.
+		.show();
+			})
+	}
+
 	function populateTable(records) {
 		// console.log(records)
 		var string = ''
@@ -281,6 +319,26 @@ category: 'data'
 		      };
 		})
 	    	.get(function(error, rows){
+	    		if (error){
+	    			$('.nav-pills li').removeClass('active'); // remove active class from tabs
+	    			$('.tab-pane.pill').removeClass('active');
+					$('#home').addClass('active')//.hide(); // add active class to clicked tab
+					$('#home-tab').addClass('active'); // add active class to clicked tab
+					$('.arcid').empty().append(el.ARCID)
+					$('.description').empty().append('No current record of that project!')
+					$('#description').show()
+					historyClick = false;
+	    			$('#issue-title').attr('placeholder', el.ARCID)
+    				$('.sponsor').empty()
+    				$('.jurisdiction').empty()
+    				$('.status').empty()
+    				$('.analysis').empty()
+    				$('.fiscal-year').val("")
+    				$('#js-table').empty()
+    				$('#project').fadeIn(250)
+    				id = el.ARCID
+					return
+	    		}
 	    		record = rows;
 				console.log(rows)
 				$('#project')
@@ -315,7 +373,7 @@ category: 'data'
 		var hash = url.split('/')[5]
 		console.log(hash)
 		$.each(uniqueIds, function(i, uniqueId){
-			$("#projects").append('<tr id="' + uniqueId + '-row"><td>' + uniqueId + '</td><td><a href="#/' + uniqueId + '" class="btn btn-default btn-xs view" role="button">View</a></td><td><a href="http://documents.atlantaregional.com/factsheets/' + uniqueId + '.PDF" class="btn btn-default btn-xs" role="button">Fact Sheet</a></td></tr>');
+			$("#projects").append('<tr id="' + uniqueId + '-row"><td class="arcid">' + uniqueId + '</td><td><a href="#/' + uniqueId + '" class="btn btn-default btn-xs view" role="button">View</a></td><td><a href="http://documents.atlantaregional.com/factsheets/' + uniqueId + '.PDF" class="btn btn-default btn-xs" role="button">Fact Sheet</a></td></tr>');
 			// <td><button id="' + id + '-history" class="history btn btn-default btn-xs" role="button">History</button></td>
 			if (uniqueId === hash){
 				$('#' + hash + '-row').addClass('active')
