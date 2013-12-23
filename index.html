@@ -1,20 +1,30 @@
 ---
 layout: default
-title: Plan-It!
+title: Home
 ---
 <div class="col-md-6">
 <h1>Welcome to Plan-It.</h1>
 
 <p>This site hosts information on the Atlanta region's <a href='http://www.atlantaregional.com/transportation/transportation-improvement-program'>Transportation Improvement Program (TIP)</a>.  The TIP allocates federal funds for use in construction of the highest-priority transportation projects in the near term of the <a href='http://www.atlantaregional.com/transportation/regional-transportation-plan'>Regional Transportation Plan (RTP)</a>. The TIP must be consistent with the long-range objectives of the RTP and must be financially balanced.</p>
 
+<h3>Go on. Explore.</h3>
+<p>For those that want to dive deep into the data and discover funding trends over years or how buckets of money get spent for different project types, check out the <a href="{{ site.baseurl }}/explore/pivot">Pivot Table</a> under the <strong>Explore</strong> tab.  The tool lets you slice, dice, and even export your results.</p>
+
 <h3>Looking for Raw Data?</h3>
-
 <p>Check out the <a href="https://github.com/landonreed/plan-it/tree/gh-pages/data">data folder</a> on GitHub.  For older versions of the data, navigate to a different branch (e.g., <a href="https://github.com/landonreed/plan-it/tree/2009Q2/data">2nd Quarter of 2009</a>). </p>
-<p>For those that want to dive deep into the data and discover funding trends over years or how buckets of money get spent for different project types, check out the <a href="{{ site.baseurl }}/explore/pivot">Pivot Table</a> under the Explore tab.  The tool lets you slice, dice, and even export your results.</p>
 
-<h3>For Project Sponsors</h3>
+<div class="row">
+	<div class="col-md-6 col-sm-6 col-xs-6">
+	<h3>For Sponsors</h3>
 
-<p>If you're a local sponsor and would like to comment on a project or need to propose a change, please visit the <a href="https://github.com/landonreed/plan-it/wiki/Proposing-Changes-to-Projects">Plan-It wiki</a> to learn more about this process.</p>
+	<p>If you're a local sponsor and would like to comment on a project or need to propose a change, please visit the <a href="https://github.com/landonreed/plan-it/wiki/Proposing-Changes-to-Projects">Plan-It wiki</a> to learn more about this process.</p>
+	</div>
+	<div class="col-md-6 col-sm-6 col-xs-6">
+	<h3>For the Public</h3>
+
+	<p>If you're looking for more information on TIP projects, please check out any of the options under the <strong>Explore</strong> tab. </p>
+	</div>
+</div>
 </div>
 <div class="col-md-6">
 <h3>
@@ -24,7 +34,8 @@ Map of TIP Projects<span style="float:right;"><small><a href="{{ site.baseurl }}
 <!-- <script src="https://embed.github.com/view/geojson/landonreed/plan-it/gh-pages/data/rtp_all.geojson"></script> -->
 <div id="map"></div>
 
-<p>The map above shows all of the current projects in the FY 2012-2017 TIP (<a href="http://www.atlantaregional.com/File%20Library/Transportation/Transportation%20Plans/tp_tiplist_112213.pdf">pdf</a>).  Zoom and click around on the map to get a better idea of some of the projects for which federal, state, and local dollars are being allocated.</p>
+<p>Zoom and click around on the map to get a better idea of some of the projects for which federal, state, and local dollars are allocated in the FY 2012-17 TIP (<a href="http://www.atlantaregional.com/File%20Library/Transportation/Transportation%20Plans/tp_tiplist_112213.pdf">pdf</a>).</p>
+<p><strong>Data source:</strong> <a href="https://github.com/landonreed/plan-it/blob/gh-pages/data/rtp_points.geojson">points</a>, <a href="https://github.com/landonreed/plan-it/blob/gh-pages/data/rtp_lines.geojson">lines</a> </p>
 </div>
 
 
