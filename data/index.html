@@ -167,7 +167,7 @@ category: 'data'
 			$.each(branches, function(i, branch){
 				$.get('https://api.github.com/repos/landonreed/plan-it/contents/data/TIP/individual/'+id+'.csv?ref='+branch, function (file) {
 					console.log(file.content)
-					$("#history").append('<p>'+branch+'<a href="' + file._links.html + '">' + file.name + '' + '</a></p><table class="table">'+populateTable(d3.csv.parse(Base64.decode(file.content), function(rows){
+					$("#history").append('<h4><a href="' + file._links.html + '">' + branch + '' + '</a></h4><table class="table">'+populateTable(d3.csv.parse(Base64.decode(file.content), function(rows){
 						delete rows.ARCID
 				        delete rows.Description
 				        delete rows.Jurisdiction
