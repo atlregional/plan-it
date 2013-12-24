@@ -1,6 +1,24 @@
 ---
 
 ---
+var branches = ['2008Q1',
+            '2008Q2',
+            '2008Q3',
+            '2008Q4',
+            '2009Q1',
+            '2009Q2',
+            '2009Q3',
+            '2009Q4',
+            '2010Q1',
+            '2010Q2',
+            '2010Q3',
+            '2010Q4',
+            '2011Q1',
+            '2011Q2',
+            '2011Q3',
+            '2011Q4',
+            'gh-pages']
+
 function fiscalYearBucket(row, field){
   var year = row[field.dataSource];
   switch (true){
@@ -217,9 +235,24 @@ var specialElementHandlers = {
   
 
   $(document).ready(function() {
-
+    $.each(branches, function(i, branch){
+      var selected = (branch=="gh-pages") ? 'selected="selected" ' : ''
+      var name = (branch=="gh-pages") ? 'Current TIP' : branch
+      $('.branch-select').append('<option '+ selected +'value="'+branch+'">' + name + '</option>')
+    })
     setupPivot({url:'{{ site.baseurl}}/data/TIP/projects.csv', fields: fields, filters:{"FiscalYear":"2014"}, rowLabels:['ARCID', 'Jurisdiction', 'ProjectType', 'Phase', 'Status'], summaries:["Total"]})
-    
+    $('.branch-select').change(function(){
+      var branch = $('.branch-select').val()
+      if (branch == 'gh-pages')
+        setupPivot({url:'{{ site.baseurl}}/data/TIP/projects.csv', fields: fields, filters:{"FiscalYear":"2014"}, rowLabels:['ARCID', 'Jurisdiction', 'ProjectType', 'Phase', 'Status'], summaries:["Total"]})
+      else{
+        $.get('https://api.github.com/repos/landonreed/plan-it/contents/data/TIP/projects.csv?ref='+ branch, function (file) {
+            var data = Base64.decode(file.content)
+            console.log(data)
+            setupPivot({csv:data, fields: fields, filters:{"FiscalYear":branch.substring(0,4)}, rowLabels:['ARCID', 'Jurisdiction', 'ProjectType', 'Phase', 'Status'], summaries:["Total"]})
+          });
+      }
+    })
 
     // prevent dropdown from closing after selection
     $('.stop-propagation').click(function(event){
