@@ -5,6 +5,8 @@ category: 'data'
 ---
 <script src="{{ site.baseurl}}/lib/javascripts/director.min.js"></script>
 <script src="{{ site.baseurl}}/lib/javascripts/json-to-table.js"></script>
+<script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/jquery.dataTables.min.js"></script>
+<!-- <script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/dataTables.bootstrap.js"></script> -->
 <ul id="myTab" class="nav nav-tabs">
   <li class="active"><a href="#proj">Projects</a></li>
   <li><a href="#data">Data</a></li>
@@ -70,11 +72,13 @@ category: 'data'
 		</div>
 		<div class="col-md-4 col-sm-5">
 			<h1>Individual Projects</h1>
-			<p>Here you'll find all of the data segmented by individual projects:</p>
-			<input id="searchInput" placeholder="Type To Filter">
-			<div class="table-responsive" style="height:300px; overflow:auto;">
+			<p>Search for project data by ARC ID:</p>
+			<input class="form-control" id="searchInput" width="20px" placeholder="Type To Filter"></span>
+			<!-- <div class="table-responsive" style="height:300px; overflow:auto;">
 				<table id="projects"  class="table table-hover table-condensed"></table>
-			</div>
+				
+			</div> -->
+			<div id="demo"></div>
 		</div>
    </div>
    <div id="issues" class="tab-pane">
@@ -108,7 +112,8 @@ category: 'data'
 		var hash = url.split('/')[5]
 		console.log(hash)
 		$('#' + hash + '-row').addClass('active')
-		runFilter()
+		// runFilter()	
+		
 		
 	})
 	$('#myTab a').click(function (e) {
@@ -156,11 +161,23 @@ category: 'data'
 		window.location='https://github.com/landonreed/plan-it/issues/new?title='+title+'&body='+body+'&labels='+this.id
 	})
 	$('#history-tab').click(function(){
-		var branches = ['2008Q2',
-					'2009Q2',
-					'2009Q4',
-					'2011Q2',
-					'gh-pages']
+		var branches = ['2008Q1',
+						'2008Q2',
+						'2008Q3',
+						'2008Q4',
+						'2009Q1',
+						'2009Q2',
+						'2009Q3',
+						'2009Q4',
+						'2010Q1',
+						'2010Q2',
+						'2010Q3',
+						'2010Q4',
+						'2011Q1',
+						'2011Q2',
+						'2011Q3',
+						'2011Q4',
+						'gh-pages']
 		var rows = []
 		console.log('View HIstory!')
 		console.log("history tab")
@@ -221,6 +238,7 @@ category: 'data'
 	})
 	href="https://github.com/landonreed/plan-it/edit/gh-pages/data/TIP/individual/'+el.ARCID+'.csv"
 	var uniqueIds = [];
+	var projectList = [];
 	var jsonHtmlTable;
 	function runFilter(){
 		$("#searchInput").keyup(function () {
@@ -245,7 +263,7 @@ category: 'data'
 		        }
 
 		        var regex = new RegExp(data[d].toLowerCase());
-		        if ($t.children('.arcid').text().toLowerCase().replace(/(manual|auto)/g,"").match(regex) === null) {
+		        if ($t.children('.arcid').text().toLowerCase().match(regex) === null) {
 		            matched = false;
 		        }
 		    }
@@ -285,100 +303,103 @@ category: 'data'
 
 		console.log(data);
 		$.each(data, function(i, el){
-	    router.on('/'+el.ARCID, function () {
-	    	d3.csv("{{ site.baseurl}}/data/TIP/individual/"+el.ARCID+".csv")
-	    	.row(function(d) {
-		    return {
-		        // ARCID: d.ARCID,
-		        // Description: d.Description,
-		        // Jurisdiction: d.Jurisdiction,
-		        // ModelingNetworkYear: d.ModelingNetworkYear,
-		        // Sponsor: d.Sponsor,
-		        // ExistLanes: d.ExistLanes,
-		        // ProposedLanes: d.ProposedLanes,
-		        // Length: d.Length,
-		        // GDOTPI: d.GDOTPI,
-		        // Limits: d.Limits,
-		        // Status: d.Status,
-		        // ProjectType: d.ProjectType,
-		        // Analysis: d.Analysis,
-		        Phase: d.Phase,
-		        Status: d.PhaseStatus,
-		        FY: d.FiscalYear,
-		        // FundSource: d.FundSource,
-		        Federal: d.Federal,
-		        State: d.State,
-		        Local: d.Local,
-		        Bond: d.Bond,
-		        Total: d.Total
-		        // FederalSum: d.FederalSum,
-		        // StateSum: d.StateSum,
-		        // LocalSum: d.LocalSum,
-		        // BondSum: d.BondSum,
-		        // TotalSum: d.TotalSum
-		      };
-		})
-	    	.get(function(error, rows){
-	    		if (error){
-	    			$('.nav-pills li').removeClass('active'); // remove active class from tabs
-	    			$('.tab-pane.pill').removeClass('active');
-					$('#home').addClass('active')//.hide(); // add active class to clicked tab
-					$('#home-tab').addClass('active'); // add active class to clicked tab
-					$('.arcid').empty().append(el.ARCID)
-					$('.description').empty().append('No current record of that project!')
-					$('#description').show()
-					historyClick = false;
-	    			$('#issue-title').attr('placeholder', el.ARCID)
-    				$('.sponsor').empty()
-    				$('.jurisdiction').empty()
-    				$('.status').empty()
-    				$('.analysis').empty()
-    				$('.fiscal-year').val("")
-    				$('#js-table').empty()
-    				$('#project').fadeIn(250)
-    				id = el.ARCID
-					return
-	    		}
-	    		record = rows;
-				console.log(rows)
-				$('#project')
-		    		.fadeOut(250, function(){
-		    			// $('#home').tab('show');
+		    router.on('/'+el.ARCID, function () {
+		    	d3.csv("{{ site.baseurl}}/data/TIP/individual/"+el.ARCID+".csv")
+		    	.row(function(d) {
+			    return {
+			        // ARCID: d.ARCID,
+			        // Description: d.Description,
+			        // Jurisdiction: d.Jurisdiction,
+			        // ModelingNetworkYear: d.ModelingNetworkYear,
+			        // Sponsor: d.Sponsor,
+			        // ExistLanes: d.ExistLanes,
+			        // ProposedLanes: d.ProposedLanes,
+			        // Length: d.Length,
+			        // GDOTPI: d.GDOTPI,
+			        // Limits: d.Limits,
+			        // Status: d.Status,
+			        // ProjectType: d.ProjectType,
+			        // Analysis: d.Analysis,
+			        Phase: d.Phase,
+			        Status: d.PhaseStatus,
+			        FY: d.FiscalYear,
+			        // FundSource: d.FundSource,
+			        Federal: d.Federal,
+			        State: d.State,
+			        Local: d.Local,
+			        Bond: d.Bond,
+			        Total: d.Total
+			        // FederalSum: d.FederalSum,
+			        // StateSum: d.StateSum,
+			        // LocalSum: d.LocalSum,
+			        // BondSum: d.BondSum,
+			        // TotalSum: d.TotalSum
+			      };
+			})
+		    	.get(function(error, rows){
+		    		if (error){
 		    			$('.nav-pills li').removeClass('active'); // remove active class from tabs
 		    			$('.tab-pane.pill').removeClass('active');
-    					$('#home').addClass('active'); // add active class to clicked tab
-    					$('#home-tab').addClass('active'); // add active class to clicked tab
-    					historyClick = false;
+						$('#home').addClass('active')//.hide(); // add active class to clicked tab
+						$('#home-tab').addClass('active'); // add active class to clicked tab
+						$('.arcid').empty().append(el.ARCID)
+						$('.description').empty().append('No current record of that project!')
+						$('#description').show()
+						historyClick = false;
 		    			$('#issue-title').attr('placeholder', el.ARCID)
-	    				$('.arcid').empty().append(el.ARCID)
-	    				$('.sponsor').empty().append(el.Sponsor)
-	    				$('.jurisdiction').empty().append(el.Jurisdiction)
-	    				$('.status').empty().append(el.Status)
-	    				$('.analysis').empty().append(el.Analysis)
-	    				$('.description').empty().append(el.Description)
-	    				$('.fiscal-year').val(el.FiscalYear)
-	    				$('#js-table').empty().append(populateTable(record))
+	    				$('.sponsor').empty()
+	    				$('.jurisdiction').empty()
+	    				$('.status').empty()
+	    				$('.analysis').empty()
+	    				$('.fiscal-year').val("")
+	    				$('#js-table').empty()
 	    				$('#project').fadeIn(250)
-
 	    				id = el.ARCID
-    			})
-		});
-	    	
-	    		
-	    })
-	    if($.inArray(el.ARCID, uniqueIds) === -1) uniqueIds.push(el.ARCID);
+						return
+		    		}
+		    		record = rows;
+					console.log(rows)
+					$('#project')
+			    		.fadeOut(250, function(){
+			    			// $('#home').tab('show');
+			    			$('.nav-pills li').removeClass('active'); // remove active class from tabs
+			    			$('.tab-pane.pill').removeClass('active');
+	    					$('#home').addClass('active'); // add active class to clicked tab
+	    					$('#home-tab').addClass('active'); // add active class to clicked tab
+	    					historyClick = false;
+			    			$('#issue-title').attr('placeholder', el.ARCID)
+		    				$('.arcid').empty().append(el.ARCID)
+		    				$('.sponsor').empty().append(el.Sponsor)
+		    				$('.jurisdiction').empty().append(el.Jurisdiction)
+		    				$('.status').empty().append(el.Status)
+		    				$('.analysis').empty().append(el.Analysis)
+		    				$('.description').empty().append(el.Description)
+		    				$('.fiscal-year').val(el.FiscalYear)
+		    				$('#js-table').empty().append(populateTable(record))
+		    				$('#project').fadeIn(250)
+
+		    				id = el.ARCID
+	    			})
 			});
+		    	
+		    		
+		    })
+	    	if($.inArray(el.ARCID, uniqueIds) === -1) 
+	    		uniqueIds.push(el.ARCID);
+		});
 		console.log(uniqueIds)
 		var url = window.location.href
 		var hash = url.split('/')[5]
 		console.log(hash)
 		$.each(uniqueIds, function(i, uniqueId){
-			$("#projects").append('<tr id="' + uniqueId + '-row"><td class="arcid">' + uniqueId + '</td><td><a href="#/' + uniqueId + '" class="btn btn-default btn-xs view" role="button">View</a></td><td><a href="http://documents.atlantaregional.com/factsheets/' + uniqueId + '.PDF" class="btn btn-default btn-xs" role="button">Fact Sheet</a></td></tr>');
-			// <td><button id="' + id + '-history" class="history btn btn-default btn-xs" role="button">History</button></td>
-			if (uniqueId === hash){
-				$('#' + hash + '-row').addClass('active')
-				id = uniqueId
-			}
+			projectList.push([uniqueId,'<a href="#/' + uniqueId + '" class="btn btn-default btn-xs view" role="button">View</a>','<a href="http://documents.atlantaregional.com/factsheets/' + uniqueId + '.PDF" class="btn btn-default btn-xs" role="button">Fact Sheet</a>'])
+			
+			// $("#projects").append('<tr id="' + uniqueId + '-row"><td class="arcid">' + uniqueId + '</td><td><a href="#/' + uniqueId + '" class="btn btn-default btn-xs view" role="button">View</a></td><td><a href="http://documents.atlantaregional.com/factsheets/' + uniqueId + '.PDF" class="btn btn-default btn-xs" role="button">Fact Sheet</a></td></tr>');
+			// // <td><button id="' + id + '-history" class="history btn btn-default btn-xs" role="button">History</button></td>
+			// if (uniqueId === hash){
+			// 	$('#' + hash + '-row').addClass('active')
+			// 	id = uniqueId
+			// }
 		
 		
 			// $('.view-row').click(function(){
@@ -389,6 +410,49 @@ category: 'data'
 			// 	$(this).addClass('active')
 			// })
 		})
+		$('#demo').html( '<table cellpadding="0" cellspacing="0" border="0" class="display" id="projects"></table>' );
+	    var oTable = $('#projects').dataTable( {
+	    	"sScrollY": "200px",
+			"bPaginate": false,
+	        "aaData": projectList,
+	        "aoColumns": [
+			{ "sTitle": "" },
+			{ "sTitle": "" },
+			{ "sTitle": "" }
+			
+		]
+	    } );
+	    $("#searchInput").keyup( function () {
+	        /* Filter on the column (the index) of this element */
+	        oTable.fnFilter( this.value, $("#searchInput").index(this) );
+	    } );
+	     
+	     
+	     
+	    // /*
+	    //  * Support functions to provide a little bit of 'user friendlyness' to the textboxes in
+	    //  * the footer
+	    //  */
+	    // $("#searchInput").each( function (i) {
+	    //     asInitVals[i] = this.value;
+	    // } );
+	     
+	    // $("#searchInput").focus( function () {
+	    //     if ( this.className == "search_init" )
+	    //     {
+	    //         this.className = "";
+	    //         this.value = "";
+	    //     }
+	    // } );
+	     
+	    // $("#searchInput").blur( function (i) {
+	    //     if ( this.value == "" )
+	    //     {
+	    //         this.className = "search_init";
+	    //         this.value = asInitVals[$("#searchInput").index(this)];
+	    //     }
+	    // } );
+		
 	}
 	var urls = [];
 	var projects = ""

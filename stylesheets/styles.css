@@ -13,10 +13,20 @@ body { padding-top: 70px; }
   max-height: none;
 }
 
+#projects_info {
+  font-size: x-small;
+}
+#projects_filter {
+  display: none;
+}
 
 #gh svg:hover {
     fill: #000;
 }
+
+/*.btn-custom {
+    .btn-pseudo-states(#1dcc00, #6d0099);
+ }*/
 
 .info {
     padding: 6px 8px;
