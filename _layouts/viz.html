@@ -2,6 +2,17 @@
 layout: default
 ---
    <script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/d3/d3.v3.min.js"></script>
+   <!-- jspdf files -->
+<script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/jspdf/jspdf.js"></script>
+<script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/jspdf/adler32.js"></script>
+<script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/jspdf/Deflate.js"></script>
+<script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/jspdf/jspdf.plugin.from_html.js"></script>
+<script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/jspdf/jspdf.plugin.standard_fonts_metrics.js"></script>
+<script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/jspdf/jspdf.plugin.cell.js"></script>
+<script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/jspdf/jspdf.plugin.split_text_to_size.js"></script>
+<script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/jspdf/jspdf.plugin.PLUGINTEMPLATE.js"></script>
+<script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/jspdf/jspdf.plugin.sillysvgrenderer.js"></script>
+<script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/filesaver/filesaver.js"></script>
       {{content}}
   <script type="text/javascript">
   var data = [];
