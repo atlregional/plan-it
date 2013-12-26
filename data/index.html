@@ -15,7 +15,7 @@ category: 'data'
 <div class="tab-content">
 	<div id="proj" class="tab-pane active">
 		<div id="project" class="col-md-8 col-sm-7 col-xs-12 pull-right" style="display:none; z-index:1000;">
-			<h3><span class="arcid"></span><span style="float:right; font-size:small"><button class="btn btn-default" id="edit" role="button">Edit</button></span></h3>
+			<h3><span class="arcid"></span><span style="float:right; font-size:small"><button class="btn btn-default" id="report" role="button">Report</button> <button class="btn btn-default" id="edit" role="button">Edit</button></span></h3>
 			<ul id="project-pill" class="nav nav-pills">
 				<li id="home-tab" class="active"><a href="#home">Home</a></li>
 				
@@ -107,6 +107,7 @@ category: 'data'
 
 
 <script type="text/javascript">
+var tables = {}
 	$(document).ready(function(){
 		var url = window.location.href
 		var hash = url.split('/')[5]
@@ -160,6 +161,85 @@ category: 'data'
 		var body = ($('#issue-body').val()) ? $('#issue-body').val() : ''
 		window.location='https://github.com/landonreed/plan-it/issues/new?title='+title+'&body='+body+'&labels='+this.id
 	})
+	$('#report').click(function(){
+		// var name = 'results.' + type
+		var a = document.createElement("a");
+		document.body.appendChild(a);
+		a.style = "display: none";
+		// var json = pivot.results().all()
+		var tableObjects = tableToJson($('#js-table').get(0))
+		console.log(tableObjects)
+		var table = tableObjects[1]
+		lengths = tableObjects[0]
+		// if (type === 'json') {
+		// 	// alert('Exporting results as ' + type + '.')
+		// 	formBlob = new Blob([JSON.stringify(table)], {
+		// 		type: 'octet/stream'
+		// 	});
+
+		// 	url = window.URL.createObjectURL(formBlob);
+		// } else if (type === 'csv') {
+		// 	// alert('Exporting results as ' + type + '.')
+		// 	csv = JSON2CSV(table)
+		// 	formBlob = new Blob([csv], {
+		// 		type: 'text/csv',
+		// 		filename: 'MyVerySpecial.csv'
+		// 	});
+
+		// 	url = window.URL.createObjectURL(formBlob);
+		// } else if (type === 'pdf') {
+			// var doc = new jsPDF();
+			// doc.fromHTML($('#pivot-table').get(0), .5, .5, {
+			//   'width': 500,
+			//   'elementHandlers': specialElementHandlers
+			// });
+			console.log(table)
+			// doc.save("results.pdf")
+			var doc = new jsPDF('p', 'pt', 'letter', true);
+			doc.setFontSize(40)
+			doc.text(id + ' Report', 30, 60)
+			doc.setFontSize(10)
+			doc.cellInitialize();
+
+			$.each(table, function (i, row) {
+				if (i == 0) {
+					$.each(lengths, function (j, length) {
+						doc.setFontStyle('bold')
+						doc.cell(10, 200, length * 5 + 13, 20, j, i)
+
+					})
+				}
+				doc.setFontStyle('normal')
+				$.each(row, function (j, cell) {
+					// if (i === 0){
+					//   doc.setFontStyle('bold')
+					//   // console.log(cell.length)
+					//   doc.cell(10, 200, lengths[j]*5+13, 20, j, i)
+
+					// }
+					// console.log(j)
+					// console.log(lengths[j])
+					doc.cell(10, 200, lengths[j] * 5 + 13, 20, cell, i + 1);
+
+				})
+			})
+			// for (row in table){
+			//   console.log(row)
+			//	 for (cell in row) {
+			//		 console.log(cell)
+			//		 // doc.cell(10, 200, 100, 20, 'Cell '+k, i);
+			//		 // k++;
+			//	 }
+			// }
+			// doc.addJS('print(true)');
+			doc.save(id+'.pdf');
+			// use jsPDF library!
+		// }
+		a.href = url;
+		a.download = name;
+		a.click();
+		window.URL.revokeObjectURL(url);
+	})
 	$('#history-tab').click(function(){
 		var branches = ['2008Q1',
 						'2008Q2',
@@ -179,6 +259,7 @@ category: 'data'
 						'2011Q4',
 						'gh-pages']
 		var rows = []
+		
 		console.log('View HIstory!')
 		console.log("history tab")
 		if (!historyClick){
@@ -186,44 +267,50 @@ category: 'data'
 			$.each(branches, function(i, branch){
 				$.get('https://api.github.com/repos/landonreed/plan-it/contents/data/TIP/individual/'+id+'.csv?ref='+branch, function (file) {
 					console.log(file.content)
-					$("#history").append('<h4><a href="' + file._links.html + '">' + branch + '' + '</a></h4><div class="table-responsive"><table class="table">'+populateTable(d3.csv.parse(Base64.decode(file.content), function(rows){
-						delete rows.ARCID
-				        delete rows.Description
-				        delete rows.Jurisdiction
-				        delete rows.ModelingNetworkYear
-				        delete rows.Sponsor
-				        delete rows.ExistLanes
-				        delete rows.ProposedLanes
-				        delete rows.Length
-				        delete rows.GDOTPI
-				        delete rows.Limits
-				        delete rows.Status
-				        delete rows.ProjectType
-				        delete rows.Analysis
-				        delete rows.FundSource
-				        delete rows.FederalSum
-				        delete rows.StateSum
-				        delete rows.LocalSum
-				        delete rows.BondSum
-				        delete rows.TotalSum
-				        return rows;
-					})
-						// .row(function(d){
-						// 	return {
-						// 		Phase: d.Phase,
-						//         Status: d.PhaseStatus,
-						//         FY: d.FiscalYear,
-						//         // FundSource: d.FundSource,
-						//         Federal: d.Federal,
-						//         State: d.State,
-						//         Local: d.Local,
-						//         Bond: d.Bond,
-						//         Total: d.Total
-						//     }
-						// })
-					)+'</table></div>');
-				});
+					tables[branch] = '<h4><a href="' + file._links.html + '">' + branch + '' + '</a></h4><div class="table-responsive"><table id="'+branch+'" class="table">'+populateTable(d3.csv.parse(Base64.decode(file.content), function(rows){
+							delete rows.ARCID
+					        delete rows.Description
+					        delete rows.Jurisdiction
+					        delete rows.ModelingNetworkYear
+					        delete rows.Sponsor
+					        delete rows.ExistLanes
+					        delete rows.ProposedLanes
+					        delete rows.Length
+					        delete rows.GDOTPI
+					        delete rows.Limits
+					        delete rows.Status
+					        delete rows.ProjectType
+					        delete rows.Analysis
+					        delete rows.FundSource
+					        delete rows.FederalSum
+					        delete rows.StateSum
+					        delete rows.LocalSum
+					        delete rows.BondSum
+					        delete rows.TotalSum
+					        return rows;
+						})
+							// .row(function(d){
+							// 	return {
+							// 		Phase: d.Phase,
+							//         Status: d.PhaseStatus,
+							//         FY: d.FiscalYear,
+							//         // FundSource: d.FundSource,
+							//         Federal: d.Federal,
+							//         State: d.State,
+							//         Local: d.Local,
+							//         Bond: d.Bond,
+							//         Total: d.Total
+							//     }
+							// })
+						)+'</table></div>'
+					
+			}).done(function() {
+				$("#history").append(tables[branch]);
 			})
+		})
+		$.each(branches, function(i, branch){
+			
+		})
 		historyClick = true;
 		}
 		
@@ -240,6 +327,52 @@ category: 'data'
 	var uniqueIds = [];
 	var projectList = [];
 	var jsonHtmlTable;
+
+	function CompareTables(table1, table2) {
+	    var instHasChange = false;
+	    for (var i = 0; i < table1.rows.length; i++) {
+	        if (table1.rows[i].cells[0].innerHTML.indexOf('div') != -1) {
+	            //call CompareTables with inner table
+	            CompareTables(table1.rows[i].cells[0].childNodes[0].childNodes[0], table2);
+	        }
+	        else {
+	            var changes = RowExists(table2, table1.rows[i].cells[0].innerHTML, table1.rows[i].cells[1].innerHTML);
+	            if (!changes[0]) {
+	                table1.rows[i].style.backgroundColor = "yellow";
+	                instHasChange = true;
+	            } else if (changes[1]) {
+	                table1.rows[i].style.backgroundColor = "yellow";
+	                instHasChange = true;
+	            }
+	        }
+	    }
+	    return instHasChange;
+	}
+
+	function RowExists(table, columnName, columnValue) {
+
+	    var hasColumnOrChange = new Array(2);
+	    hasColumnOrChange[0] = false;
+	    hasColumnOrChange[1] = false;
+	    for (var i = 0; i < table.rows.length; i++) {
+	        if (table.rows[i].cells[0].innerHTML.indexOf('div') != -1) {
+	            //call RowExists with inner table
+	            hasColumnOrChange = RowExists(table.rows[i].cells[0].childNodes[0].childNodes[0], columnName, columnValue);
+	        }
+	        else {
+	            if (table.rows[i].cells[0].innerHTML == columnName) {
+	                hasColumnOrChange[0] = true;
+	                if (table.rows[i].cells[1].innerHTML != columnValue)
+	                    hasColumnOrChange[1] = true;
+	            }
+	        }
+	        //finish for loop if name was found
+	        if (hasColumnOrChange[0] == true)
+	            break;
+	    }
+
+	    return hasColumnOrChange;
+	}
 	function runFilter(){
 		$("#searchInput").keyup(function () {
 	    //split the current value of searchInput
@@ -285,17 +418,18 @@ category: 'data'
     			string += '</th>'
 		}
 		string += '</tr></thead>'
-		
+		string += '<tbody>'
 		$.each(records, function(i, record){
-			string += '<tbody><tr>'
+			string += '<tr>'
 			for (var key in record) {
 					string += '<td>' + record[key]
 					console.log("Key: " + key);
 	    			console.log("Value: " + record[key]);
 	    			string += '</td>'
 			}
-			string += '</tr></tbody>'
+			string += '</tr>'
 		})
+		string += '</tbody>'
 		return string
 	}
 	function doDataThings(error, rows){
@@ -410,7 +544,7 @@ category: 'data'
 			// 	$(this).addClass('active')
 			// })
 		})
-		$('#demo').html( '<table cellpadding="0" cellspacing="0" border="0" class="display" id="projects"></table>' );
+		$('#demo').html( '<table cellpadding="0" cellspacing="0" border="0" class="display table table-condensed" id="projects"></table>' );
 	    var oTable = $('#projects').dataTable( {
 	    	"sScrollY": "200px",
 			"bPaginate": false,
