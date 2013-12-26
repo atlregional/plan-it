@@ -5,6 +5,7 @@ category: 'data'
 ---
 <script src="{{ site.baseurl}}/lib/javascripts/director.min.js"></script>
 <script src="{{ site.baseurl}}/lib/javascripts/json-to-table.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
 <script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/jquery.dataTables.min.js"></script>
 <!-- <script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/dataTables.bootstrap.js"></script> -->
 <ul id="myTab" class="nav nav-tabs">
@@ -15,12 +16,13 @@ category: 'data'
 <div class="tab-content">
 	<div id="proj" class="tab-pane active">
 		<div id="project" class="col-md-8 col-sm-7 col-xs-12 pull-right" style="display:none; z-index:1000;">
-			<h3><span class="arcid"></span><span style="float:right; font-size:small"><button class="btn btn-default" id="report" role="button">Report</button> <button class="btn btn-default" id="edit" role="button">Edit</button></span></h3>
+			<h3><span class="arcid"></span><span style="float:right; font-size:small"><button class="btn btn-default btn-sm" id="report" role="button">Report</button> <button class="btn btn-default btn-sm" id="edit" role="button">Edit</button></span></h3>
 			<ul id="project-pill" class="nav nav-pills">
 				<li id="home-tab" class="active"><a href="#home">Home</a></li>
 				
-				<li><a href="#details">Details</a></li>
+				<li><a href="#pmap" id="map-tab">Map</a></li>
 				<li><a href="#history" id="history-tab">History</a></li>
+				<li><a href="#issue" id="issue-tab">Issue</a></li>
 			</ul>
 			<div class="tab-content">
 				<div id="history" class="tab-pane pill">
@@ -28,10 +30,22 @@ category: 'data'
 						<h1>History</h1>
 					
 				</div>
-				<div id="details" class="tab-pane pill">
+				<div id="issue" class="tab-pane pill">
 					
-						<h1>Details</h1>
-						<div id="proj-map"><img width="300px" height="225px" src="http://ojw.dev.openstreetmap.org/StaticMap/?lat=33.793117596502&lon=-84.399032592773&z=14&mode=Location&mlat0=33.795400116601&mlon0=-84.394226074219&show=1" ismap=""></div>
+						<h3>Open an issue for <span class="arcid"></span>:</h3>
+						<input id="issue-title" type="text" class="form-control" placeholder=""></br>
+						<textarea id="issue-body" class="form-control" rows="3" placeholder="Describe issue or change here..."></textarea></br>
+						<label>Issue Type:</label></br>
+						<button id="general" class="issue btn btn-sm btn-primary" role="button">General</button>
+						<button id="delay" class="issue btn btn-sm btn-warning" role="button">Delay</button>
+						<button id="delete" class="issue btn btn-sm btn-danger" role="button">Delete</button>
+						<button id="funding" class="issue btn btn-sm btn-success" role="button">Funding</button><hr>
+				</div>
+				<div id="pmap" class="tab-pane pill">
+					
+						<h1>Map</h1>
+						<div id="proj-map">
+						</div>
 					
 				</div>
 				<div id="home" class="tab-pane pill active">
@@ -57,16 +71,6 @@ category: 'data'
 					<div style="overflow:auto; max-height:300px">
 						<table id="js-table" class="table table-condensed table-bordered"></table>
 					</div>
-					
-					<hr>
-					<h4>Open an issue for <span class="arcid"></span>:</h4>
-					<input id="issue-title" type="text" class="form-control" placeholder=""></br>
-					<textarea id="issue-body" class="form-control" rows="3" placeholder="Describe issue or change here..."></textarea></br>
-					<label>Issue Type:</label></br>
-					<button id="general" class="issue btn btn-sm btn-primary" role="button">General</button>
-					<button id="delay" class="issue btn btn-sm btn-warning" role="button">Delay</button>
-					<button id="delete" class="issue btn btn-sm btn-danger" role="button">Delete</button>
-					<button id="funding" class="issue btn btn-sm btn-success" role="button">Funding</button><hr>
 				</div>
 			</div>
 		</div>
@@ -142,6 +146,7 @@ var tables = {}
         // Store the current value on focus and on change
         previous = this.value;
     })
+
 	var router = new Router().init();
 	$('.fiscal-year').change(function(){
 		var value = $('.fiscal-year').val()
@@ -318,7 +323,40 @@ var tables = {}
 	$('.view').live('click', function(){
 		var color = 'active'
 		$(this).closest('tr').addClass(color).siblings().removeClass(color);
+		// points.selectAll(".explosionpoint").attr("visibility", function(d) {
+		// 	//Replace with the correct date comparison logic
+		// 	return d.properties.ARCID === id ? "visible" : "hidden";
+		// });
+		
 		// runFilter();
+	})
+	$('#map-tab').click(function(){
+		var match = null;
+		$.each(rtp.features, function(i, feature){
+			// console.log(feature)
+			
+			if (feature.properties.ARCID == id){
+				match = true
+				match = feature
+				console.log(match)
+				
+			}
+			
+
+		})
+		if (match) {
+			var patt = /Point/g;
+			$('#proj-map').empty().append('<p>This project <strong>does</strong> have a geographic component.</p>')
+			if (patt.test(match.geometry.type)){
+				var latlng = match.geometry.coordinates[0][1]+","+match.geometry.coordinates[0][0]
+				$('#proj-map').append('<img width="300px" height="300px" src="http://maps.googleapis.com/maps/api/staticmap?center='+latlng+'&zoom=14&size=400x400&sensor=false&format=jpg&&markers=color:red%7Clabel:P%7C'+latlng+'">')
+
+			}
+			
+		}
+		else{
+			$('#proj-map').empty().append('<p>This project does not have a geographic component.</p>')
+		}
 	})
 	$('#edit').click(function(){
 		window.location='https://github.com/landonreed/plan-it/edit/gh-pages/data/TIP/individual/'+ $('.arcid').html() +'.csv'
@@ -492,7 +530,7 @@ var tables = {}
 						return
 		    		}
 		    		record = rows;
-					console.log(rows)
+					// console.log(rows)
 					$('#project')
 			    		.fadeOut(250, function(){
 			    			// $('#home').tab('show');
@@ -671,5 +709,64 @@ var apiUrl = ""
 	// for (url in urls){
 	// 	d3.csv
 	// }
+var rtp;
+d3.json("{{ site.baseurl }}/data/rtp_all.geojson", function(json) {
+	rtp = json
+	
+})
+
+
+var width = 300,
+    height = 400;
+
+
+
+
+
+// var svg = d3.select("#pmap").append("svg")
+//     .attr("width", width)
+//     .attr("height", height);
+// Create the points variable
+var points = d3.select("#pmap")
+	.append("svg")
+	.append("g")
+	    .attr("id", "points");
+d3.json("{{ site.baseurl }}/data/rtp_points.geojson", function(json) {
+	var center = d3.geo.centroid(json)
+	var scale  = 150;
+	var offset = [width/2, height/2];
+	var projection = d3.geo.mercator().scale(scale).center(center)
+	  .translate(offset);
+	var path = d3.geo.path()
+    	.projection(projection);
+    var bounds  = path.bounds(json);
+      var hscale  = scale*width  / (bounds[1][0] - bounds[0][0]);
+      var vscale  = scale*height / (bounds[1][1] - bounds[0][1]);
+      var scale   = (hscale < vscale) ? hscale : vscale;
+      var offset  = [width - (bounds[0][0] + bounds[1][0])/2,
+                        height - (bounds[0][1] + bounds[1][1])/2];
+      projection = d3.geo.mercator().center(center)
+        .scale(scale).translate(offset);
+      path = path.projection(projection);
+	console.log(json)
+	points
+	    .selectAll("path")
+	    .data(json.features)
+	    .enter().append("path")
+	    .attr("d", path)
+	    .append("title")
+	    .text(function(d) { return d.properties.ARCID; });
+	console.log(points)
+	// svg.append("path")
+	// 	.datum({type: "FeatureCollection", features: json.features})
+	// 	.attr("d", path);
+	// svg.selectAll().attr("visibility", function(d) {
+		//Replace with the correct date comparison logic
+	// 	console.log(d)
+	// 	return d.date < sliderrange[1] && d.date > sliderrange[0] ? "visible" : "hidden";
+	// });
+});
+
+
 
 </script>
