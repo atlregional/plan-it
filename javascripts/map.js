@@ -60,8 +60,13 @@ legend.onAdd = function (map) {
 
     return div;
 };
-
+new L.Control.GeoSearch({
+    provider: new L.GeoSearch.Provider.OpenStreetMap(),
+    position: 'bottomleft',
+    showMarker: false
+}).addTo(map);
 legend.addTo(map);
+
 function onEachFeature (feature, layer) {
 	// var popupContent = "" //+
 	// // feature.geometry.type + ", but now I'm a Leaflet vector!</p>";
@@ -88,14 +93,11 @@ info.onAdd = function (map) {
 // method that we will use to update the control based on feature properties passed
 info.update = function (props) {
     this._div.innerHTML = '<h4>TIP Projects</h4>' +  (props ?
-        '<b>' + props.ARCID + '</b><br />' + toTitleCase(props.PRJ_DESC) + ''
+        '<b><a href="{{ site.baseurl }}/data/#/'+props.ARCID+'">' + props.ARCID + '</a></b><br />' + toTitleCase(props.PRJ_DESC) + ''
         : 'Hover over a project');
 };
 
 info.addTo(map);
-function toTitleCase(str) {
-    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-}
 function lineColor(props) {
 	var type = props.PRJ_TYPE;
 	var desc = props.PRJ_DESC;

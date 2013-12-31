@@ -1,6 +1,14 @@
 function replaceSpecialChars(str) {
 	return str.replace(/&amp;/g, "&").replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/"/g, "&quot;").replace(/&nbsp;/g, " ");
 }
+function toTitleCase(str) {
+    return str.replace(/\w\S*/g, function(txt){
+    	if (/^LCI|FY|ARC|SR|II|III|^US$/g.test(txt))
+    		return txt
+    	else
+    		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+}
 function tableToJson(table) { 
 	var data = []; // first row needs to be headers 
 	var headers = []; 
