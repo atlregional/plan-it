@@ -450,10 +450,20 @@ var tables = {}
 		if (match) {
 			var patt = /Point/g;
 			$('#proj-map').empty().append('<p>This project <strong>does</strong> have a geographic component.</p>')
-			if (patt.test(match.geometry.type)){
-				var latlng = match.geometry.coordinates[0][1]+","+match.geometry.coordinates[0][0]
+			console.log(match.geometry.type)
+			var latlng = ''
+			if (/Point/g.test(match.geometry.type)){
+				latlng = match.geometry.coordinates[0][1]+","+match.geometry.coordinates[0][0]
 				$('#proj-map').append('<img width="300px" height="300px" src="http://maps.googleapis.com/maps/api/staticmap?center='+latlng+'&zoom=14&size=400x400&sensor=false&format=jpg&&markers=color:red%7Clabel:P%7C'+latlng+'">')
-
+			}
+			else if (/Line/g.test(match.geometry.type)){
+				$('#proj-map').empty().append('<p>This project <strong>does</strong> have a geographic component.  It\'s a line!</p>')
+				var latlngString = '';
+				$.each(match.geometry.coordinates, function(i, coord){
+					latlng += '|'+coord[1]+","+coord[0]
+				})
+				$('#proj-map').append('<img width="300px" height="300px" src="http://maps.googleapis.com/maps/api/staticmap?size=400x400&sensor=false&format=jpg&&path=color:red'+latlng+'">')
+				// var latlng = match.geometry.coordinates[0][1]+","+match.geometry.coordinates[0][0]
 			}
 			
 		}
@@ -708,53 +718,45 @@ d3.json("{{ site.baseurl }}/data/rtp_all.geojson", function(json) {
 var width = 300,
     height = 400;
 
-
-
-
-
-// var svg = d3.select("#pmap").append("svg")
-//     .attr("width", width)
-//     .attr("height", height);
-// Create the points variable
 var points = d3.select("#pmap")
 	.append("svg")
 	.append("g")
 	    .attr("id", "points");
-d3.json("{{ site.baseurl }}/data/rtp_points.geojson", function(json) {
-	var center = d3.geo.centroid(json)
-	var scale  = 150;
-	var offset = [width/2, height/2];
-	var projection = d3.geo.mercator().scale(scale).center(center)
-	  .translate(offset);
-	var path = d3.geo.path()
-    	.projection(projection);
-    var bounds  = path.bounds(json);
-      var hscale  = scale*width  / (bounds[1][0] - bounds[0][0]);
-      var vscale  = scale*height / (bounds[1][1] - bounds[0][1]);
-      var scale   = (hscale < vscale) ? hscale : vscale;
-      var offset  = [width - (bounds[0][0] + bounds[1][0])/2,
-                        height - (bounds[0][1] + bounds[1][1])/2];
-      projection = d3.geo.mercator().center(center)
-        .scale(scale).translate(offset);
-      path = path.projection(projection);
-	console.log(json)
-	points
-	    .selectAll("path")
-	    .data(json.features)
-	    .enter().append("path")
-	    .attr("d", path)
-	    .append("title")
-	    .text(function(d) { return d.properties.ARCID; });
-	console.log(points)
-	// svg.append("path")
-	// 	.datum({type: "FeatureCollection", features: json.features})
-	// 	.attr("d", path);
-	// svg.selectAll().attr("visibility", function(d) {
-		//Replace with the correct date comparison logic
-	// 	console.log(d)
-	// 	return d.date < sliderrange[1] && d.date > sliderrange[0] ? "visible" : "hidden";
-	// });
-});
+// d3.json("{{ site.baseurl }}/data/rtp_points.geojson", function(json) {
+// 	var center = d3.geo.centroid(json)
+// 	var scale  = 150;
+// 	var offset = [width/2, height/2];
+// 	var projection = d3.geo.mercator().scale(scale).center(center)
+// 	  .translate(offset);
+// 	var path = d3.geo.path()
+//     	.projection(projection);
+//     var bounds  = path.bounds(json);
+//       var hscale  = scale*width  / (bounds[1][0] - bounds[0][0]);
+//       var vscale  = scale*height / (bounds[1][1] - bounds[0][1]);
+//       var scale   = (hscale < vscale) ? hscale : vscale;
+//       var offset  = [width - (bounds[0][0] + bounds[1][0])/2,
+//                         height - (bounds[0][1] + bounds[1][1])/2];
+//       projection = d3.geo.mercator().center(center)
+//         .scale(scale).translate(offset);
+//       path = path.projection(projection);
+// 	console.log(json)
+// 	points
+// 	    .selectAll("path")
+// 	    .data(json.features)
+// 	    .enter().append("path")
+// 	    .attr("d", path)
+// 	    .append("title")
+// 	    .text(function(d) { return d.properties.ARCID; });
+// 	console.log(points)
+// 	// svg.append("path")
+// 	// 	.datum({type: "FeatureCollection", features: json.features})
+// 	// 	.attr("d", path);
+// 	// svg.selectAll().attr("visibility", function(d) {
+// 		//Replace with the correct date comparison logic
+// 	// 	console.log(d)
+// 	// 	return d.date < sliderrange[1] && d.date > sliderrange[0] ? "visible" : "hidden";
+// 	// });
+// });
 
 
 
