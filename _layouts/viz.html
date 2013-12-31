@@ -1,7 +1,7 @@
 ---
 layout: default
 ---
-   <script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/d3/d3.v3.min.js"></script>
+   <script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/d3/d3.v3.min.js" charset="utf-8"></script>
    <!-- jspdf files -->
 <script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/jspdf/jspdf.js"></script>
 <script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/jspdf/adler32.js"></script>
@@ -16,8 +16,10 @@ layout: default
       {{content}}
   <script type="text/javascript">
   var data = [];
-  
-  var svg = null;
+  $(document).ready(function(){
+    
+  })
+  // var svg = null;
   d3.csv("{{ site.baseurl}}/data/TIP/projects.csv").row(function(d) {
     return {
         ARCID: d.ARCID,
@@ -58,7 +60,7 @@ function doThis(data){
     height = 500, 
     margin = 50;
 
-svg=d3.select(".chart").append("svg").attr("width",width).attr("height",height);
+var svg=d3.select(".chart").append("svg").attr("width",width).attr("height",height);
 var x=d3.scale.linear().domain([2000,2040]).range([margin,width-margin]);
 var y=d3.scale.linear().domain([0,100000000]).range([height-margin,margin]);
 var r=d3.scale.linear().domain([0,500]).range([0,20]);
