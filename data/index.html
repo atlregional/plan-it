@@ -121,8 +121,8 @@ category: 'data'
 		    this.get('{{ site.baseurl }}/data/#/:id', function() {
 				// alert(this.params['name']);
 				id = this.params['id']
+				$('#'+id+'-link').closest('tr').addClass(color).siblings().removeClass(color);
 
-				
 				d3.csv("{{ site.baseurl}}/data/TIP/individual/"+id+".csv")
 		    	.row(function(d) {
 			    return {
@@ -224,7 +224,6 @@ category: 'data'
         });
       
       })(jQuery);
-
 
 var tables = {}
 	$(document).ready(function(){
@@ -433,15 +432,6 @@ var tables = {}
 		historyClick = true;
 		}
 		
-	})
-	$('.view').live('click', function(){
-		$(this).closest('tr').addClass(color).siblings().removeClass(color);
-		// points.selectAll(".explosionpoint").attr("visibility", function(d) {
-		// 	//Replace with the correct date comparison logic
-		// 	return d.properties.ARCID === id ? "visible" : "hidden";
-		// });
-		
-		// runFilter();
 	})
 	$('#map-tab').click(function(){
 		var match = null;
