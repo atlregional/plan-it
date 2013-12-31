@@ -68,7 +68,7 @@ var fields = [
 	// {name: 'city',				type: 'string', filterable: true},
 	// {name: 'invoice_date',		type: 'date',	 filterable: true},
 
-	{name: 'ARCID', type: 'string', filterable: true, summarizable: 'count'},
+	{name: 'ARCID', type: 'string', filterable: true, summarizable: 'count', displayFunction: function(value){ return '<a href="{{ site.baseurl }}/data/#/'+value+'">'+value+'</a>'}},
 	{name: 'Description', type: 'string', filterable: true},
 	{name: 'Jurisdiction', type: 'string', filterable: true},
 	{name: 'ModelingNetworkYear', type: 'integer', filterable: true},
@@ -210,7 +210,7 @@ var specialElementHandlers = {
 		var branch = $('.branch-select').val()
 		if (branch == 'gh-pages')
 		setupPivot({url:'{{ site.baseurl}}/data/TIP/projects.csv', fields: fields, filters:{"FiscalYear":"2014"}, rowLabels:['ARCID', 'Jurisdiction', 'ProjectType', 'Phase', 'Status'], summaries:["Total"]})
-		else{
+		else{ 
 		$.get('https://api.github.com/repos/landonreed/plan-it/contents/data/TIP/projects.csv?ref='+ branch, function (file) {
 			var data = Base64.decode(file.content)
 			console.log(data)
