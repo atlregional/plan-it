@@ -83,7 +83,7 @@ var fields = [
 	{name: 'Analysis', type: 'string', filterable: true},
 	{name: 'Phase', type: 'string', filterable: true},
 	{name: 'PhaseStatus', type: 'string', filterable: true},
-	{name: 'FiscalYear', type: 'string', filterable: true},
+	{name: 'FiscalYear', type: 'string', filterable: true, filterType:'multiselect', columnLabelable: true},
 	{name: 'FundSource', type: 'string', filterable: true},
 	// {name: 'Federal', type: 'integer', filterable: true},
 	// {name: 'State', type: 'integer', filterable: true},
@@ -109,9 +109,8 @@ var fields = [
 	//	 return date.getFullYear() + '_' + pivot.utils().padLeft((date.getMonth() + 1),2,'0')}
 	// },
 	{name: 'ModelingNetworkYear', type: 'string', filterable: true, pseudo: true, columnLabelable: true,pseudoFunction: function(row){ return "MY"+row.ModelingNetworkYear }},
-	// {name: 'FiscalYear', type: 'string', filterable: true, pseudo: true, columnLabelable: true,pseudoFunction: function(row){ return row.FiscalYear }},
+	// {name: 'FY', type: 'string', filterable: true, pseudo: true, columnLabelable: true, pseudoFunction: fiscalYearBucket},
 	 // {name: 'ModelYearBucket', type: 'string', filterable: true, columnLabelable: true, pseudo: true, dataSource: 'ModelingNetworkYear', pseudoFunction: modelYearBucket},
-	 {name: 'FiscalYearBucket', type: 'string', filterable: true, columnLabelable: true, pseudo: true, dataSource: 'FiscalYear', pseudoFunction: fiscalYearBucket},
 
 	// // summary fields
 	{name: 'Federal',	 type: 'integer',	rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}},
