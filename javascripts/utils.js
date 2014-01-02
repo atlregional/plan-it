@@ -3,8 +3,11 @@ function replaceSpecialChars(str) {
 }
 function toTitleCase(str) {
     return str.replace(/\w\S*/g, function(txt){
-    	if (/LCI|TDM|CSX|MARTA|^FY$|^ARC$|^SR$|^II$|^III$|^US$|CMAQ/g.test(txt))
+    	if (/LCI|TDM|CSX|MARTA|^FY$|^ARC$|^SR$|^II$|^STP$|^III$|^US$|CMAQ/g.test(txt))
     		return txt
+    	else if (/^IN$|^OF$|^AND$|^FOR$/g.test(txt)){
+    		return txt.toLowerCase()
+    	}
     	else
     		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
