@@ -3,7 +3,7 @@ function replaceSpecialChars(str) {
 }
 function toTitleCase(str) {
     return str.replace(/\w\S*/g, function(txt){
-    	if (/^LCI|FY|ARC|SR|II|III|^US$/g.test(txt))
+    	if (/LCI|TDM|CSX|MARTA|^FY$|^ARC$|^SR$|^II$|^III$|^US$|CMAQ/g.test(txt))
     		return txt
     	else
     		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
@@ -109,4 +109,54 @@ function exportResults(type) {
 }
 function generateReport(type) {
 	
+}
+
+function drawPoints(coordinates) {
+	var latlng = ''
+	var markerString = '&markers=color:red%7Clabel:P%7C'
+	var markers = ''
+	var latlngs = []
+	var latlngbounds = new google.maps.LatLngBounds()
+	if (coordinates[0][0] == undefined){
+		latlng = coordinates[1]+","+coordinates[0]
+		markers = markerString + latlng
+		latlngs.push(new google.maps.LatLng(coordinates[1],coordinates[0]))
+	}
+	else{
+		$.each(coordinates, function (i, coord){
+			latlng = coord[1]+","+coord[0]
+			markers += markerString + latlng
+			latlngs.push(new google.maps.LatLng(coord[1],coord[0]))
+		})
+	}
+	$.each(latlngs, function(i, l){
+		latlngbounds.extend(l)
+	})
+	$('#proj-map').append('<img width="300px" height="300px" src="http://maps.googleapis.com/maps/api/staticmap?center='+latlngbounds.getCenter()+'&zoom=14&size=400x400&sensor=false&format=jpg'+markers+'">')
+}
+
+function getPathString(arr){
+	var points = []
+	var latlng = ''
+	$.each(arr, function(i, coord){
+		var point = new google.maps.LatLng(coord[1],coord[0])
+		latlng += '|'+coord[1]+","+coord[0]
+		points.push(point)
+	})
+	return '&path=color:red%7Cenc:' + google.maps.geometry.encoding.encodePath(points)
+}
+
+function drawPaths(coordinates){
+	var latlngString = '';
+	var pathString = ''
+	if (coordinates[0][0][0] == undefined){
+		pathString = getPathString(coordinates)
+	}
+	else{
+		$.each(coordinates, function(i, arr){
+			pathString += getPathString(arr)
+		})
+	}	
+	console.log(pathString)
+	$('#proj-map').append('<img width="300px" height="300px" src="http://maps.googleapis.com/maps/api/staticmap?size=400x400&sensor=false&format=jpg'+pathString+'&key=AIzaSyB2DmD3aD3d0JIrc31MxUV6U0-Xp4WIE4c">')
 }
