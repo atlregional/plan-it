@@ -184,6 +184,12 @@ $(document).ready(function() {
 		success: function(data){
 			markers = data;
 			markersLayer = L.geoJson(data, {
+				filter: function(feature, layer){
+					if (feature.properties){
+						return feature.properties.STATUS == "Programmed" ? true : false
+					}
+					return false
+				},
 				pointToLayer: function (feature, latlng) {
 					var projType = feature.properties.PRJ_TYPE;
 					var description = toTitleCase(feature.properties.PRJ_DESC)
@@ -217,6 +223,12 @@ $(document).ready(function() {
 		success: function(data){
 			markers = data;
 			geojson = L.geoJson(data, {
+				filter: function(feature, layer){
+					if (feature.properties){
+						return feature.properties.STATUS == "Programmed" ? true : false
+					}
+					return false
+				},
 				style: function (feature) {
 					var projType = feature.properties.PRJ_TYPE;
 					var description = feature.properties.PRJ_DESC;
