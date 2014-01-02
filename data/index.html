@@ -43,8 +43,7 @@ category: 'data'
 						<button id="funding" class="issue btn btn-sm btn-success" role="button">Funding</button><hr>
 				</div>
 				<div id="pmap" class="tab-pane pill">
-						<div id="proj-map">
-						</div>
+						<div id="proj-map"></div>
 					
 				</div>
 				<div id="home" class="tab-pane pill active">
@@ -119,8 +118,9 @@ category: 'data'
 		    this.get('{{ site.baseurl }}/data/#/:id', function() {
 				// alert(this.params['name']);
 				id = this.params['id']
+				document.title = id + " {{ page.title }} | Plan-It"
 				$('#'+id+'-link').closest('tr').addClass(color).siblings().removeClass(color);
-
+				$('#proj-map').empty()
 				d3.csv("{{ site.baseurl}}/data/TIP/individual/"+id+".csv")
 		    	.row(function(d) {
 			    return {
@@ -233,6 +233,7 @@ var tables = {}
 		
 		
 	})
+	$('#issue-title').tooltip({title:'don\'t change this!'})
 	$('#myTab a').click(function (e) {
 		e.preventDefault()
 		$(this).tab('show')
@@ -243,12 +244,14 @@ var tables = {}
 	})
 	$('#issues-tab').click(function () {
 		console.log("issues tab")
-		$.get("https://api.github.com/repos/landonreed/plan-it/issues?", function (issues) {
-			console.log(issues)
-			$.each(issues, function(i, issue){
-				$("#issue-list").append('<p><a href="'+issue.user.url+'" title="'+issue.user.login+'"><img src="'+issue.user.avatar_url+'" height="30" width="30"></a> <a href="' + issue.url + '">' + issue.title + '' + '</a></p><p>'+issue.body+'</p>');
-			})
-		});
+		if($('#issue-list').is(':empty')){
+			$.get("https://api.github.com/repos/landonreed/plan-it/issues?", function (issues) {
+				console.log(issues)
+				$.each(issues, function(i, issue){
+					$("#issue-list").append('<p><a href="'+issue.user.url+'" title="'+issue.user.login+'"><img src="'+issue.user.avatar_url+'" height="30" width="30"></a> <a href="' + issue.url + '">' + issue.title + '' + '</a></p><p>'+issue.body+'</p>');
+				})
+			});
+		}
 	})
 	var previous;
 	var id;
@@ -445,23 +448,28 @@ var tables = {}
 			
 
 		})
-		if (match) {
-			$('#proj-map').empty().append('<p>This project <strong>does</strong> have a geographic component.</p>')
-			console.log(match.geometry.type)
-			var latlng = ''
-			if (/Point/g.test(match.geometry.type)){
-				drawPoints(match.geometry.coordinates)
+		var projMap = $('#proj-map')
+		console.log(projMap.html())
+		if (projMap.is(':empty')){
+			if (match) {
+				
+				$('#proj-map').empty() // .append('<p>This project <strong>does</strong> have a geographic component.</p>')
+				console.log(match.geometry.type)
+				var latlng = ''
+				if (/Point/g.test(match.geometry.type)){
+					drawPoints(match.geometry.coordinates)
+					
+				}
+				else if (/Line/g.test(match.geometry.type)){
+					// $('#proj-map').empty().append('<p>This project <strong>does</strong> have a geographic component.  It\'s a line!</p>')
+					drawPaths(match.geometry.coordinates)
+					// var latlng = match.geometry.coordinates[0][1]+","+match.geometry.coordinates[0][0]
+				}
 				
 			}
-			else if (/Line/g.test(match.geometry.type)){
-				$('#proj-map').empty().append('<p>This project <strong>does</strong> have a geographic component.  It\'s a line!</p>')
-				drawPaths(match.geometry.coordinates)
-				// var latlng = match.geometry.coordinates[0][1]+","+match.geometry.coordinates[0][0]
+			else{
+				$('#proj-map').empty().append('<p>This project does not have a geographic component.</p>')
 			}
-			
-		}
-		else{
-			$('#proj-map').empty().append('<p>This project does not have a geographic component.</p>')
 		}
 	})
 	$('#edit').click(function(){
@@ -708,13 +716,13 @@ d3.json("{{ site.baseurl }}/data/rtp_all.geojson", function(json) {
 })
 
 
-var width = 300,
-    height = 400;
+// var width = 300,
+//     height = 400;
 
-var points = d3.select("#pmap")
-	.append("svg")
-	.append("g")
-	    .attr("id", "points");
+// var points = d3.select("#pmap")
+// 	.append("svg")
+// 	.append("g")
+// 	    .attr("id", "points");
 // d3.json("{{ site.baseurl }}/data/rtp_points.geojson", function(json) {
 // 	var center = d3.geo.centroid(json)
 // 	var scale  = 150;
