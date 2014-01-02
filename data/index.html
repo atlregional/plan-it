@@ -121,6 +121,7 @@ category: 'data'
 				document.title = id + " {{ page.title }} | Plan-It"
 				$('#'+id+'-link').closest('tr').addClass(color).siblings().removeClass(color);
 				$('#proj-map').empty()
+				$('#history').empty()
 				d3.csv("{{ site.baseurl}}/data/TIP/individual/"+id+".csv")
 		    	.row(function(d) {
 			    return {
@@ -381,7 +382,7 @@ var tables = {}
 		
 		console.log('View HIstory!')
 		console.log("history tab")
-		if (!historyClick){
+		if($('#history').is(':empty')){
 			$("#history").empty()
 			$.each(branches, function(i, branch){
 				$.get('https://api.github.com/repos/landonreed/plan-it/contents/data/TIP/individual/'+id+'.csv?ref='+branch, function (file) {
@@ -423,14 +424,13 @@ var tables = {}
 							// })
 						)+'</table></div>'
 					
-			}).done(function() {
-				$("#history").append(tables[branch]);
+				}).done(function() {
+					$("#history").append(tables[branch]);
+				})
 			})
-		})
-		$.each(branches, function(i, branch){
-			
-		})
-		historyClick = true;
+			$.each(branches, function(i, branch){
+				
+			})
 		}
 		
 	})
