@@ -135,7 +135,7 @@ function drawPoints(coordinates) {
 	$.each(latlngs, function(i, l){
 		latlngbounds.extend(l)
 	})
-	$('#proj-map').append('<img width="300px" height="300px" src="http://maps.googleapis.com/maps/api/staticmap?center='+latlngbounds.getCenter()+'&zoom=14&size=400x400&sensor=false&format=jpg'+markers+'">')
+	$('#proj-map').append('<img class="img-thumbnail" width="242px" height="242px" src="http://maps.googleapis.com/maps/api/staticmap?center='+latlngbounds.getCenter()+'&zoom=14&size=400x400&sensor=false&format=jpg'+markers+'">')
 }
 
 function getPathString(arr){
@@ -161,5 +161,5 @@ function drawPaths(coordinates){
 		})
 	}	
 	console.log(pathString)
-	$('#proj-map').append('<img width="300px" height="300px" src="http://maps.googleapis.com/maps/api/staticmap?size=400x400&sensor=false&format=jpg'+pathString+'&key=AIzaSyB2DmD3aD3d0JIrc31MxUV6U0-Xp4WIE4c">')
+	$('#proj-map').append('<img class="img-thumbnail" width="242px" height="242px" src="http://maps.googleapis.com/maps/api/staticmap?size=400x400&sensor=false&format=jpg'+pathString+'&key=AIzaSyB2DmD3aD3d0JIrc31MxUV6U0-Xp4WIE4c">')
 }

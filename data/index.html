@@ -8,7 +8,7 @@ category: 'data'
 <script src="{{ site.baseurl}}/lib/javascripts/json-to-table.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
 <script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/jquery.dataTables.min.js"></script>
-<!-- <script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/dataTables.bootstrap.js"></script> -->
+<script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/dataTables.bootstrap.js"></script>
 <ul id="myTab" class="nav nav-tabs">
   <li class="active"><a href="#proj">Projects</a></li>
   <li><a href="#data">Data</a></li>
@@ -16,12 +16,12 @@ category: 'data'
 </ul>
 <div class="tab-content">
 	<div id="proj" class="tab-pane active">
-		<div id="project" class="col-md-8 col-sm-7 col-xs-12 pull-right" style="display:none; z-index:1000;">
+		<div id="project" class="col-lg-9 col-md-9 col-sm-8 col-xs-12 pull-right" style="display:none; z-index:1000;">
 			<h3><span class="arcid"></span><span style="float:right; font-size:small"><button class="btn btn-default btn-sm" id="report" role="button">Report</button> <button class="btn btn-default btn-sm" id="edit" role="button">Edit</button></span></h3>
 			<ul id="project-pill" class="nav nav-pills">
 				<li id="home-tab" class="active"><a href="#home">Home</a></li>
 				
-				<li><a href="#pmap" id="map-tab">Map</a></li>
+				<!-- <li><a href="#pmap" id="map-tab">Map</a></li> -->
 				<li><a href="#history" id="history-tab">History</a></li>
 				<li><a href="#issue" id="issue-tab">Issue</a></li>
 			</ul>
@@ -42,20 +42,35 @@ category: 'data'
 						<button id="delete" class="issue btn btn-sm btn-danger" role="button">Delete</button>
 						<button id="funding" class="issue btn btn-sm btn-success" role="button">Funding</button><hr>
 				</div>
-				<div id="pmap" class="tab-pane pill">
-						<div id="proj-map"></div>
+				<!-- <div id="pmap" class="tab-pane pill">
+						
 					
-				</div>
+				</div> -->
 				<div id="home" class="tab-pane pill active">
-					<p id="description"><span class="description"></span></p>
-					<p>
-						<strong>Sponsor:</strong> <span class="sponsor"></span>&nbsp;&nbsp;&nbsp;
-						<strong>Jurisdiction:</strong> <span class="jurisdiction"></span>&nbsp;&nbsp;&nbsp;
+				
+					
+				
+				<div class="row">
+					<div class="col-ms-4 col-md-4 col-sm-4 col-xs-12 col-ms-push-8 col-md-push-8 col-lg-push-8" id="proj-map"></div>	
+
+					<div class="col-ms-8 col-md-8 col-sm-8 col-xs-12 col-ms-pull-4 col-md-pull-4 col-lg-pull-4">
+						<h4 class="description"></h4>
+						<br>
+						<strong>Sponsor:</strong> <span class="sponsor"></span>
+						<br>
+						<strong>Jurisdiction:</strong> <span class="jurisdiction"></span>
+						<br>
 						<strong>Status:</strong> <span class="status"></span>
-					</p>
-					<p>
-						<strong>Analysis Level:</strong> <span class="analysis"></span>&nbsp;&nbsp;&nbsp;
-					</p>
+						<br>
+						<strong>Analysis Level:</strong> <span class="analysis"></span>
+					</div>
+					
+					
+				<!-- </div> -->
+				
+				</div>
+				<hr>
+				<div class="row">
 					<!-- <p><strong>FiscalYear:</strong> 
 					<span><select class="fiscal-year" >
 						  <option>2013</option>
@@ -66,13 +81,14 @@ category: 'data'
 						</select>
 					</span>
 					</p> -->
-					<div style="overflow:auto; max-height:300px">
+					<div class="col-md-12" style="overflow:auto; max-height:300px">
 						<table id="js-table" class="table table-condensed table-bordered"></table>
 					</div>
 				</div>
-			</div>
+				</div>
+			</div><hr>
 		</div>
-		<div class="col-md-4 col-sm-5">
+		<div class="col-md-3 col-sm-4 col-lg-3">
 			<h1>Individual Projects</h1>
 			<p>Search for project data by ARC ID:</p>
 			<input class="form-control" id="searchInput" width="20px" placeholder="Type To Filter"></span>
@@ -121,6 +137,7 @@ category: 'data'
 				document.title = id + " {{ page.title }} | Plan-It"
 				$('#'+id+'-link').closest('tr').addClass(color).siblings().removeClass(color);
 				$('#proj-map').empty()
+				drawMap()
 				$('#history').empty()
 				d3.csv("{{ site.baseurl}}/data/TIP/individual/"+id+".csv")
 		    	.row(function(d) {
@@ -171,6 +188,8 @@ category: 'data'
 	    				$('.analysis').empty()
 	    				// $('.fiscal-year').val("")
 	    				$('#js-table').empty()
+	    				
+						
 	    				$('#project').fadeIn(250)
 	    				console.log("error")
 						return
@@ -434,8 +453,21 @@ var tables = {}
 		}
 		
 	})
-	$('#map-tab').click(function(){
-		var match = null;
+var rtp;
+
+function drawMap(){
+	if (rtp == undefined){
+		d3.json("{{ site.baseurl }}/data/rtp_all.geojson", function(json) {
+			rtp = json
+			getMap()		
+		})
+	}
+	else
+		getMap()
+}
+
+function getMap(){
+	var match = null;
 		$.each(rtp.features, function(i, feature){
 			// console.log(feature)
 			
@@ -468,9 +500,12 @@ var tables = {}
 				
 			}
 			else{
-				$('#proj-map').empty().append('<p>This project does not have a geographic component.</p>')
+				$('#proj-map').empty().append('<img class="img-thumbnail" title="This project does not have a geographic component." width="242px" height="242px" src="{{ site.baseurl }}/lib/images/no_geo.png">')
 			}
 		}
+}
+	$('#map-tab').click(function(){
+		
 	})
 	$('#edit').click(function(){
 		window.location='https://github.com/landonreed/plan-it/edit/gh-pages/data/TIP/individual/'+ $('.arcid').html() +'.csv'
@@ -563,7 +598,7 @@ var tables = {}
 		var hash = url.split('/')[5]
 		console.log(hash)
 		$.each(uniqueIds, function(i, uniqueId){
-			projectList.push([uniqueId,'<a id="'+uniqueId+'-link" href="#/' + uniqueId + '" class="btn btn-default btn-xs view" role="button">View</a>','<a href="http://documents.atlantaregional.com/factsheets/' + uniqueId + '.PDF" class="btn btn-default btn-xs" role="button">Fact Sheet</a>'])
+			projectList.push([uniqueId,'<a id="'+uniqueId+'-link" href="#/' + uniqueId + '" class="btn btn-default btn-xs view" role="button">View</a>'])
 			
 			// $("#projects").append('<tr id="' + uniqueId + '-row"><td class="arcid">' + uniqueId + '</td><td><a href="#/' + uniqueId + '" class="btn btn-default btn-xs view" role="button">View</a></td><td><a href="http://documents.atlantaregional.com/factsheets/' + uniqueId + '.PDF" class="btn btn-default btn-xs" role="button">Fact Sheet</a></td></tr>');
 			// // <td><button id="' + id + '-history" class="history btn btn-default btn-xs" role="button">History</button></td>
@@ -587,7 +622,6 @@ var tables = {}
 			"bPaginate": false,
 	        "aaData": projectList,
 	        "aoColumns": [
-			{ "sTitle": "" },
 			{ "sTitle": "" },
 			{ "sTitle": "" }
 			
@@ -709,11 +743,7 @@ var apiUrl = ""
 	// for (url in urls){
 	// 	d3.csv
 	// }
-var rtp;
-d3.json("{{ site.baseurl }}/data/rtp_all.geojson", function(json) {
-	rtp = json
-	
-})
+
 
 
 // var width = 300,
