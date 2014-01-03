@@ -438,7 +438,7 @@ function grabD3Data(id){
 					console.log(rows)
 					$('#project')
 			    		.fadeOut(250, function(){
-			    			drawMap()
+			    			drawMap(id)
 			    			// $('#home').tab('show');
 			    			$('.nav-pills li').removeClass('active'); // remove active class from tabs
 			    			$('.tab-pane.pill').removeClass('active');
@@ -447,7 +447,6 @@ function grabD3Data(id){
 	    					historyClick = false;
 			    			$('#issue-title').attr('placeholder', id)
 		    				$('.arcid').empty().append(id)
-		    				$('.img-thumbnail').show()
 		    				$('.sponsor').empty().append(rows[0].Sponsor)
 		    				$('.jurisdiction').empty().append(rows[0].Jurisdiction)
 		    				$('.status').empty().append(rows[0].Status)
@@ -459,18 +458,18 @@ function grabD3Data(id){
 	    			})
 			});
 }
-function drawMap(){
+function drawMap(id){
 	if (rtp == undefined){
 		d3.json("{{ site.baseurl }}/data/rtp_all.geojson", function(json) {
 			rtp = json
-			getMap()		
+			getMap(id)		
 		})
 	}
 	else
-		getMap()
+		getMap(id)
 }
 
-function getMap(){
+function getMap(id){
 	$('#proj-map').empty()
 	var match = null;
 		$.each(rtp.features, function(i, feature){
@@ -494,18 +493,18 @@ function getMap(){
 				console.log(match.geometry.type)
 				var latlng = ''
 				if (/Point/g.test(match.geometry.type)){
-					drawPoints(match.geometry.coordinates)
+					drawPoints(match.geometry.coordinates, id)
 					
 				}
 				else if (/Line/g.test(match.geometry.type)){
 					// $('#proj-map').empty().append('<p>This project <strong>does</strong> have a geographic component.  It\'s a line!</p>')
-					drawPaths(match.geometry.coordinates)
+					drawPaths(match.geometry.coordinates, id)
 					// var latlng = match.geometry.coordinates[0][1]+","+match.geometry.coordinates[0][0]
 				}
 				
 			}
 			else{
-				$('#proj-map').empty().append('<img class="img-thumbnail" title="This project does not have a geographic component." width="242px" height="242px" src="{{ site.baseurl }}/lib/images/no_geo.png">')
+				$('#proj-map').empty().append('<img class="img-thumbnail" title="'+id+' does not have a geographic component." width="242px" height="242px" src="{{ site.baseurl }}/lib/images/no_geo.png">')
 			}
 		}
 }

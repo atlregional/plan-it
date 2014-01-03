@@ -114,7 +114,7 @@ function generateReport(type) {
 	
 }
 
-function drawPoints(coordinates) {
+function drawPoints(coordinates, id) {
 	var latlng = ''
 	var markerString = '&markers=color:red%7Clabel:P%7C'
 	var markers = ''
@@ -135,7 +135,7 @@ function drawPoints(coordinates) {
 	$.each(latlngs, function(i, l){
 		latlngbounds.extend(l)
 	})
-	$('#proj-map').append('<img class="img-thumbnail" width="242px" height="242px" src="http://maps.googleapis.com/maps/api/staticmap?center='+latlngbounds.getCenter()+'&zoom=14&size=400x400&sensor=false&format=jpg'+markers+'">')
+	$('#proj-map').append('<img class="img-thumbnail" title="'+id+'" width="242px" height="242px" src="http://maps.googleapis.com/maps/api/staticmap?center='+latlngbounds.getCenter()+'&zoom=14&size=400x400&sensor=false&format=jpg'+markers+'">')
 	
 }
 
@@ -150,7 +150,7 @@ function getPathString(arr){
 	return '&path=color:red%7Cenc:' + google.maps.geometry.encoding.encodePath(points)
 }
 
-function drawPaths(coordinates){
+function drawPaths(coordinates, id){
 	var latlngString = '';
 	var pathString = ''
 	if (coordinates[0][0][0] == undefined){
@@ -162,5 +162,5 @@ function drawPaths(coordinates){
 		})
 	}	
 	console.log(pathString)
-	$('#proj-map').append('<img class="img-thumbnail" width="242px" height="242px" src="http://maps.googleapis.com/maps/api/staticmap?size=400x400&sensor=false&format=jpg'+pathString+'&key=AIzaSyB2DmD3aD3d0JIrc31MxUV6U0-Xp4WIE4c">')
+	$('#proj-map').append('<img class="img-thumbnail" title="'+id+'" width="242px" height="242px" src="http://maps.googleapis.com/maps/api/staticmap?size=400x400&sensor=false&format=jpg'+pathString+'&key=AIzaSyB2DmD3aD3d0JIrc31MxUV6U0-Xp4WIE4c">')
 }
