@@ -136,6 +136,7 @@ function drawPoints(coordinates) {
 		latlngbounds.extend(l)
 	})
 	$('#proj-map').append('<img class="img-thumbnail" width="242px" height="242px" src="http://maps.googleapis.com/maps/api/staticmap?center='+latlngbounds.getCenter()+'&zoom=14&size=400x400&sensor=false&format=jpg'+markers+'">')
+	
 }
 
 function getPathString(arr){
