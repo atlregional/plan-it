@@ -135,10 +135,8 @@ category: 'data'
 				id = this.params['id']
 				document.title = id + " {{ page.title }} | Plan-It"
 				$('#'+id+'-link').closest('tr').addClass(color).siblings().removeClass(color);
-				$('#proj-map').empty()
-				drawMap(function(){
-					$('.img-thumbnail').hide()
-				})
+				
+				
 				$('#history').empty()
 				grabD3Data(id)
 			});
@@ -393,6 +391,7 @@ function grabD3Data(id){
 			      };
 			})
 		    	.get(function(error, rows){
+
 		    		if (error){
 		    			$('.nav-pills li').removeClass('active'); // remove active class from tabs
 		    			$('.tab-pane.pill').removeClass('active');
@@ -439,6 +438,7 @@ function grabD3Data(id){
 					console.log(rows)
 					$('#project')
 			    		.fadeOut(250, function(){
+			    			drawMap()
 			    			// $('#home').tab('show');
 			    			$('.nav-pills li').removeClass('active'); // remove active class from tabs
 			    			$('.tab-pane.pill').removeClass('active');
@@ -459,7 +459,7 @@ function grabD3Data(id){
 	    			})
 			});
 }
-function drawMap(callback){
+function drawMap(){
 	if (rtp == undefined){
 		d3.json("{{ site.baseurl }}/data/rtp_all.geojson", function(json) {
 			rtp = json
@@ -468,10 +468,10 @@ function drawMap(callback){
 	}
 	else
 		getMap()
-	return callback()
 }
 
 function getMap(){
+	$('#proj-map').empty()
 	var match = null;
 		$.each(rtp.features, function(i, feature){
 			// console.log(feature)
