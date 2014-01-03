@@ -287,17 +287,17 @@ var tables = {}
 						'2008Q2',
 						'2008Q3',
 						'2008Q4',
-						'2009Q1',
-						'2009Q2',
-						'2009Q3',
-						'2009Q4',
-						'2010Q1',
-						'2010Q2',
-						'2010Q3',
-						'2010Q4',
-						'2011Q1',
-						'2011Q2',
-						'2011Q3',
+						// '2009Q1',
+						// '2009Q2',
+						// '2009Q3',
+						// '2009Q4',
+						// '2010Q1',
+						// '2010Q2',
+						// '2010Q3',
+						// '2010Q4',
+						// '2011Q1',
+						// '2011Q2',
+						// '2011Q3',
 						'2011Q4',
 						'gh-pages']
 		var rows = []
@@ -306,10 +306,12 @@ var tables = {}
 		console.log("history tab")
 		if($('#history').is(':empty')){
 			$("#history").empty()
+			var count = 0
 			$.each(branches, function(i, branch){
+				count++
 				$.get('https://api.github.com/repos/landonreed/plan-it/contents/data/TIP/individual/'+id+'.csv?ref='+branch, function (file) {
 					console.log(file.content)
-					tables[branch] = '<h4><a href="' + file._links.html + '">' + branch + '' + '</a></h4><div class="table-responsive"><table id="'+branch+'" class="table">'+populateTable(d3.csv.parse(Base64.decode(file.content), function(rows){
+					tables[branch] = d3.csv.parse(Base64.decode(file.content), function(rows){
 							delete rows.ARCID
 					        delete rows.Description
 					        delete rows.Jurisdiction
@@ -331,26 +333,42 @@ var tables = {}
 					        delete rows.TotalSum
 					        return rows;
 						})
-							// .row(function(d){
-							// 	return {
-							// 		Phase: d.Phase,
-							//         Status: d.PhaseStatus,
-							//         FY: d.FiscalYear,
-							//         // FundSource: d.FundSource,
-							//         Federal: d.Federal,
-							//         State: d.State,
-							//         Local: d.Local,
-							//         Bond: d.Bond,
-							//         Total: d.Total
-							//     }
-							// })
-						)+'</table></div>'
+
 					
 				}).done(function() {
-					$("#history").append(tables[branch]);
+					$("#history").empty()
+					console.log(count)
+					if(count == branches.length) {
+						console.log("match!")
+						var previous = []
+						var prevBranch = ''
+						$.each(branches, function(i, branch){
+							
+							if (tables[branch]){
+								console.log('****************from '+prevBranch+' to '+branch+'****************')
+								$.each(tables[branch], function(j, row){
+									$.each(row, function(key, data) {
+							        	if(previous[j] != undefined && data !== previous[j][key]){
+						            		console.log(key + ' changed from '+ previous[j][key] + ' to '+ data);
+						            		if(data.substring(0,1) === '$'){
+						            			var prev = Number(previous[j][key].replace(/[^0-9\.]+/g,""))
+						            			var curr = Number(data.replace(/[^0-9\.]+/g,""))
+						            			console.log(prev)
+						            			console.log('that\'s a diff of ' + curr - prev)
+						            		}
+							        	}
+								    })
+									
+								})
+								
+								$("#history").append('<h4><a href="https://github.com/landonreed/plan-it/blob/' + branch + '/data/TIP/individual/'+'.csv">' + branch + '' + '</a></h4><div class="table-responsive"><table id="'+branch+'" class="table">'+populateTable(tables[branch])+'</table></div>');	
+								previous = tables[branch]
+								prevBranch = branch
+								console.log(previous)
+							}
+						})
+					}
 				})
-			})
-			$.each(branches, function(i, branch){
 				
 			})
 		}
