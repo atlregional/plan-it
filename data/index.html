@@ -89,8 +89,7 @@ category: 'data'
 			</div><hr>
 		</div>
 		<div class="col-md-3 col-sm-4 col-lg-3">
-			<h1>Individual Projects</h1>
-			<p>Search for project data by ARC ID:</p>
+			<h4 style="padding-top:15px;">Search projects by ID:</h4>
 			<input class="form-control" id="searchInput" width="20px" placeholder="Type To Filter"></span>
 			<!-- <div class="table-responsive" style="height:300px; overflow:auto;">
 				<table id="projects"  class="table table-hover table-condensed"></table>
@@ -598,7 +597,7 @@ function getMap(){
 		var hash = url.split('/')[5]
 		console.log(hash)
 		$.each(uniqueIds, function(i, uniqueId){
-			projectList.push([uniqueId,'<a id="'+uniqueId+'-link" href="#/' + uniqueId + '" class="btn btn-default btn-xs view" role="button">View</a>'])
+			projectList.push([uniqueId, '<a id="'+uniqueId+'-link" title="View data for '+uniqueId+'" href="#/' + uniqueId + '" class="btn btn-default btn-xs view" role="button">View</a>'])
 			
 			// $("#projects").append('<tr id="' + uniqueId + '-row"><td class="arcid">' + uniqueId + '</td><td><a href="#/' + uniqueId + '" class="btn btn-default btn-xs view" role="button">View</a></td><td><a href="http://documents.atlantaregional.com/factsheets/' + uniqueId + '.PDF" class="btn btn-default btn-xs" role="button">Fact Sheet</a></td></tr>');
 			// // <td><button id="' + id + '-history" class="history btn btn-default btn-xs" role="button">History</button></td>
@@ -618,7 +617,7 @@ function getMap(){
 		})
 		$('#demo').html( '<table cellpadding="0" cellspacing="0" border="0" class="display table table-condensed" id="projects"></table>' );
 	    var oTable = $('#projects').dataTable( {
-	    	"sScrollY": "200px",
+	    	"sScrollY": "400px",
 			"bPaginate": false,
 	        "aaData": projectList,
 	        "aoColumns": [
