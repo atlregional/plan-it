@@ -345,7 +345,7 @@ var tables = {}
 						$.each(branches, function(i, branch){
 							
 							if (tables[branch]){
-								var tableString = '<h4><a href="https://github.com/landonreed/plan-it/blob/' + branch + '/data/TIP/individual/'+'.csv">' + branch + '' + '</a></h4><div class="table-responsive"><table id="'+branch+'" class="table">'
+								var tableString = '<h4><a href="https://github.com/landonreed/plan-it/blob/' + branch + '/data/TIP/individual/'+'.csv">' + branch + '' + '</a></h4><div class="table-responsive"><table id="'+branch+'" class="table table-hover table-condensed">'
 								console.log('****************from '+prevBranch+' to '+branch+'****************')
 								tableString += '<thead><tr>'
 								for (var key in tables[branch][0]) {
@@ -372,14 +372,16 @@ var tables = {}
 							            			var diff = curr - prev
 							            			console.log('that\'s a diff of ' + diff)
 							            			if (diff > 0){
-							            				tableString += '<td class="success">' + data + '</td>'
+							            				tableString += '<td class="success" title="'+key+' funding increased by '+Math.abs(diff)+'">' + data + '</td>'
 							            			}
 							            			else{
-							            				tableString += '<td class="danger">' + data + '</td>'	
+							            				tableString += '<td class="danger" title="'+key+' funding decreased by '+Math.abs(diff)+'">' + data + '</td>'	
 							            			}
 							            		}
 							            		else {
-							            			tableString += '<td class="warning">' + data + '</td>'
+							            			var prev = previous[j][key]
+							            			var curr = data
+							            			tableString += '<td class="warning" title="'+key+' changed from '+prev+' to '+curr+'">' + data + '</td>'
 							            		}
 							            		// else if (key == 'FiscalYear') {
 							            		// 	var prev = previous[j][key].parseInt()
@@ -397,7 +399,7 @@ var tables = {}
 									}
 						        	else{
 		            					console.log('row ' + j + ' is new ')
-		            					tableString += '<tr class="success">'
+		            					tableString += '<tr class="success" title="Phase added">'
 		            					$.each(row, function(key, data){
 											tableString += '<td>' + data + '</td>'
 										})
@@ -586,7 +588,7 @@ function getMap(id){
 				
 			}
 			else{
-				$('#proj-map').empty().append('<img class="img-thumbnail" title="'+id+' does not have a geographic component." width="242px" height="242px" src="{{ site.baseurl }}/lib/images/no_geo.png">')
+				$('#proj-map').empty().append('<img class="img-thumbnail hidden-xs" title="'+id+' does not have a geographic component." width="242px" height="242px" src="{{ site.baseurl }}/lib/images/no_geo.png">')
 			}
 		}
 }
