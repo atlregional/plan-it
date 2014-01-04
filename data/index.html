@@ -345,29 +345,87 @@ var tables = {}
 						$.each(branches, function(i, branch){
 							
 							if (tables[branch]){
+								var tableString = '<h4><a href="https://github.com/landonreed/plan-it/blob/' + branch + '/data/TIP/individual/'+'.csv">' + branch + '' + '</a></h4><div class="table-responsive"><table id="'+branch+'" class="table">'
 								console.log('****************from '+prevBranch+' to '+branch+'****************')
+								tableString += '<thead><tr>'
+								for (var key in tables[branch][0]) {
+										tableString += '<th>' + key
+						    			tableString += '</th>'
+								}
+								tableString += '</tr></thead>'
+								tableString += '<tbody>'
 								$.each(tables[branch], function(j, row){
+									
+									
+
+									// Checks if row existed in previous branch
 									if(previous[j] != undefined){
+										tableString += '<tr>'
 										$.each(row, function(key, data) {
+											// Check if data has changed from previous year
 								        	if(data !== previous[j][key]){
 							            		console.log(key + ' changed from '+ previous[j][key] + ' to '+ data);
 							            		if(data.substring(0,1) === '$'){
 							            			var prev = Number(previous[j][key].replace(/[^0-9\.]+/g,""))
 							            			var curr = Number(data.replace(/[^0-9\.]+/g,""))
 							            			console.log(prev)
-							            			console.log('that\'s a diff of ' + curr - prev)
+							            			var diff = curr - prev
+							            			console.log('that\'s a diff of ' + diff)
+							            			if (diff > 0){
+							            				tableString += '<td class="success">' + data + '</td>'
+							            			}
+							            			else{
+							            				tableString += '<td class="danger">' + data + '</td>'	
+							            			}
 							            		}
+							            		else {
+							            			tableString += '<td class="warning">' + data + '</td>'
+							            		}
+							            		// else if (key == 'FiscalYear') {
+							            		// 	var prev = previous[j][key].parseInt()
+							            		// 	var curr = data.parseInt()
+							            		// 	var diff = curr - prev
+							            		// 	console.log('that\'s a diff of ' + diff)
+							            		// }
 
+								        	}
+								        	// If data is not new from previous branch, just draw it to the table
+								        	else {
+								        		tableString += '<td>' + data + '</td>'
 								        	}
 								        })
 									}
-						        	else
+						        	else{
 		            					console.log('row ' + j + ' is new ')
-								    
-									
-								})
+		            					tableString += '<tr class="success">'
+		            					$.each(row, function(key, data){
+											tableString += '<td>' + data + '</td>'
+										})
+						        	}
+								    tableString += '</tr>'
+															// var string = ''
 								
-								$("#history").append('<h4><a href="https://github.com/landonreed/plan-it/blob/' + branch + '/data/TIP/individual/'+'.csv">' + branch + '' + '</a></h4><div class="table-responsive"><table id="'+branch+'" class="table">'+populateTable(tables[branch])+'</table></div>');	
+															// string += '<thead><tr>'
+															// for (var key in record[0]) {
+															// 		string += '<th>' + key
+													  //   			string += '</th>'
+															// }
+															// string += '</tr></thead>'
+															// string += '<tbody>'
+															// $.each(records, function(i, record){
+															// 	string += '<tr>'
+															// 	for (var key in record) {
+															// 			string += '<td>' + record[key]
+														 //    			string += '</td>'
+															// 	}
+															// 	string += '</tr>'
+															// })
+															// string += '</tbody>'
+															// return string
+								})
+								tableString += '</tbody>'
+								
+								$("#history").append(tableString) //'<h4><a href="https://github.com/landonreed/plan-it/blob/' + branch + '/data/TIP/individual/'+'.csv">' + branch + '' + '</a></h4><div class="table-responsive"><table id="'+branch+'" class="table">'+populateTable(tables[branch])+'</table></div>');	
 								previous = tables[branch]
 								prevBranch = branch
 								console.log(previous)
