@@ -347,17 +347,23 @@ var tables = {}
 							if (tables[branch]){
 								console.log('****************from '+prevBranch+' to '+branch+'****************')
 								$.each(tables[branch], function(j, row){
-									$.each(row, function(key, data) {
-							        	if(previous[j] != undefined && data !== previous[j][key]){
-						            		console.log(key + ' changed from '+ previous[j][key] + ' to '+ data);
-						            		if(data.substring(0,1) === '$'){
-						            			var prev = Number(previous[j][key].replace(/[^0-9\.]+/g,""))
-						            			var curr = Number(data.replace(/[^0-9\.]+/g,""))
-						            			console.log(prev)
-						            			console.log('that\'s a diff of ' + curr - prev)
-						            		}
-							        	}
-								    })
+									if(previous[j] != undefined){
+										$.each(row, function(key, data) {
+								        	if(data !== previous[j][key]){
+							            		console.log(key + ' changed from '+ previous[j][key] + ' to '+ data);
+							            		if(data.substring(0,1) === '$'){
+							            			var prev = Number(previous[j][key].replace(/[^0-9\.]+/g,""))
+							            			var curr = Number(data.replace(/[^0-9\.]+/g,""))
+							            			console.log(prev)
+							            			console.log('that\'s a diff of ' + curr - prev)
+							            		}
+
+								        	}
+								        })
+									}
+						        	else
+		            					console.log('row ' + j + ' is new ')
+								    
 									
 								})
 								
