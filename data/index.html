@@ -6,6 +6,8 @@ category: 'data'
 <script src="{{ site.baseurl}}/lib/javascripts/director.min.js"></script>
 <script src="{{ site.baseurl}}/lib/javascripts/sammy.min.js"></script>
 <script src="{{ site.baseurl}}/lib/javascripts/json-to-table.js"></script>
+<script src="{{ site.baseurl}}/javascripts/backgrid.js"></script>
+
 <script src="http://d3js.org/topojson.v1.min.js"></script>
 <script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/dataTables.bootstrap.js"></script>
@@ -36,11 +38,13 @@ category: 'data'
 						<h3>Open an issue for <span class="arcid"></span>:</h3>
 						<input id="issue-title" type="text" class="form-control" placeholder=""></br>
 						<textarea id="issue-body" class="form-control" rows="3" placeholder="Describe issue or change here..."></textarea></br>
+						
 						<label>Issue Type:</label></br>
 						<button id="general" class="issue btn btn-sm btn-primary" role="button">General</button>
 						<button id="delay" class="issue btn btn-sm btn-warning" role="button">Delay</button>
 						<button id="delete" class="issue btn btn-sm btn-danger" role="button">Delete</button>
 						<button id="funding" class="issue btn btn-sm btn-success" role="button">Funding</button><hr>
+
 				</div>
 				<!-- <div id="pmap" class="tab-pane pill">
 						
@@ -84,6 +88,9 @@ category: 'data'
 					<div class="col-md-12" style="overflow:auto; max-height:300px">
 						<table id="js-table" class="table table-condensed table-bordered"></table>
 					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12" style="overflow:auto; max-height:300px" id="example-1-result"></div><hr>
 				</div>
 				</div>
 			</div><hr>
@@ -482,6 +489,7 @@ function grabD3Data(id){
 						$('#home').addClass('active')//.hide(); // add active class to clicked tab
 						$('#home-tab').addClass('active'); // add active class to clicked tab
 						$('.arcid').empty().append(id)
+
 						$('.description').empty().append('No current record of that project!')
 						$('#description').show()
 						$('.img-thumbnail').show()
@@ -518,11 +526,15 @@ function grabD3Data(id){
 						// delete row.Phase
 						// delete row.PhaseStatus 
 		    		})
+		    		// var recordArr = []
+		    		// recordArr.push(record["0"])
+		    		
 		    		
 					console.log(rows)
 					$('#project')
 			    		.fadeOut(250, function(){
 			    			drawMap(id)
+			    			backgridTable(rows)
 			    			// $('#home').tab('show');
 			    			$('.nav-pills li').removeClass('active'); // remove active class from tabs
 			    			$('.tab-pane.pill').removeClass('active');
@@ -537,7 +549,9 @@ function grabD3Data(id){
 		    				$('.analysis').empty().append(rows[0].Analysis)
 		    				$('.description').empty().append(toTitleCase(rows[0].Description))
 		    				// $('.fiscal-year').val(rows[0].FiscalYear)
-		    				$('#js-table').empty().append(populateTable(record))
+
+		    				// Old table for financial info
+		    				// $('#js-table').empty().append(populateTable(record))
 		    				$('#project').fadeIn(250)
 	    			})
 			});
