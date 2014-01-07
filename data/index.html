@@ -89,8 +89,9 @@ category: 'data'
 						<table id="js-table" class="table table-condensed table-bordered"></table>
 					</div>
 				</div>
-				<div class="row">
+				<div class="row" id="project-table">
 					<div class="col-md-12" style="overflow:auto; max-height:300px" id="example-1-result"></div><hr>
+					<div id="edit-message" style="position:relative; top:40px;" class="alert alert-info"></div>
 				</div>
 				</div>
 			</div><hr>
@@ -145,6 +146,7 @@ category: 'data'
 				
 				
 				$('#history').empty()
+				$('#edit-message').hide()
 				grabD3Data(id)
 			});
       	});
