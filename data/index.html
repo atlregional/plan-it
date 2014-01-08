@@ -91,6 +91,7 @@ category: 'data'
 					</div> -->
 				<!-- </div> -->
 				<div id="edit-message" style="position:fixed; top: 100px; z-index:1000;" class="col-xs-10 col-ms-11 col-md-offset-2 col-md-4 col-lg-offset-2 col-lg-3 alert alert-info"></div>
+				<button class="btn pull-right btn-danger" id="save" disabled>Save</button>
 				<div class="row" id="project-table">
 
 					<div class="col-md-12" style="overflow:auto; max-height:300px" id="example-1-result"></div><hr>
@@ -215,6 +216,14 @@ var tables = {}
 		var body = ($('#issue-body').val()) ? $('#issue-body').val() : ''
 		window.location='https://github.com/landonreed/plan-it/issues/new?title='+title+'&body='+body+'&labels='+this.id
 	})
+	$('#save').click(function(){
+		$('#issue-tab').trigger({
+			type: "click"
+		})
+		var message = $('#edit-message').text()
+		console.log(message)
+		$('#issue-body').attr('placeholder', message)
+	})
 	$('#report').click(function(){
 		// var name = 'results.' + type
 		var a = document.createElement("a");
@@ -306,7 +315,7 @@ var tables = {}
 						// '2010Q1',
 						// '2010Q2',
 						// '2010Q3',
-						// '2010Q4',
+						// '2010Q34',
 						// '2011Q1',
 						// '2011Q2',
 						// '2011Q3',

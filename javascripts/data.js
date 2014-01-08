@@ -87,6 +87,7 @@ function backgridTable(data){
         var message = "You changed <strong>"+selected.attributes.name+"</strong> from "+previous+" to "+current
         console.log()
         $('#edit-message').empty().append(message).fadeIn(500).delay(500).fadeOut(2000)
+        $('#save').removeAttr('disabled')
      }
   });
   // Render the grid and attach the root to your HTML document
