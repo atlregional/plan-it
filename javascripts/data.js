@@ -92,18 +92,21 @@ function backgridTable(data){
   grid.collection.on('backgrid:edited', function(model, selected) { 
      var previous = model._previousAttributes[selected.attributes.name]
      var current = model.attributes[selected.attributes.name]
+     var id = model.attributes['ARCID']
+     var lineNumber = model.cid.substring(1) + 1
      console.log(selected)
      console.log(model)
      if (previous != current){
         
         var message = model.attributes['Phase'] + " phase <strong>"+selected.attributes.name+"</strong> changed from "+previous+" to "+current // +"<br>"
         console.log()
+        var issueMessage = "* [" + strip(message) + "](https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv#L" + lineNumber + ")"
         $('#edit-message').empty().append(message).fadeIn(500).delay(500).fadeOut(2000)
         if (count > 0){
-          $('#issue-body').val($('#issue-body').val() + "\n" + strip(message))
+          $('#issue-body').val($('#issue-body').val() + "\n" + issueMessage)
         }
         else{
-          $('#issue-body').val(strip(message))
+          $('#issue-body').val("**Changes:**\n" + issueMessage)
         }
         $('#save').removeAttr('disabled')
         count++

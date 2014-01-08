@@ -214,6 +214,10 @@ var tables = {}
 	$('.issue').click(function(){
 		var title = ($('#issue-title').val()) ? $('#issue-title').val() : $('#issue-title').attr('placeholder')
 		var body = ($('#issue-body').val()) ? $('#issue-body').val() : ''
+
+		// Properly transmit new lines to github issues
+		body = body.replace(/\n/g, '%0A');
+		body = body.replace(/#/g, '%23');
 		window.location='https://github.com/landonreed/plan-it/issues/new?title='+title+'&body='+body+'&labels='+this.id
 	})
 	$('#save').click(function(){
