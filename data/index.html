@@ -93,12 +93,13 @@ category: 'data'
 				<div id="edit-message" style="position:fixed; top: 100px; z-index:1000;" class="col-xs-10 col-ms-11 col-md-offset-2 col-md-4 col-lg-offset-2 col-lg-3 alert alert-info"></div>
 				<span class="pull-left">
 					<!-- <button class="btn btn-warning" style="margin-bottom:10px;" id="undo" disabled>Undo</button> -->
-					<button class="btn btn-danger btn-xs"  id="delete-row" title="Delete row"><span class="glyphicon glyphicon-minus-sign"></span></button> 
-					<button class="btn btn-success btn-xs"  id="add-row" title="Add row"><span class="glyphicon glyphicon-plus-sign"></span></button> 
+					<button class="btn btn-danger btn-xs"  id="delete-row" title="Delete phase"><span class="glyphicon glyphicon-minus-sign"></span></button> 
+					<button class="btn btn-success btn-xs"  id="add-row" title="Add phase"><span class="glyphicon glyphicon-plus-sign"></span></button> 
 				</span>
 				<span class="pull-right">
-					<button class="btn btn-default" style="margin-bottom:10px;" id="undo" disabled><span class="glyphicon glyphicon-share-alt glyphicon-flipped"></span> Undo</button>
-					<button class="btn btn-primary" style="margin-bottom:10px;" id="save" disabled>Save</button> 
+				<button class="btn btn-default btn-xs change" style="margin-bottom:10px;" data-toggle="modal" data-target="#myModal" id="view-edits" title="View list of edits" disabled><span class="glyphicon glyphicon-eye-open"></span></button>
+					<button class="btn btn-default btn-xs change" style="margin-bottom:10px;" id="undo" title="Undo most recent edit" disabled><span class="glyphicon glyphicon-share-alt glyphicon-flipped"></span> Undo</button>
+					<button class="btn btn-primary btn-xs change" style="margin-bottom:10px;" id="create-issue" title="Create issue from changes" disabled>Create Issue</button> 
 					
 				</span>
 				<div class="row" id="project-table">
@@ -141,7 +142,25 @@ category: 'data'
 		</div>
 	</div>
 </div>
-
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Edits to <span class="arcid"></span></h4>
+      </div>
+      <div class="modal-body">
+      	<ol id="edits-list">
+      		
+      	</ol>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 
 <script type="text/javascript">
@@ -163,7 +182,7 @@ category: 'data'
 				grabD3Data(id)
 				grid.remove()
 				changes = []
-				$('#undo').attr('disabled', 'disabled')
+				$('.change').attr('disabled', 'disabled')
 			});
       	});
       	$(function() {
@@ -182,6 +201,7 @@ var tables = {}
 
 	})
 	$('#issue-title').tooltip({title:'don\'t change this!'})
+	$('.tooltip').tooltip()
 	$('#myTab a').click(function (e) {
 		e.preventDefault()
 		$(this).tab('show')
@@ -232,6 +252,15 @@ var tables = {}
 		body = body.replace(/#/g, '%23');
 		window.location='https://github.com/landonreed/plan-it/issues/new?title='+title+'&body='+body+'&labels='+this.id
 	})
+	$('#create-issue').click(function(){
+		var title = ($('#issue-title').val()) ? $('#issue-title').val() : $('#issue-title').attr('placeholder')
+		var body = ($('#issue-body').val()) ? $('#issue-body').val() : ''
+
+		// Properly transmit new lines to github issues
+		body = body.replace(/\n/g, '%0A');
+		body = body.replace(/#/g, '%23');
+		window.location='https://github.com/landonreed/plan-it/issues/new?title='+title+'&body='+body // +'&labels='+this.id
+	})
 	$('#save').click(function(){
 		$('#issue-tab').trigger({
 			type: "click"
@@ -241,14 +270,18 @@ var tables = {}
 		// $('#issue-body').attr('placeholder', message)
 	})
 	$('#undo').click(function(){
+		var last = _.last(changes)
 		console.log(_.last(changes))
 		changes.splice(changes.length-1, 1)
 		console.log(changes)
-		if (changes.type === "delete-row"){
+		if (last.type == "delete-row"){
 			// add changes.previous
+			console.log("add row back in")
+			console.log(last.attributes)
+			grid.insertRow(last.previous.model.attributes)
 		}
 		if(changes.length === 0){
-			$('#undo').attr('disabled', 'disabled')
+			$('.change').attr('disabled', 'disabled')
 		}
 		// var message = $('#edit-message').text()
 		// console.log(message)
@@ -259,10 +292,13 @@ var tables = {}
 	        alert("No row selected!")
     	}
     	else{
-    		changes.push(newChange("delete-row", row.model))
+    		changes.push(newChange("delete-row", row))
     		row.remove()
     	    console.log("remove that row!")
     	}
+      })
+	$('#add-row').click(function(){
+		grid.insertRow(row)
       })
 	$('#report').click(function(){
 		// var name = 'results.' + type
@@ -673,7 +709,7 @@ function getMap(id){
 		window.location='https://github.com/landonreed/plan-it/edit/gh-pages/data/TIP/individual/'+ $('.arcid').html() +'.csv'
 	})
 	href="https://github.com/landonreed/plan-it/edit/gh-pages/data/TIP/individual/'+el.ARCID+'.csv"
-	var uniqueIds = [];
+	var uniqueIds = {};
 	var projectList = [];
 	var jsonHtmlTable;
 	var color = 'active'
@@ -750,16 +786,25 @@ function getMap(id){
 	function doDataThings(error, rows){
 		data = rows
 
-		console.log(data);
+		// console.log(data);
 		$.each(data, function(i, el){
-			if($.inArray(el.ARCID, uniqueIds) === -1) 
-	    		uniqueIds.push(el.ARCID);	
+			if (i === 0){
+				$.each(el, function(key, value){
+					// console.log(key)
+					uniqueIds[key] = []
+				})
+			}
+			$.each(el, function(key, value){
+				if($.inArray(value, uniqueIds[key]) === -1) 
+	    			uniqueIds[key].push(value);
+			})
+				
 		});
 		console.log(uniqueIds)
 		var url = window.location.href
 		var hash = url.split('/')[5]
 		console.log(hash)
-		$.each(uniqueIds, function(i, uniqueId){
+		$.each(uniqueIds["ARCID"], function(i, uniqueId){
 			projectList.push([uniqueId, '<a id="'+uniqueId+'-link" title="View data for '+uniqueId+'" href="#/' + uniqueId + '" class="btn btn-default btn-xs view" role="button">View</a>'])
 			
 			// $("#projects").append('<tr id="' + uniqueId + '-row"><td class="arcid">' + uniqueId + '</td><td><a href="#/' + uniqueId + '" class="btn btn-default btn-xs view" role="button">View</a></td><td><a href="http://documents.atlantaregional.com/factsheets/' + uniqueId + '.PDF" class="btn btn-default btn-xs" role="button">Fact Sheet</a></td></tr>');

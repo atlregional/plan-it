@@ -4,6 +4,7 @@
 var grid;
 var row;
 var changes = [];
+var values;
 function backgridTable(data){
    $('#example-1-result').empty()
   	var Territory = Backbone.Model.extend({});
@@ -13,29 +14,33 @@ function backgridTable(data){
   	});
     console.log(JSON.stringify(data))
   	var territories = new Territories(data);
+    var i = 0
+    
   	var columns = [
+    // {
+    //   name: "index",
+    //   label: "#",
+    //   cell: Backgrid.SelectCell.extend({
+    //   // It's possible to render an option group or use a
+    //   // function to provide option values too.
+    //     optionValues: [[i, i]]
+
+    //   }),
+    //   editable: true, 
+    //   // 
+    //   sortable: false
+    // },
     {
       name: "Phase",
       label: "Phase",
       cell: "string",
       editable: false, 
-      // Backgrid.SelectCell.extend({
-      // // It's possible to render an option group or use a
-      // // function to provide option values too.
-      //   optionValues: [["ALL", "ALL"], ["CST", "CST"], ["PE", "PE"], ["PE-OV", "PE-OV"], ["ROW", "ROW"], ["SCP", "SCP"], ["UTL", "UTL"]]
-
-      // }),
       sortable: false
     },
     {
       name: "Auth",
       label: "Auth",
       cell: "string",
-      // Backgrid.SelectCell.extend({
-      // // It's possible to render an option group or use a
-      // // function to provide option values too.
-      //   optionValues: [["AUTH", "AUTH"], ["", ""], ["  ", ""]]
-      // }),
       sortable: false
     },
     {
@@ -43,17 +48,29 @@ function backgridTable(data){
       label: "FY",
       cell: "string",
       sortable: false
-      // cell: Backgrid.SelectCell.extend({
-      // // It's possible to render an option group or use a
-      // // function to provide option values too.
-      //   optionValues: [["2013", "2013"], ["2014", "2014"], ["2015", "2015"], ["2016", "2016"], ["2017", "2017"], ["AUTH", "AUTH"], ["LR 2018-2030", "LR 2018-2030"], ["LR 2031-2040", "LR 2031-2040"]]
-        
-      // })
     },
     {
       name: "FundSource",
       label: "FundSource",
       cell: "string",
+      // Backgrid.SelectCell.extend({
+      // It's possible to render an option group or use a
+      // function to provide option values too.
+        // optionValues: [["Male", "m"], ["Female", "f"]]
+        // function(){
+        //   return [["Male", "m"], ["Female", "f"]]
+    //       values = ['']
+    // var arrLength = uniqueIds["FundSource"].length
+    // for (i=0; i < arrLength; i++) {
+    //   var entry = ['"' + uniqueIds["FundSource"][i] + '"', '"' + uniqueIds["FundSource"][i] + '"']
+    //   values.push = entry
+    //   // if (i < arrLength - 1)
+    //     // values[0] += ', '
+    //   // console.log(values[i])
+    // }
+    // console.log(values)
+        // }
+      // }),
       sortable: false
     },
     {
@@ -104,9 +121,9 @@ function backgridTable(data){
       // $('#delete-row').attr('disabled', 'disabled')
 
       // Goofy way to handle the 
-      setTimeout(function(){
-        row = undefined
-      }, 1000) 
+      // setTimeout(function(){
+      //   row = undefined
+      // }, 1000) 
     }
   });
 
@@ -130,13 +147,14 @@ function backgridTable(data){
         console.log()
         var issueMessage = "* [" + strip(message) + "](https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv#L" + lineNumber + ")"
         $('#edit-message').empty().append(message).fadeIn(500).delay(500).fadeOut(2000)
+        $('#edits-list').append("<li>" + message + "</li>")
         if (count > 0){
           $('#issue-body').val($('#issue-body').val() + "\n" + issueMessage)
         }
         else{
           $('#issue-body').val("**Changes:**\n" + issueMessage)
         }
-        $('#save').removeAttr('disabled')
+        $('.change').removeAttr('disabled')
         count++
      }
   });
