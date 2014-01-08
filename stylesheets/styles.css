@@ -8,6 +8,13 @@ body { padding-top: 70px; }
   display:block;
  }
 
+.glyphicon-flipped {
+    transform: scaleX(-1);
+    -moz-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    -ms-transform: scaleX(-1);
+}
+
 .leaflet-map-pane img {
   max-width: none;
   max-height: none;

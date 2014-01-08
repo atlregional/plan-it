@@ -1,6 +1,9 @@
 ---
 
 ---
+var grid;
+var row;
+var changes = [];
 function backgridTable(data){
    $('#example-1-result').empty()
   	var Territory = Backbone.Model.extend({});
@@ -27,11 +30,12 @@ function backgridTable(data){
     {
       name: "Auth",
       label: "Auth",
-      cell: Backgrid.SelectCell.extend({
-      // It's possible to render an option group or use a
-      // function to provide option values too.
-        optionValues: [["AUTH", "AUTH"], ["", ""]]
-      }),
+      cell: "string",
+      // Backgrid.SelectCell.extend({
+      // // It's possible to render an option group or use a
+      // // function to provide option values too.
+      //   optionValues: [["AUTH", "AUTH"], ["", ""], ["  ", ""]]
+      // }),
       sortable: false
     },
     {
@@ -82,9 +86,32 @@ function backgridTable(data){
       cell: "string",
       sortable: false
     }];
+  // Suppose you want to highlight the entire row when an editable field is focused
+  var FocusableRow = Backgrid.Row.extend({
+    highlightColor: 'lightYellow',
+    events: {
+      focusin: 'rowFocused',
+      focusout: 'rowLostFocus'
+    },
+    rowFocused: function() {
+      this.$el.css('background-color', this.highlightColor);
+      // $('#delete-row').removeAttr('disabled')
+      row = this
+    },
+    rowLostFocus: function() {
+      this.$el.removeAttr('style');
+      // $('#delete-row').attr('disabled', 'disabled')
+
+      // Goofy way to handle the 
+      // setTimeout(function(){
+      //   row = undefined
+      // }, 1000) 
+    }
+  });
 
   // Initialize a new Grid instance
-  var grid = new Backgrid.Grid({
+  grid = new Backgrid.Grid({
+    row: FocusableRow, // <-- Tell the Body class to use FocusableRow to render rows.
     columns: columns,
     collection: territories
   });
@@ -93,11 +120,11 @@ function backgridTable(data){
      var previous = model._previousAttributes[selected.attributes.name]
      var current = model.attributes[selected.attributes.name]
      var id = model.attributes['ARCID']
-     var lineNumber = model.cid.substring(1) + 1
+     var lineNumber = parseInt(model.cid.substring(1)) + 1
      console.log(selected)
      console.log(model)
      if (previous != current){
-        
+        changes.push(newChange("cell-edit", model))
         var message = model.attributes['Phase'] + " phase <strong>"+selected.attributes.name+"</strong> changed from "+previous+" to "+current // +"<br>"
         console.log()
         var issueMessage = "* [" + strip(message) + "](https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv#L" + lineNumber + ")"
