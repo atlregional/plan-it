@@ -12,6 +12,13 @@ function toTitleCase(str) {
     		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
 }
+
+function strip(html){
+   var tmp = document.createElement("DIV");
+   tmp.innerHTML = html;
+   return tmp.textContent || tmp.innerText || "";
+}
+
 function tableToJson(table) { 
 	var data = []; // first row needs to be headers 
 	var headers = []; 

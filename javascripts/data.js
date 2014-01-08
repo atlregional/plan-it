@@ -14,12 +14,15 @@ function backgridTable(data){
     {
       name: "Phase",
       label: "Phase",
-      cell: Backgrid.SelectCell.extend({
-      // It's possible to render an option group or use a
-      // function to provide option values too.
-        optionValues: [["ALL", "ALL"], ["CST", "CST"], ["PE", "PE"], ["PE-OV", "PE-OV"], ["ROW", "ROW"], ["SCP", "SCP"], ["UTL", "UTL"]]
+      cell: "string",
+      editable: false, 
+      // Backgrid.SelectCell.extend({
+      // // It's possible to render an option group or use a
+      // // function to provide option values too.
+      //   optionValues: [["ALL", "ALL"], ["CST", "CST"], ["PE", "PE"], ["PE-OV", "PE-OV"], ["ROW", "ROW"], ["SCP", "SCP"], ["UTL", "UTL"]]
 
-      })
+      // }),
+      sortable: false
     },
     {
       name: "Auth",
@@ -27,14 +30,15 @@ function backgridTable(data){
       cell: Backgrid.SelectCell.extend({
       // It's possible to render an option group or use a
       // function to provide option values too.
-        optionValues: [["AUTH", "AUTH"], ["", "  "]]
-        
-      })
+        optionValues: [["AUTH", "AUTH"], ["", ""]]
+      }),
+      sortable: false
     },
     {
       name: "FY",
       label: "FY",
-      cell: "string"
+      cell: "string",
+      sortable: false
       // cell: Backgrid.SelectCell.extend({
       // // It's possible to render an option group or use a
       // // function to provide option values too.
@@ -45,32 +49,38 @@ function backgridTable(data){
     {
       name: "FundSource",
       label: "FundSource",
-      cell: "string"
+      cell: "string",
+      sortable: false
     },
     {
       name: "Federal",
       label: "Federal",
-      cell: "string"
+      cell: "string",
+      sortable: false
     },
     {
       name: "State",
       label: "State",
-      cell: "string"
+      cell: "string",
+      sortable: false
     },
     {
       name: "Local",
       label: "Local",
-      cell: "string"
+      cell: "string",
+      sortable: false
     },
     {
       name: "Bond",
       label: "Bond",
-      cell: "string"
+      cell: "string",
+      sortable: false
     },
     {
       name: "Total",
       label: "Total",
-      cell: "string"
+      cell: "string",
+      sortable: false
     }];
 
   // Initialize a new Grid instance
@@ -78,16 +88,25 @@ function backgridTable(data){
     columns: columns,
     collection: territories
   });
+  var count = 0;
   grid.collection.on('backgrid:edited', function(model, selected) { 
      var previous = model._previousAttributes[selected.attributes.name]
      var current = model.attributes[selected.attributes.name]
-     console.log(selected.attributes.name)
+     console.log(selected)
      console.log(model)
      if (previous != current){
-        var message = "You changed <strong>"+selected.attributes.name+"</strong> from "+previous+" to "+current
+        
+        var message = model.attributes['Phase'] + " phase <strong>"+selected.attributes.name+"</strong> changed from "+previous+" to "+current // +"<br>"
         console.log()
         $('#edit-message').empty().append(message).fadeIn(500).delay(500).fadeOut(2000)
+        if (count > 0){
+          $('#issue-body').val($('#issue-body').val() + "\n" + strip(message))
+        }
+        else{
+          $('#issue-body').val(strip(message))
+        }
         $('#save').removeAttr('disabled')
+        count++
      }
   });
   // Render the grid and attach the root to your HTML document
