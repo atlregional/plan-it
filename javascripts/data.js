@@ -100,12 +100,13 @@ function backgridTable(data){
     },
     rowLostFocus: function() {
       this.$el.removeAttr('style');
+
       // $('#delete-row').attr('disabled', 'disabled')
 
       // Goofy way to handle the 
-      // setTimeout(function(){
-      //   row = undefined
-      // }, 1000) 
+      setTimeout(function(){
+        row = undefined
+      }, 1000) 
     }
   });
 
