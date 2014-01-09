@@ -335,8 +335,12 @@ var tables = {}
 			console.log(last.attributes)
 			grid.render().collection.remove(last.previous)
 		}
-		else if (last.type == "cell-edit"){
-			console.log("fix that cell back")
+		else if (last.type.split("-")[0] == "edit"){
+			var field = last.type.split("-")[1]
+			console.log(field)
+			// Undo edit cell change... oy.
+			grid.collection.models[last.previous.attributes.index - 1].attributes[field] = last.previous._previousAttributes[field]
+			grid.render()
 		}
 		
 		// var message = $('#edit-message').text()
@@ -936,8 +940,8 @@ function getMap(id){
 		})
 		var options = $('#new-phase-type');
 		$.each(uniqueIds["Phase"], function(i, value) {
-			console.log("we're here")
-			console.log(value)
+			// console.log("we're here")
+			// console.log(value)
 			options.append($("<option />").val(value).text(value));
 		});
 		$('#demo').html( '<table cellpadding="0" cellspacing="0" border="0" class="display table table-condensed" id="projects"></table>' );

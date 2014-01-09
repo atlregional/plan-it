@@ -145,11 +145,12 @@ function backgridTable(data){
   });
   var count = 0;
   grid.collection.on('backgrid:edited', function(model, selected) { 
-     var previous = model._previousAttributes[selected.attributes.name]
-     var current = model.attributes[selected.attributes.name]
+     var field = selected.attributes.name
+     var previous = model._previousAttributes[field]
+     var current = model.attributes[field]
      var id = model.attributes['ARCID']
      var lineNumber = model.attributes.index + 1
-     console.log(lineNumber)
+     // console.log(lineNumber)
      console.log(selected)
      console.log(model)
      // These first two if statements need some work!
@@ -158,10 +159,10 @@ function backgridTable(data){
      else if (previous === undefined)
         console.log("nothing changed!")
      else if (previous != current){
-        var message = model.attributes['Phase'] + " phase <strong>"+selected.attributes.name+"</strong> changed from "+previous+" to "+current // +"<br>"
+        var message = model.attributes['Phase'] + " phase <strong>"+field+"</strong> changed from "+previous+" to "+current // +"<br>"
         console.log()
         var issueMessage = "* [" + strip(message) + "](https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv#L" + lineNumber + ")"
-        changes.push(newChange("cell-edit", model, message, issueMessage))
+        changes.push(newChange("edit-" + field, model, message, issueMessage))
         updateMessages(changes, false)
         $('.change').removeAttr('disabled')
         count++
