@@ -215,7 +215,7 @@ category: 'data'
         });
       
       })(jQuery);
-
+var messages = []
 var tables = {}
 	$(document).ready(function(){
 		var url = window.location.href
@@ -272,6 +272,12 @@ var tables = {}
 		}
 
 	})
+	$('td').live('click', function(){
+	  var col = $(this).parent().children().index($(this));
+	  var row = $(this).parent().parent().children().index($(this).parent());
+	  // alert('Row: ' + parseInt(row+2) + ', Column: ' + col);
+	  rowNum = parseInt(row+2)
+	});
 	$('.issue').click(function(){
 		var title = ($('#issue-title').val()) ? $('#issue-title').val() : $('#issue-title').attr('placeholder')
 		var body = ($('#issue-body').val()) ? $('#issue-body').val() : ''
@@ -301,6 +307,7 @@ var tables = {}
 	$('#undo').click(function(){
 		var last = _.last(changes)
 		console.log(_.last(changes))
+		updateMessages(changes, true)
 		changes.splice(changes.length-1, 1)
 		console.log(changes)
 		if(changes.length === 0){
@@ -310,14 +317,22 @@ var tables = {}
 			// add changes.previous
 			console.log("add row back in")
 			console.log(last.attributes)
-			grid.insertRow(last.previous.model.attributes).render().sort("FY", "descending")
-			// grid.render().
+			grid.insertRow(last.previous.model) // .sort("FY", "descending")
+			// You must render first to have the grid construct all the DOM elements
+			// before you can set the sorting state
+			// grid.render().sort("index", "descending");
+
+			// now you can display it
+			// $("#example-1-result").append(grid.el);
 		}
 		else if (last.type == "add-row"){
 			// add changes.previous
 			console.log("remove that new row")
 			console.log(last.attributes)
-			grid.removeRow(last.previous)
+			grid.render().collection.remove(last.previous)
+		}
+		else if (last.type == "cell-edit"){
+			console.log("fix that cell back")
 		}
 		
 		// var message = $('#edit-message').text()
@@ -325,14 +340,28 @@ var tables = {}
 		// $('#issue-body').attr('placeholder', message)
 	})
 	$('#delete-row').click(function(){
+		// var row = jQuery.extend(true, {}, grid.collection.models[rowNum-2])
+		console.log("removed row:")
+		console.log(row)
 		if (! row ){
 	        alert("No row selected!")
     	}
     	else{
-    		changes.push(newChange("delete-row", row))
-    		row.remove()
+    		
+    		
     	    console.log("remove that row!")
+    	    // Generate messages
+	        var message = row.model.attributes['Phase'] + " phase removed" // +"<br>"
+	        // messages.html.push(message)
+	        // console.log()
+	        var issueMessage = "* [" + strip(message) + "](https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv#L" + rowNum + ")"
+	        changes.push(newChange("delete-row", row, message, issueMessage))
+	        updateMessages(changes, false)
+	        grid.removeRow(row.model)
+	        
+	        $('.change').removeAttr('disabled')
     	}
+    	console.log(row)
       })
 	$('#add-row').click(function(){
 		var newPhaseType = $("#new-phase-type").val()
@@ -344,9 +373,16 @@ var tables = {}
 		// 	emptyText: '',
 		// 	columns: columns
 		// })
-		var store = grid.insertRow(newRow)
-		changes.push(newChange("add-row", _.last(territories.models)))
+		var store = grid.render().collection.add(newRow)
 		console.log(changes)
+		// Generate messages
+        var message = "<strong>Phase added</strong>" // +"<br>"
+        // messages.html.push(message)
+        // console.log()
+        var issueMessage = "* [" + strip(message) + "](https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv#L" + rowNum + ")"
+        changes.push(newChange("add-row", _.last(grid.collection.models), message, issueMessage))
+        updateMessages(changes, false)
+        $('.change').removeAttr('disabled')
       })
 	$('#report').click(function(){
 		// var name = 'results.' + type
@@ -587,11 +623,28 @@ var tables = {}
 	})
 var rtp;
 
-function newChange(name, oldObject){
+function newChange(name, oldObject, htmlMessage, markdownMessage){
 	$('#undo').removeAttr('disabled')
-	return {"type": name, "previous": oldObject}
+	return {"type": name, "previous": oldObject, "html": htmlMessage, "markdown": markdownMessage}
 }
-
+function updateMessages(changes, undoBool){
+	$('#edits-list').empty()
+	$('#issue-body').empty()
+	if(!undoBool)
+			$('#edit-message').empty().append(_.last(changes).html).fadeIn(250).delay(250).fadeOut(1000)
+		else
+			$('#edit-message').empty().append("Undo: " + _.last(changes).html).fadeIn(250).delay(250).fadeOut(1000)
+	$.each(changes, function(i, change){
+		
+		$('#edits-list').append("<li>" + change.html + "</li>")
+		if (i === 0){
+			$('#issue-body').val("**Changes:**\n" + change.markdown)
+		}
+		else{
+			$('#issue-body').val($('#issue-body').val() + "\n" + change.markdown)
+		}
+	})
+}
 function grabD3Data(id){
 	d3.csv("{{ site.baseurl}}/data/TIP/individual/"+id+".csv")
 		    	.row(function(d) {

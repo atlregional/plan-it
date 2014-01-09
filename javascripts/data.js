@@ -8,37 +8,43 @@ var values;
 var Territory;
 var Territories;
 var columns
+var rowNum;
 var territories
 function backgridTable(data){
    $('#example-1-result').empty()
   	Territory = Backbone.Model.extend({});
     
   	Territories = Backbone.Collection.extend({
+      comparator: 'index',
   	  model: Territory
   	});
-    console.log(JSON.stringify(data))
+    // console.log(JSON.stringify(data))
+    $.each(data, function(i, row){
+      row.index = i + 1
+    })
   	territories = new Territories(data);
     var i = 0
     
   	columns = [
-    // {
-    //   name: "index",
-    //   label: "#",
-    //   cell: Backgrid.SelectCell.extend({
-    //   // It's possible to render an option group or use a
-    //   // function to provide option values too.
-    //     optionValues: [[i, i]]
-
-    //   }),
-    //   editable: true, 
-    //   // 
-    //   sortable: false
-    // },
+    {
+      name: "index",
+      label: "#",
+      cell: "integer",
+      editable: false, 
+      // 
+      sortable: true
+    },
     {
       name: "Phase",
       label: "Phase",
-      cell: "string",
-      // editable: false, 
+      cell: 
+      Backgrid.SelectCell.extend({
+      // It's possible to render an option group or use a
+      // function to provide option values too.
+        optionValues: 
+        [["PE", "PE"], ["CST", "CST"], ["SCP", "SCP"], ["ROW", "ROW"], ["UTL", "UTL"], ["ALL", "ALL"], ["PE-OV", "PE-OV"]]
+      }),
+      // editable: false,  false], [
       sortable: false
     },
     {
@@ -145,24 +151,23 @@ function backgridTable(data){
      var lineNumber = parseInt(model.cid.substring(1)) + 1
      console.log(selected)
      console.log(model)
-     if (previous != current){
-        changes.push(newChange("cell-edit", model))
+     // These first two if statements need some work!
+     if (previous === undefined && current === '')
+        console.log("nothing changed!")
+     else if (previous === undefined)
+        console.log("nothing changed!")
+     else if (previous != current){
         var message = model.attributes['Phase'] + " phase <strong>"+selected.attributes.name+"</strong> changed from "+previous+" to "+current // +"<br>"
         console.log()
         var issueMessage = "* [" + strip(message) + "](https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv#L" + lineNumber + ")"
-        $('#edit-message').empty().append(message).fadeIn(500).delay(500).fadeOut(2000)
-        $('#edits-list').append("<li>" + message + "</li>")
-        if (count > 0){
-          $('#issue-body').val($('#issue-body').val() + "\n" + issueMessage)
-        }
-        else{
-          $('#issue-body').val("**Changes:**\n" + issueMessage)
-        }
+        changes.push(newChange("cell-edit", model, message, issueMessage))
+        updateMessages(changes, false)
         $('.change').removeAttr('disabled')
         count++
      }
   });
   // Render the grid and attach the root to your HTML document
+  grid.collection = grid.collection.sort("index", "descending")
   $("#example-1-result").append(grid.render().$el);
 
   // Fetch some countries from the url
