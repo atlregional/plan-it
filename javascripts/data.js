@@ -5,18 +5,22 @@ var grid;
 var row;
 var changes = [];
 var values;
+var Territory;
+var Territories;
+var columns
+var territories
 function backgridTable(data){
    $('#example-1-result').empty()
-  	var Territory = Backbone.Model.extend({});
+  	Territory = Backbone.Model.extend({});
     
-  	var Territories = Backbone.Collection.extend({
+  	Territories = Backbone.Collection.extend({
   	  model: Territory
   	});
     console.log(JSON.stringify(data))
-  	var territories = new Territories(data);
+  	territories = new Territories(data);
     var i = 0
     
-  	var columns = [
+  	columns = [
     // {
     //   name: "index",
     //   label: "#",
@@ -34,7 +38,7 @@ function backgridTable(data){
       name: "Phase",
       label: "Phase",
       cell: "string",
-      editable: false, 
+      // editable: false, 
       sortable: false
     },
     {

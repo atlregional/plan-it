@@ -19,7 +19,12 @@ category: 'data'
 
 <div class="tab-content">
 	<div id="proj" class="tab-pane active">
+		<div id="project-splash" class="text-center col-lg-9 col-md-9 col-sm-8 col-xs-12 pull-right" style="display:none; z-index:1000;">
+			<h1>Not sure what project you're looking for?</h1>
+			<p>Visit <strong>Explore > <a href="{{ site.baseurl }}/explore/pivot">Pivot Table</a></strong> to find individual projects by jurisdiction, project type, fiscal year, or any other project attribute.</p>
+		</div>
 		<div id="project" class="col-lg-9 col-md-9 col-sm-8 col-xs-12 pull-right" style="display:none; z-index:1000;">
+
 			<h2><span class="arcid"></span><span class="pull-right hidden-xs" ><button class="btn btn-default btn-sm" id="report" role="button">Report</button> <button class="btn btn-default btn-sm" id="edit" role="button">Edit</button></span></h2>
 			<ul id="project-pill" class="nav nav-pills">
 				<li id="home-tab" class="active"><a href="#home">Home</a></li>
@@ -142,7 +147,7 @@ category: 'data'
 		</div>
 	</div>
 </div>
-<!-- Modal -->
+<!-- List of Edits Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -162,6 +167,24 @@ category: 'data'
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<!-- Add Phase Modal -->
+<div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Add Phase to <span class="arcid"></span></h4>
+      </div>
+      <div class="modal-body">
+      	<span>Select phase type: <select id="new-phase-type"></select></span>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success" data-dismiss="modal" id="add-phase">Add Phase</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <script type="text/javascript">
 (function($) {
@@ -173,6 +196,8 @@ category: 'data'
 		    this.get('{{ site.baseurl }}/data/#/:id', function() {
 				// alert(this.params['name']);
 				id = this.params['id']
+				if (id !== '')
+					$('#project-splash').hide()
 				document.title = id + " {{ page.title }} | Plan-It"
 				$('#'+id+'-link').closest('tr').addClass(color).siblings().removeClass(color);
 				
@@ -196,8 +221,12 @@ var tables = {}
 		var url = window.location.href
 		var hash = url.split('/')[5]
 		console.log(hash)
+		if (hash === ''){
+			$('#project-splash').show()
+		}
 		$('#' + hash + '-row').addClass('active')
-		// runFilter()	
+		// runFilter()
+		
 
 	})
 	$('#issue-title').tooltip({title:'don\'t change this!'})
@@ -274,15 +303,23 @@ var tables = {}
 		console.log(_.last(changes))
 		changes.splice(changes.length-1, 1)
 		console.log(changes)
+		if(changes.length === 0){
+			$('.change').attr('disabled', 'disabled')
+		}
 		if (last.type == "delete-row"){
 			// add changes.previous
 			console.log("add row back in")
 			console.log(last.attributes)
-			grid.insertRow(last.previous.model.attributes)
+			grid.insertRow(last.previous.model.attributes).render().sort("FY", "descending")
+			// grid.render().
 		}
-		if(changes.length === 0){
-			$('.change').attr('disabled', 'disabled')
+		else if (last.type == "add-row"){
+			// add changes.previous
+			console.log("remove that new row")
+			console.log(last.attributes)
+			grid.removeRow(last.previous)
 		}
+		
 		// var message = $('#edit-message').text()
 		// console.log(message)
 		// $('#issue-body').attr('placeholder', message)
@@ -298,7 +335,18 @@ var tables = {}
     	}
       })
 	$('#add-row').click(function(){
-		grid.insertRow(row)
+		var newPhaseType = $("#new-phase-type").val()
+		var newRow = new Backgrid.Row.extend({
+			columns: columns,
+			model: territories.model
+		}) 
+		// Backgrid.EmptyRow({
+		// 	emptyText: '',
+		// 	columns: columns
+		// })
+		var store = grid.insertRow(newRow)
+		changes.push(newChange("add-row", _.last(territories.models)))
+		console.log(changes)
       })
 	$('#report').click(function(){
 		// var name = 'results.' + type
@@ -823,6 +871,12 @@ function getMap(id){
 			// 	$(this).addClass('active')
 			// })
 		})
+		var options = $('#new-phase-type');
+		$.each(uniqueIds["Phase"], function(i, value) {
+			console.log("we're here")
+			console.log(value)
+			options.append($("<option />").val(value).text(value));
+		});
 		$('#demo').html( '<table cellpadding="0" cellspacing="0" border="0" class="display table table-condensed" id="projects"></table>' );
 	    var oTable = $('#projects').dataTable( {
 	    	"sScrollY": "400px",
