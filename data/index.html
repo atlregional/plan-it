@@ -20,7 +20,7 @@ category: 'data'
 <div class="tab-content">
 	<div id="proj" class="tab-pane active">
 		<div id="project-splash" class="text-center col-lg-9 col-md-9 col-sm-8 col-xs-12 pull-right" style="display:none; z-index:1000;">
-			<h1>Not sure what project you're looking for?</h1>
+			<h1 style="margin-top:100px;">Not sure what project you're looking for?</h1>
 			<p>Visit <strong>Explore > <a href="{{ site.baseurl }}/explore/pivot">Pivot Table</a></strong> to find individual projects by jurisdiction, project type, fiscal year, or any other project attribute.</p>
 		</div>
 		<div id="project" class="col-lg-9 col-md-9 col-sm-8 col-xs-12 pull-right" style="display:none; z-index:1000;">
@@ -96,17 +96,21 @@ category: 'data'
 					</div> -->
 				<!-- </div> -->
 				<div id="edit-message" style="position:fixed; top: 100px; z-index:1000;" class="col-xs-10 col-ms-11 col-md-offset-2 col-md-4 col-lg-offset-2 col-lg-3 alert alert-info"></div>
-				<span class="pull-left">
-					<!-- <button class="btn btn-warning" style="margin-bottom:10px;" id="undo" disabled>Undo</button> -->
-					<button class="btn btn-danger btn-xs"  id="delete-row" title="Delete phase"><span class="glyphicon glyphicon-minus-sign"></span></button> 
-					<button class="btn btn-success btn-xs"  id="add-row" title="Add phase"><span class="glyphicon glyphicon-plus-sign"></span></button> 
-				</span>
-				<span class="pull-right">
-				<button class="btn btn-default btn-xs change" style="margin-bottom:10px;" data-toggle="modal" data-target="#myModal" id="view-edits" title="View list of edits" disabled><span class="glyphicon glyphicon-eye-open"></span></button>
-					<button class="btn btn-default btn-xs change" style="margin-bottom:10px;" id="undo" title="Undo most recent edit" disabled><span class="glyphicon glyphicon-share-alt glyphicon-flipped"></span> Undo</button>
-					<button class="btn btn-primary btn-xs change" style="margin-bottom:10px;" id="create-issue" title="Create issue from changes" disabled>Create Issue</button> 
-					
-				</span>
+				<div class="row">
+					<div class="col-md-12">
+						<span class="pull-left">
+							<!-- <button class="btn btn-warning" style="margin-bottom:10px;" id="undo" disabled>Undo</button> -->
+							<button class="btn btn-danger btn-xs"  id="delete-row" title="Delete phase"><span class="glyphicon glyphicon-minus-sign"></span></button> 
+							<button class="btn btn-success btn-xs"  id="add-row" title="Add phase"><span class="glyphicon glyphicon-plus-sign"></span></button> 
+						</span>
+						<span class="pull-right">
+						<button class="btn btn-default btn-xs change" style="margin-bottom:10px;" data-toggle="modal" data-target="#myModal" id="view-edits" title="View list of edits" disabled><span class="glyphicon glyphicon-eye-open"></span></button>
+							<button class="btn btn-default btn-xs change" style="margin-bottom:10px;" id="undo" title="Undo most recent edit" disabled><span class="glyphicon glyphicon-share-alt glyphicon-flipped"></span> Undo</button>
+							<button class="btn btn-primary btn-xs change" style="margin-bottom:10px;" id="create-issue" title="Create issue from changes" disabled>Create Issue</button> 
+							
+						</span>
+					</div>
+				</div> 
 				<div class="row" id="project-table">
 
 					<div class="col-md-12" style="overflow:auto; max-height:300px" id="example-1-result"></div>
@@ -347,21 +351,23 @@ var tables = {}
 	        alert("No row selected!")
     	}
     	else{
-    		
-    		
     	    console.log("remove that row!")
     	    // Generate messages
 	        var message = row.model.attributes['Phase'] + " phase removed" // +"<br>"
 	        // messages.html.push(message)
 	        // console.log()
-	        var issueMessage = "* [" + strip(message) + "](https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv#L" + rowNum + ")"
+	        var lineNumber = row.model.attributes.index + 1
+	        // console.log(lineNumber)
+	        var issueMessage = "* [" + strip(message) + "](https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv#L" + lineNumber + ")"
 	        changes.push(newChange("delete-row", row, message, issueMessage))
 	        updateMessages(changes, false)
 	        grid.removeRow(row.model)
 	        
 	        $('.change').removeAttr('disabled')
+	        row = null
     	}
     	console.log(row)
+
       })
 	$('#add-row').click(function(){
 		var newPhaseType = $("#new-phase-type").val()
@@ -373,13 +379,17 @@ var tables = {}
 		// 	emptyText: '',
 		// 	columns: columns
 		// })
-		var store = grid.render().collection.add(newRow)
+		var newIndex = parseInt(_.last(grid.collection.models).attributes["index"]) + 1
+		console.log(newIndex)
+		grid.collection.add(newRow)
+		_.last(grid.collection.models).attributes.index = newIndex
+		grid.render()
 		console.log(changes)
 		// Generate messages
         var message = "<strong>Phase added</strong>" // +"<br>"
         // messages.html.push(message)
         // console.log()
-        var issueMessage = "* [" + strip(message) + "](https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv#L" + rowNum + ")"
+        var issueMessage = "* [" + strip(message) + "](https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv)"
         changes.push(newChange("add-row", _.last(grid.collection.models), message, issueMessage))
         updateMessages(changes, false)
         $('.change').removeAttr('disabled')

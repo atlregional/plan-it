@@ -148,7 +148,8 @@ function backgridTable(data){
      var previous = model._previousAttributes[selected.attributes.name]
      var current = model.attributes[selected.attributes.name]
      var id = model.attributes['ARCID']
-     var lineNumber = parseInt(model.cid.substring(1)) + 1
+     var lineNumber = model.attributes.index + 1
+     console.log(lineNumber)
      console.log(selected)
      console.log(model)
      // These first two if statements need some work!
