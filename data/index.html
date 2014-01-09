@@ -104,9 +104,9 @@ category: 'data'
 							<button class="btn btn-success btn-xs"  id="add-row" title="Add phase"><span class="glyphicon glyphicon-plus-sign"></span></button> 
 						</span>
 						<span class="pull-right">
-						<button class="btn btn-default btn-xs change" style="margin-bottom:10px;" data-toggle="modal" data-target="#myModal" id="view-edits" title="View list of edits" disabled><span class="glyphicon glyphicon-eye-open"></span></button>
+							<button class="btn btn-default btn-xs change" style="margin-bottom:10px;" data-toggle="modal" data-target="#myModal" id="view-edits" title="View list of edits" disabled><span class="glyphicon glyphicon-eye-open"></span></button>
 							<button class="btn btn-default btn-xs change" style="margin-bottom:10px;" id="undo" title="Undo most recent edit" disabled><span class="glyphicon glyphicon-share-alt glyphicon-flipped"></span> Undo</button>
-							<button class="btn btn-primary btn-xs change" style="margin-bottom:10px;" id="create-issue" title="Create issue from changes" disabled>Create Issue</button> 
+							<button class="btn btn-primary btn-xs change" style="margin-bottom:10px;" data-toggle="modal" data-target="#issueModal" id="create-issue" title="Create issue from changes" disabled>Create Issue</button> 
 							
 						</span>
 					</div>
@@ -160,7 +160,7 @@ category: 'data'
         <h4 class="modal-title" id="myModalLabel">Edits to <span class="arcid"></span></h4>
       </div>
       <div class="modal-body">
-      	<ol id="edits-list">
+      	<ol class="edits-list">
       		
       	</ol>
       </div>
@@ -171,20 +171,26 @@ category: 'data'
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<!-- Add Phase Modal -->
-<div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<!-- Create Issue Modal -->
+<div class="modal fade" id="issueModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="myModalLabel">Add Phase to <span class="arcid"></span></h4>
+        <h2 class="modal-title" id="myModalLabel">Are you sure you want to open an issue for <span class="arcid"></span>?</h2>
       </div>
       <div class="modal-body">
-      	<span>Select phase type: <select id="new-phase-type"></select></span>
+      <h4>Here's a list of the edits you've made so far:</h4>
+      	<ol class="edits-list">
+      		
+      	</ol>
+      	<br><br>
+      <h4>Add some comments to describe the reasons for the changes:</h4>
+      <textarea id="issue-comments" class="form-control" rows="3" placeholder="Describe changes here..."></textarea></br>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-success" data-dismiss="modal" id="add-phase">Add Phase</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Back</button>
+        <button type="button" class="btn btn-success" id="submit-issue">Submit Issue</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -291,14 +297,18 @@ var tables = {}
 		body = body.replace(/#/g, '%23');
 		window.location='https://github.com/landonreed/plan-it/issues/new?title='+title+'&body='+body+'&labels='+this.id
 	})
-	$('#create-issue').click(function(){
+	$('#submit-issue').click(function(){
 		var title = ($('#issue-title').val()) ? $('#issue-title').val() : $('#issue-title').attr('placeholder')
 		var body = ($('#issue-body').val()) ? $('#issue-body').val() : ''
-
+		var comments = $('#issue-comments').val()
+		if (comments !== ""){
+			comments = "**Comments**\n"+comments
+			body = body + '\n\n' + comments
+		}
 		// Properly transmit new lines to github issues
 		body = body.replace(/\n/g, '%0A');
 		body = body.replace(/#/g, '%23');
-		window.location='https://github.com/landonreed/plan-it/issues/new?title='+title+'&body='+body // +'&labels='+this.id
+		window.location='https://github.com/landonreed/plan-it/issues/new?title='+title+'&body='+body// +'&labels='+this.id
 	})
 	$('#save').click(function(){
 		$('#issue-tab').trigger({
@@ -642,7 +652,7 @@ function newChange(name, oldObject, htmlMessage, markdownMessage){
 	return {"type": name, "previous": oldObject, "html": htmlMessage, "markdown": markdownMessage}
 }
 function updateMessages(changes, undoBool){
-	$('#edits-list').empty()
+	$('.edits-list').empty()
 	$('#issue-body').empty()
 	if(!undoBool)
 			$('#edit-message').empty().append(_.last(changes).html).fadeIn(250).delay(250).fadeOut(1000)
@@ -650,7 +660,7 @@ function updateMessages(changes, undoBool){
 			$('#edit-message').empty().append("Undo: " + _.last(changes).html).fadeIn(250).delay(250).fadeOut(1000)
 	$.each(changes, function(i, change){
 		
-		$('#edits-list').append("<li>" + change.html + "</li>")
+		$('.edits-list').append("<li>" + change.html + "</li>")
 		if (i === 0){
 			$('#issue-body').val("**Changes:**\n" + change.markdown)
 		}

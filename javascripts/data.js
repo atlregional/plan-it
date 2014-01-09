@@ -208,7 +208,7 @@ function backgridTable(data){
      else if (previous === undefined)
         console.log("nothing changed!")
      else if (previous != current){
-        var message = model.attributes['Phase'] + " phase <strong>"+field+"</strong> changed from "+previous+" to "+current // +"<br>"
+        var message = model.attributes['Phase'] + " phase <strong>"+field+"</strong> changed from <em>"+previous+"</em> to <em>"+current +"</em>"
         console.log()
         var issueMessage = "* [" + strip(message) + "](https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv#L" + lineNumber + ")"
         changes.push(newChange("edit-" + field, model, message, issueMessage))
