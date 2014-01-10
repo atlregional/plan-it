@@ -323,11 +323,11 @@ var edit = false
 	$('#begin-edits').click(function(){
 		edit = !edit
 		if(edit){
-			$('.edit').show()
+			$('.edit').fadeIn(250)
 			$('#begin-edits').addClass('active')
 		}
 		else{
-			$('.edit').hide()
+			$('.edit').fadeOut(250)
 			$('#begin-edits').removeClass('active')
 		}
 		$.each(grid.columns.models, function(i, col){
