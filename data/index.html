@@ -102,7 +102,7 @@ category: 'data'
 							<!-- <button class="btn btn-warning" style="margin-bottom:10px;" id="undo" disabled>Undo</button> -->
 							<button class="btn btn-default btn-xs"  id="begin-edits" style="margin-bottom:10px;" title="Click to toggle editing mode"><span class="glyphicon glyphicon-edit"></span></button> 
 							<button class="btn btn-danger btn-xs edit"  id="delete-row"  title="Delete phase"><span class="glyphicon glyphicon-minus-sign"></span></button> 
-							<button class="btn btn-success btn-xs edit"  id="add-row" title="Add phase"><span class="glyphicon glyphicon-plus-sign"></span></button> 
+							<button class="btn btn-success btn-xs edit"  data-toggle="modal" data-target="#phaseModal" id="add-row" title="Add phase"><span class="glyphicon glyphicon-plus-sign"></span></button> 
 						</span>
 						<span class="pull-right">
 							<button class="btn btn-default btn-xs change edit" data-toggle="modal" data-target="#myModal" id="view-edits" title="View list of edits" disabled><span class="glyphicon glyphicon-eye-open"></span></button>
@@ -166,6 +166,27 @@ category: 'data'
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Add Phase Modal -->
+<div class="modal fade" id="phaseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Add phase to <span class="arcid"></span></h4>
+      </div>
+      <div class="modal-body">
+      <h5>Please fill out the details for the new phase:</h5>
+      	<br><br>
+      	<select></select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-success" data-dismiss="modal" id="create-row">Add Phase</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -400,7 +421,7 @@ var edit = false
     	console.log(row)
 
       })
-	$('#add-row').click(function(){
+	$('#create-row').click(function(){
 		var newPhaseType = $("#new-phase-type").val()
 		var newRow = new Backgrid.Row.extend({
 			columns: columns,
