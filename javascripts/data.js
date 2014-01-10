@@ -32,7 +32,7 @@ function backgridTable(data){
       cell: "integer",
       editable: false, 
       // 
-      sortable: true
+      sortable: false
     },
     {
       name: "Phase",
