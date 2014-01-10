@@ -45,18 +45,21 @@ function backgridTable(data){
         [["PE", "PE"], ["CST", "CST"], ["SCP", "SCP"], ["ROW", "ROW"], ["UTL", "UTL"], ["ALL", "ALL"], ["PE-OV", "PE-OV"]]
       }),
       // editable: false,  false], [
+      editable: false,
       sortable: false
     },
     {
       name: "Auth",
       label: "Auth",
       cell: "string",
+      editable: false,
       sortable: false
     },
     {
       name: "FY",
       label: "FY",
       cell: "string",
+      editable: false,
       sortable: false
     },
     {
@@ -129,37 +132,42 @@ function backgridTable(data){
 ["ARRA - Urban (>200K) (ARC)", "ARRA - Urban (>200K) (ARC)"],
 ["Appalachian Local Access", "Appalachian Local Access"]]
 }),
-
+      editable: false,
       sortable: false
     },
     {
       name: "Federal",
       label: "Federal",
       cell: "string",
+      editable: false,
       sortable: false
     },
     {
       name: "State",
       label: "State",
       cell: "string",
+      editable: false,
       sortable: false
     },
     {
       name: "Local",
       label: "Local",
       cell: "string",
+      editable: false,
       sortable: false
     },
     {
       name: "Bond",
       label: "Bond",
       cell: "string",
+      editable: false,
       sortable: false
     },
     {
       name: "Total",
       label: "Total",
       cell: "string",
+      editable: false,
       sortable: false
     }];
   // Suppose you want to highlight the entire row when an editable field is focused

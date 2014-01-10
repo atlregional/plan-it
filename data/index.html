@@ -100,14 +100,14 @@ category: 'data'
 					<div class="col-md-12">
 						<span class="pull-left">
 							<!-- <button class="btn btn-warning" style="margin-bottom:10px;" id="undo" disabled>Undo</button> -->
-							<button class="btn btn-danger btn-xs"  id="delete-row" title="Delete phase"><span class="glyphicon glyphicon-minus-sign"></span></button> 
-							<button class="btn btn-success btn-xs"  id="add-row" title="Add phase"><span class="glyphicon glyphicon-plus-sign"></span></button> 
+							<button class="btn btn-default btn-xs"  id="begin-edits" style="margin-bottom:10px;" title="Click to allow editing"><span class="glyphicon glyphicon-edit"></span></button> 
+							<button class="btn btn-danger btn-xs edit"  id="delete-row"  title="Delete phase"><span class="glyphicon glyphicon-minus-sign"></span></button> 
+							<button class="btn btn-success btn-xs edit"  id="add-row" title="Add phase"><span class="glyphicon glyphicon-plus-sign"></span></button> 
 						</span>
 						<span class="pull-right">
-							<button class="btn btn-default btn-xs change" style="margin-bottom:10px;" data-toggle="modal" data-target="#myModal" id="view-edits" title="View list of edits" disabled><span class="glyphicon glyphicon-eye-open"></span></button>
-							<button class="btn btn-default btn-xs change" style="margin-bottom:10px;" id="undo" title="Undo most recent edit" disabled><span class="glyphicon glyphicon-share-alt glyphicon-flipped"></span> Undo</button>
-							<button class="btn btn-primary btn-xs change" style="margin-bottom:10px;" data-toggle="modal" data-target="#issueModal" id="create-issue" title="Create issue from changes" disabled>Create Issue</button> 
-							
+							<button class="btn btn-default btn-xs change edit" data-toggle="modal" data-target="#myModal" id="view-edits" title="View list of edits" disabled><span class="glyphicon glyphicon-eye-open"></span></button>
+							<button class="btn btn-default btn-xs change edit" style="margin-left:4px;" id="undo" title="Undo most recent edit" disabled><span class="glyphicon glyphicon-share-alt glyphicon-flipped"></span> Undo</button>
+							<button class="btn btn-primary btn-xs change edit" style="margin-left:4px;" data-toggle="modal" data-target="#issueModal" id="create-issue" title="Create issue from changes" disabled>Create Issue</button>
 						</span>
 					</div>
 				</div> 
@@ -227,6 +227,7 @@ category: 'data'
       })(jQuery);
 var messages = []
 var tables = {}
+var edit = false
 	$(document).ready(function(){
 		var url = window.location.href
 		var hash = url.split('/')[5]
@@ -296,6 +297,21 @@ var tables = {}
 		body = body.replace(/\n/g, '%0A');
 		body = body.replace(/#/g, '%23');
 		window.location='https://github.com/landonreed/plan-it/issues/new?title='+title+'&body='+body+'&labels='+this.id
+	})
+	$('#begin-edits').click(function(){
+		edit = !edit
+		if(edit){
+			$('.edit').show()
+			$('#begin-edits').addClass('active')
+		}
+		else{
+			$('.edit').hide()
+			$('#begin-edits').removeClass('active')
+		}
+		$.each(grid.columns.models, function(i, col){
+			if (col.attributes.name !== "index")
+				col.attributes.editable = ! col.attributes.editable
+		})
 	})
 	$('#submit-issue').click(function(){
 		var title = ($('#issue-title').val()) ? $('#issue-title').val() : $('#issue-title').attr('placeholder')
