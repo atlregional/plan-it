@@ -179,14 +179,63 @@ category: 'data'
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4 class="modal-title" id="myModalLabel">Add phase to <span class="arcid"></span></h4>
       </div>
-      <div class="modal-body">
+      <div class="modal-body row">
+      
       <h5>Please fill out the details for the new phase:</h5>
-      	<br><br>
-      	<select></select>
+      	<form id="new-phase-form" role="form">
+      	<div class="row">
+	      	<div class="form-group col-md-2">
+				<label for="new-phase">Type</label>
+				<select class="new-phase form-control" id="new-phase-type" name="new-phase-type"><option></option></select>
+			</div>
+			<div class="form-group col-md-2">
+				<label for="new-auth">Authorized</label>
+				<select class="new-phase form-control" id="new-auth">
+					<option></option>
+					<option>AUTH</option>
+				</select>
+			</div>
+			<div class="form-group col-md-2">
+				<label for="new-fy">FY</label>
+				<input class="new-phase form-control" id="new-fy" type="text" placeholder="2014">
+			</div>
+
+			<div class="form-group col-md-6">
+				<label for="new-fund-source">Funding source</label>
+				<select class="new-phase form-control" id="new-fund-source" id="new-fund-source"></select>
+					<option></option>
+				</select>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-md-3">
+				<label for="new-federal">Federal</label>
+				<input class="new-phase form-control" id="new-federal" type="text" placeholder="$100,000">
+			</div>
+			<div class="form-group col-md-3">
+				<label for="new-state">State</label>
+				<input class="new-phase form-control" id="new-state" type="text" placeholder="$100,000">
+			</div>
+			<div class="form-group col-md-3">
+				<label for="new-local">Local</label>
+				<input class="new-phase form-control" id="new-local" type="text" placeholder="$100,000">
+			</div>
+			<div class="form-group col-md-3">
+				<label for="new-bond">Bond</label>
+				<input class="new-phase form-control" id="new-bond" type="text" placeholder="$100,000">
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-md-3 pull-right">
+				<label for="new-total">Total</label>
+				<input class="new-phase form-control" id="new-total" type="text" placeholder="$400,000">
+			</div>
+		</div>
+      	</form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-success" data-dismiss="modal" id="create-row">Add Phase</button>
+        <button type="button" class="btn btn-success"  id="create-row">Add Phase</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -422,7 +471,24 @@ var edit = false
 
       })
 	$('#create-row').click(function(){
-		var newPhaseType = $("#new-phase-type").val()
+		$("#new-phase-form").validate({
+			rules: {
+                "new-phase-type": "required",
+                "new-fund-source": "required"
+              },
+              highlight: function(element) {
+              	console.log("highlight")
+                $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+              },
+              success: function(element) {
+              	console.log("success")
+                element
+                .closest('.form-group').removeClass('has-error').addClass('has-success');
+                
+              }
+		});
+		$('#phaseModal').modal('hide')
+        // var newPhaseType = $("#new-phase-type").val()
 		var newRow = new Backgrid.Row.extend({
 			columns: columns,
 			model: territories.model
@@ -435,7 +501,17 @@ var edit = false
 		console.log(newIndex)
 		grid.collection.add(newRow)
 		_.last(grid.collection.models).attributes.index = newIndex
+		_.last(grid.collection.models).attributes["Phase"] = $('#new-phase-type').val()
+		_.last(grid.collection.models).attributes["FundSource"] = $('#new-fund-source').val()
+		_.last(grid.collection.models).attributes["FY"] = $('#new-fy').val()
+		_.last(grid.collection.models).attributes["Auth"] = $('#new-auth').val()
+		_.last(grid.collection.models).attributes["Federal"] = $('#new-federal').val()
+		_.last(grid.collection.models).attributes["State"] = $('#new-state').val()
+		_.last(grid.collection.models).attributes["Local"] = $('#new-local').val()
+		_.last(grid.collection.models).attributes["Bond"] = $('#new-bond').val()
+		_.last(grid.collection.models).attributes["Total"] = $('#new-total').val()
 		grid.render()
+		// $('#phaseModal').modal('hide')
 		console.log(changes)
 		// Generate messages
         var message = "<strong>Phase added</strong>" // +"<br>"
@@ -445,6 +521,7 @@ var edit = false
         changes.push(newChange("add-row", _.last(grid.collection.models), message, issueMessage))
         updateMessages(changes, false)
         $('.change').removeAttr('disabled')
+		
       })
 	$('#report').click(function(){
 		// var name = 'results.' + type
@@ -946,6 +1023,7 @@ function getMap(id){
 		string += '</tbody>'
 		return string
 	}
+	
 	function doDataThings(error, rows){
 		data = rows
 
@@ -986,12 +1064,8 @@ function getMap(id){
 			// 	$(this).addClass('active')
 			// })
 		})
-		var options = $('#new-phase-type');
-		$.each(uniqueIds["Phase"], function(i, value) {
-			// console.log("we're here")
-			// console.log(value)
-			options.append($("<option />").val(value).text(value));
-		});
+		populateSelect('#new-phase-type', uniqueIds["Phase"])
+		populateSelect('#new-fund-source', uniqueIds["FundSource"])
 		$('#demo').html( '<table cellpadding="0" cellspacing="0" border="0" class="display table table-condensed" id="projects"></table>' );
 	    var oTable = $('#projects').dataTable( {
 	    	"sScrollY": "400px",

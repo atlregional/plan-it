@@ -12,7 +12,14 @@ function toTitleCase(str) {
     		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
 }
-
+function populateSelect(element, array){
+	var options = $(element);
+	$.each(array, function(i, value) {
+		// console.log("we're here")
+		// console.log(value)
+		options.append($("<option />").val(value).text(value));
+	});
+}
 function strip(html){
    var tmp = document.createElement("DIV");
    tmp.innerHTML = html;
