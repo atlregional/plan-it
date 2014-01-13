@@ -186,23 +186,23 @@ category: 'data'
       	<div class="row">
 	      	<div class="form-group col-md-2">
 				<label for="new-phase">Type</label>
-				<select class="new-phase form-control" id="new-phase-type" name="new-phase-type"><option></option></select>
+				<select class="new-phase form-control" id="new-phase-type" required name="new-phase-type"><option></option></select>
 			</div>
 			<div class="form-group col-md-2">
 				<label for="new-auth">Authorized</label>
-				<select class="new-phase form-control" id="new-auth">
+				<select class="new-phase form-control" id="new-auth" required name="new-auth">
 					<option></option>
 					<option>AUTH</option>
 				</select>
 			</div>
 			<div class="form-group col-md-2">
 				<label for="new-fy">FY</label>
-				<input class="new-phase form-control" id="new-fy" type="text" placeholder="2014">
+				<input class="new-phase form-control" id="new-fy" required name="new-fy" type="text" placeholder="2014">
 			</div>
 
 			<div class="form-group col-md-6">
 				<label for="new-fund-source">Funding source</label>
-				<select class="new-phase form-control" id="new-fund-source" id="new-fund-source">
+				<select class="new-phase form-control" id="new-fund-source" required name="new-fund-source">
 					<option></option>
 				</select>
 			</div>
@@ -210,25 +210,25 @@ category: 'data'
 		<div class="row">
 			<div class="form-group col-md-3">
 				<label for="new-federal">Federal</label>
-				<input class="new-phase form-control" id="new-federal" type="text" placeholder="$100,000">
+				<input class="new-phase form-control" id="new-federal" required name="new-federal" type="text" placeholder="$100,000">
 			</div>
 			<div class="form-group col-md-3">
 				<label for="new-state">State</label>
-				<input class="new-phase form-control" id="new-state" type="text" placeholder="$100,000">
+				<input class="new-phase form-control" id="new-state" required name="new-state" type="text" placeholder="$100,000">
 			</div>
 			<div class="form-group col-md-3">
 				<label for="new-local">Local</label>
-				<input class="new-phase form-control" id="new-local" type="text" placeholder="$100,000">
+				<input class="new-phase form-control" id="new-local" required name="new-local" type="text" placeholder="$100,000">
 			</div>
 			<div class="form-group col-md-3">
 				<label for="new-bond">Bond</label>
-				<input class="new-phase form-control" id="new-bond" type="text" placeholder="$100,000">
+				<input class="new-phase form-control" id="new-bond" required name="new-bond" type="text" placeholder="$100,000">
 			</div>
 		</div>
 		<div class="row">
 			<div class="form-group col-md-3 pull-right">
 				<label for="new-total">Total</label>
-				<input class="new-phase form-control" id="new-total" type="text" placeholder="$400,000">
+				<input class="new-phase form-control" id="new-total" required name="new-total" type="text" placeholder="$400,000">
 			</div>
 		</div>
       	</form>
@@ -300,14 +300,36 @@ var tables = {}
 var edit = false
 	$(document).ready(function(){
 		var url = window.location.href
-		var hash = url.split('/')[5]
+		var hash = _.last(url.split('/'))
 		console.log(hash)
 		if (hash === ''){
 			$('#project-splash').show()
 		}
 		$('#' + hash + '-row').addClass('active')
 		// runFilter()
-		
+		$("#new-phase-form").validate({
+			rules: {
+                "new-phase-type": "required",
+                "new-fund-source": {
+                	required: true,
+                	minlength: 1
+                }
+              },
+              highlight: function(element) {
+              	console.log("highlight")
+                $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+              },
+              success: function(element) {
+              	console.log("success")
+                element
+                .closest('.form-group').removeClass('has-error').addClass('has-success');
+                
+              },
+              submitHandler: function(form){
+              	addPhase();
+              }
+              
+		});
 
 	})
 	$('#issue-title').tooltip({title:'don\'t change this!'})
@@ -471,56 +493,8 @@ var edit = false
 
       })
 	$('#create-row').click(function(){
-		$("#new-phase-form").validate({
-			rules: {
-                "new-phase-type": "required",
-                "new-fund-source": "required"
-              },
-              highlight: function(element) {
-              	console.log("highlight")
-                $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
-              },
-              success: function(element) {
-              	console.log("success")
-                element
-                .closest('.form-group').removeClass('has-error').addClass('has-success');
-                
-              }
-		});
-		$('#phaseModal').modal('hide')
-        // var newPhaseType = $("#new-phase-type").val()
-		var newRow = new Backgrid.Row.extend({
-			columns: columns,
-			model: territories.model
-		}) 
-		// Backgrid.EmptyRow({
-		// 	emptyText: '',
-		// 	columns: columns
-		// })
-		var newIndex = parseInt(_.last(grid.collection.models).attributes["index"]) + 1
-		console.log(newIndex)
-		grid.collection.add(newRow)
-		_.last(grid.collection.models).attributes.index = newIndex
-		_.last(grid.collection.models).attributes["Phase"] = $('#new-phase-type').val()
-		_.last(grid.collection.models).attributes["FundSource"] = $('#new-fund-source').val()
-		_.last(grid.collection.models).attributes["FY"] = $('#new-fy').val()
-		_.last(grid.collection.models).attributes["Auth"] = $('#new-auth').val()
-		_.last(grid.collection.models).attributes["Federal"] = $('#new-federal').val()
-		_.last(grid.collection.models).attributes["State"] = $('#new-state').val()
-		_.last(grid.collection.models).attributes["Local"] = $('#new-local').val()
-		_.last(grid.collection.models).attributes["Bond"] = $('#new-bond').val()
-		_.last(grid.collection.models).attributes["Total"] = $('#new-total').val()
-		grid.render()
-		// $('#phaseModal').modal('hide')
-		console.log(changes)
-		// Generate messages
-        var message = "<strong>Phase added</strong>" // +"<br>"
-        // messages.html.push(message)
-        // console.log()
-        var issueMessage = "* [" + strip(message) + "](https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv)"
-        changes.push(newChange("add-row", _.last(grid.collection.models), message, issueMessage))
-        updateMessages(changes, false)
-        $('.change').removeAttr('disabled')
+
+		// addPhase();
 		
       })
 	$('#report').click(function(){
@@ -761,6 +735,43 @@ var edit = false
 		
 	})
 var rtp;
+
+function addPhase(){
+	$('#phaseModal').modal('hide')
+        // var newnew-phase-type = $("#new-phase-type").val()
+		var newRow = new Backgrid.Row.extend({
+			columns: columns,
+			model: territories.model
+		}) 
+		// Backgrid.EmptyRow({
+		// 	emptyText: '',
+		// 	columns: columns
+		// })
+		var newIndex = parseInt(_.last(grid.collection.models).attributes["index"]) + 1
+		console.log(newIndex)
+		grid.collection.add(newRow)
+		_.last(grid.collection.models).attributes.index = newIndex
+		_.last(grid.collection.models).attributes["Phase"] = $('#new-phase-type').val()
+		_.last(grid.collection.models).attributes["FundSource"] = $('#new-fund-source').val()
+		_.last(grid.collection.models).attributes["FY"] = $('#new-fy').val()
+		_.last(grid.collection.models).attributes["Auth"] = $('#new-auth').val()
+		_.last(grid.collection.models).attributes["Federal"] = $('#new-federal').val()
+		_.last(grid.collection.models).attributes["State"] = $('#new-state').val()
+		_.last(grid.collection.models).attributes["Local"] = $('#new-local').val()
+		_.last(grid.collection.models).attributes["Bond"] = $('#new-bond').val()
+		_.last(grid.collection.models).attributes["Total"] = $('#new-total').val()
+		grid.render()
+		// $('#phaseModal').modal('hide')
+		console.log(changes)
+		// Generate messages
+        var message = "<strong>Phase added</strong>" // +"<br>"
+        // messages.html.push(message)
+        // console.log()
+        var issueMessage = "* [" + strip(message) + "](https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv)"
+        changes.push(newChange("add-row", _.last(grid.collection.models), message, issueMessage))
+        updateMessages(changes, false)
+        $('.change').removeAttr('disabled')
+}
 
 function newChange(name, oldObject, htmlMessage, markdownMessage){
 	$('#undo').removeAttr('disabled')
