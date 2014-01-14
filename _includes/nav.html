@@ -70,11 +70,10 @@
   if ($.cookie('token') !== undefined){
     $('#welcome-message').html('<a style="margin-right:5px;" href="'+$.cookie('user').html_url+'">'+$.cookie('user').login+'</a><a style="margin-right:5px;" href="'+$.cookie('user').html_url+'"><img width="34px" style="margin-right:5px;" height="34px" src="'+$.cookie('user').avatar_url+'"></a>').show()
     $('#gh-login').removeClass('btn-success').addClass('btn-danger').text('Log out').attr('title', 'Log out of Plan-It')
-     
+    var url = 'https://api.github.com/repos/landonreed/plan-it/issues?access_token='+$.cookie('token')
+    var data = JSON.stringify({"title": "tester test"})
   }
-$.cookie('token', '0bb5b423d2c528ae5577424556d5ea7a7243a294')
-var url = 'https://api.github.com/repos/landonreed/plan-it/issues?access_token='+$.cookie('token')
-var data = JSON.stringify({"title": "tester test"})
+
 // Code to create a new issue
 // $.post(url, data, function(data){
 //   console.log(data)
