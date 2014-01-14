@@ -26,6 +26,10 @@ function strip(html){
    return tmp.textContent || tmp.innerText || "";
 }
 
+function apiRemaining(){
+	$.getJSON('https://api.github.com/rate_limit?access_token='+$.cookie('token'), function(data){return data.rate.remaining})
+}
+
 function tableToJson(table) { 
 	var data = []; // first row needs to be headers 
 	var headers = []; 
