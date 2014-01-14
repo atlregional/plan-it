@@ -83,7 +83,7 @@
       $.removeCookie('user')
       $.removeCookie('token')
       $('#welcome-message').hide()
-      $('#gh-login').removeClass('btn-danger').addClass('btn-success').text('Log in')
+      $('#gh-login').removeClass('btn-danger').addClass('btn-success').text('Log in').attr('title', 'Log in with GitHub')
       //window.location = '{{ site.baseurl }}'
       
     }
