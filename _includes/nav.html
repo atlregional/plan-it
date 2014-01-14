@@ -48,7 +48,7 @@
   if($.cookie('token') !== undefined){
     console.log("cookie worked!")
     session.token = $.cookie('token')
-    session.user = JSON.parse($.cookie('user'))
+    session.user = $.cookie('user')
   }
   else
     console.log("cookie didn't work!")
