@@ -63,8 +63,8 @@
       token: session.token,
       auth: "oauth"
      })
-     $.cookie('session', session);
-     $.cookie('github', github);
+     $.cookie('token', session.token);
+     $.cookie('user', session.user);
     });
   }
   $('#gh-view').click(function(){
