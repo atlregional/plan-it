@@ -40,26 +40,30 @@
     $('.' + nav ).addClass('active');
 
   var code = '';
-  var token;
-  var user = {};
+  var session = {
+    "token": "",
+    "user": {}
+  }
   var github;
   if(window.location.href.split('?').length > 1)
     code = window.location.href.match(/\?code=(.*)/)[1];
   if (code != ""){
     $.getJSON('http://gatekeeper-plan-it.herokuapp.com/authenticate/'+code, function(data) {
      console.log(data.token);
-     token = data.token
+     session.token = data.token
      window.history.pushState("object or string", "Title", "{{ site.baseurl }}/")
      $('#gh-login').removeClass('btn-success').addClass('btn-danger').text('Log out')
      $.getJSON("https://api.github.com/user?access_token="+token, function(data){
-        user = data
-        $('#welcome-message').html('<a style="margin-right:5px;" href="'+user.html_url+'">'+user.login+'</a><a style="margin-right:5px;" href="'+user.html_url+'"><img width="34px" style="margin-right:5px;" height="34px" src="'+user.avatar_url+'"></a>').fadeIn(500)
+        session.user = data
+        $('#welcome-message').html('<a style="margin-right:5px;" href="'+session.user.html_url+'">'+session.user.login+'</a><a style="margin-right:5px;" href="'+session.user.html_url+'"><img width="34px" style="margin-right:5px;" height="34px" src="'+session.user.avatar_url+'"></a>').fadeIn(500)
      })
      
      github = new Github({
-      token: token,
+      token: session.token,
       auth: "oauth"
      })
+     $.cookie('session', session);
+     $.cookie('github', github);
     });
   }
   $('#gh-view').click(function(){
@@ -69,8 +73,8 @@
     if($(this).hasClass('btn-success'))
       window.location='https://github.com/login/oauth/authorize?response_type=code&client_id=a37cadae6a1f4bdd4237&scope=public_repo'
     else{
-      token = ''
-      user = {}
+      session.token = ''
+      session.user = {}
       window.location = '{{ site.baseurl }}'
       $('#welcome-message').hide()
       $('#gh-login').removeClass('btn-danger').addClass('btn-success').text('Log in')
