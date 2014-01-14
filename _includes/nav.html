@@ -28,7 +28,8 @@
       </li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li><a href="https://github.com/landonreed/plan-it" title="View on GitHub"><img id="gh" src="{{ site.baseurl }}/lib/images/gh.svg"></a></li>
+      <li><button id="gh-login" class="btn btn-success" style="position:relative; top:10px; left:10px;" title="Log in with GitHub">Log in</button>
+      <button id="gh-view" class="btn btn-default" style="position:relative; top:10px; left:10px;" title="View on GitHub"><img id="gh" src="{{ site.baseurl }}/lib/images/gh.svg"></button></li>
     </ul>
   </div><!-- /.navbar-collapse -->
   </div>
@@ -36,4 +37,20 @@
 <script type="text/javascript">
 var nav = '{{ page.category }}'
 $('.' + nav ).addClass('active');
+
+var code;
+if(window.location.href.split('?').length > 1)
+  code = window.location.href.match(/\?code=(.*)/)[1];
+if (code != ""){
+  $.getJSON('http://gatekeeper-plan-it.herokuapp.com/authenticate/'+code, function(data) {
+   console.log(data.token);
+  });
+}
+$('#gh-view').click(function(){
+  window.location='https://github.com/landonreed/plan-it'
+})
+$('#gh-login').click(function(){
+  window.location='https://github.com/login/oauth/authorize?response_type=code&client_id=a37cadae6a1f4bdd4237'
+})
+
 </script>
