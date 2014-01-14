@@ -41,6 +41,7 @@
 
   var code = '';
   var token;
+  var github;
   if(window.location.href.split('?').length > 1)
     code = window.location.href.match(/\?code=(.*)/)[1];
   if (code != ""){
@@ -49,6 +50,10 @@
      token = data.token
      window.history.pushState("object or string", "Title", "{{ site.baseurl }}/")
      $('#gh-login').removeClass('btn-success').addClass('btn-danger').text('Log out')
+     github = new Github({
+      token: token,
+      auth: "oauth"
+     })
     });
   }
   $('#gh-view').click(function(){
