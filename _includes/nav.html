@@ -53,8 +53,9 @@
      $('#gh-login').removeClass('btn-success').addClass('btn-danger').text('Log out')
      $.getJSON("https://api.github.com/user?access_token="+token, function(data){
         user = data
+        $('#welcome-message').text("Welcome "+user.login)
      })
-     $('#welcome-message').text("Welcome "+user.login)
+     
      github = new Github({
       token: token,
       auth: "oauth"
@@ -70,6 +71,7 @@
     else{
       token = ''
       window.location = '{{ site.baseurl }}'
+      $('#welcome-message').text('')
       $('#gh-login').removeClass('btn-danger').addClass('btn-success').text('Log in')
     }
 
