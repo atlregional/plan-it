@@ -53,7 +53,7 @@
      $('#gh-login').removeClass('btn-success').addClass('btn-danger').text('Log out')
      $.getJSON("https://api.github.com/user?access_token="+token, function(data){
         user = data
-        $('#welcome-message').html('<a style="margin-right:5px;" href="'+user.html_url+'"><img width="34px" style="margin-right:5px;" height="34px" src="'+user.avatar_url+'"></a><a style="margin-right:5px;" href="'+user.html_url+'">'+user.login+'</a>').fadeIn(500)
+        $('#welcome-message').html('<a style="margin-right:5px;" href="'+user.html_url+'">'+user.login+'</a><a style="margin-right:5px;" href="'+user.html_url+'"><img width="34px" style="margin-right:5px;" height="34px" src="'+user.avatar_url+'"></a>').fadeIn(500)
      })
      
      github = new Github({
