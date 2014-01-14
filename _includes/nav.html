@@ -56,7 +56,8 @@
      window.history.pushState("object or string", "Title", "{{ site.baseurl }}/")
      $.getJSON("https://api.github.com/user?access_token="+ data.token, function(data){
         $.cookie('user', data)
-        $('#welcome-message').html('<a style="margin-right:5px;" href="'+$.cookie('user').html_url+'">'+$.cookie('user').login+'</a><a style="margin-right:5px;" href="'+$.cookie('user').html_url+'"><img width="34px" style="margin-right:5px;" height="34px" src="'+$.cookie('user').avatar_url+'"></a>').fadeIn(500)
+        $('#welcome-message').html('<a style="margin-right:5px;" href="'+$.cookie('user').html_url+'">'+$.cookie('user').login+'</a><a style="margin-right:5px;" href="'+$.cookie('user').html_url+'"><img width="34px" style="margin-right:5px;" height="34px" src="'+$.cookie('user').avatar_url+'"></a>').show()
+        console.log('showing username')
 
      })
     });
