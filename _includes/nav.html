@@ -51,7 +51,7 @@
      token = data.token
      window.history.pushState("object or string", "Title", "{{ site.baseurl }}/")
      $('#gh-login').removeClass('btn-success').addClass('btn-danger').text('Log out')
-     $.getJSON("https://api.github.com/user?access_token="+token, function(error, data){
+     $.getJSON("https://api.github.com/user?access_token="+token, function(data){
         user = data
      })
      $('#welcome-message').text("Welcome "+user.login)
