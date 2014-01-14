@@ -28,7 +28,7 @@
       </li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li style="position:relative; top:10px; left:10px;"><span id="welcome-message"></span><button id="gh-login" class="btn btn-success" title="Log in with GitHub">Log in</button>
+      <li style="position:relative; top:10px; left:10px;"><span id="welcome-message" style="display:none;"></span><button id="gh-login" class="btn btn-success" title="Log in with GitHub">Log in</button>
       <button id="gh-view" class="btn btn-default"  title="View on GitHub"><img id="gh" src="{{ site.baseurl }}/lib/images/gh.svg"></button></li>
     </ul>
   </div><!-- /.navbar-collapse -->
@@ -53,7 +53,7 @@
      $('#gh-login').removeClass('btn-success').addClass('btn-danger').text('Log out')
      $.getJSON("https://api.github.com/user?access_token="+token, function(data){
         user = data
-        $('#welcome-message').html('Welcome <a href="'+user.url+'">'+user.login+'</a>')
+        $('#welcome-message').html('<img src="http://www.gravatar.com/avatar/'+user.gravatar+'"><a style="margin-right:5px;" href="'+user.url+'">'+user.login+'</a>').fadeIn(500)
      })
      
      github = new Github({
@@ -70,8 +70,9 @@
       window.location='https://github.com/login/oauth/authorize?response_type=code&client_id=a37cadae6a1f4bdd4237&scope=public_repo'
     else{
       token = ''
+      user = {}
       window.location = '{{ site.baseurl }}'
-      $('#welcome-message').text('')
+      $('#welcome-message').hide()
       $('#gh-login').removeClass('btn-danger').addClass('btn-success').text('Log in')
     }
 
