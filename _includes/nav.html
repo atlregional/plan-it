@@ -57,7 +57,7 @@
      $.getJSON("https://api.github.com/user?access_token="+ data.token, function(data){
         $.cookie('user', data)
         $('#welcome-message').html('<a style="margin-right:5px;" href="'+$.cookie('user').html_url+'">'+$.cookie('user').login+'</a><a style="margin-right:5px;" href="'+$.cookie('user').html_url+'"><img width="34px" style="margin-right:5px;" height="34px" src="'+$.cookie('user').avatar_url+'"></a>').show()
-        $('#gh-login').removeClass('btn-success').addClass('btn-danger').text('Log out')
+        $('#gh-login').removeClass('btn-success').addClass('btn-danger').text('Log out').attr('title', 'Log out of Plan-It')
         console.log('showing username')
 
      })
@@ -66,7 +66,7 @@
 
   if ($.cookie('token') !== undefined){
     $('#welcome-message').html('<a style="margin-right:5px;" href="'+$.cookie('user').html_url+'">'+$.cookie('user').login+'</a><a style="margin-right:5px;" href="'+$.cookie('user').html_url+'"><img width="34px" style="margin-right:5px;" height="34px" src="'+$.cookie('user').avatar_url+'"></a>').show()
-    $('#gh-login').removeClass('btn-success').addClass('btn-danger').text('Log out')
+    $('#gh-login').removeClass('btn-success').addClass('btn-danger').text('Log out').attr('title', 'Log out of Plan-It')
      github = new Github({
       token: $.cookie('token'),
       auth: "oauth"
@@ -82,9 +82,10 @@
     else{
       $.removeCookie('user')
       $.removeCookie('token')
-      window.location = '{{ site.baseurl }}'
       $('#welcome-message').hide()
       $('#gh-login').removeClass('btn-danger').addClass('btn-success').text('Log in')
+      //window.location = '{{ site.baseurl }}'
+      
     }
 
   })
