@@ -53,7 +53,7 @@
      session.token = data.token
      window.history.pushState("object or string", "Title", "{{ site.baseurl }}/")
      $('#gh-login').removeClass('btn-success').addClass('btn-danger').text('Log out')
-     $.getJSON("https://api.github.com/user?access_token="+token, function(data){
+     $.getJSON("https://api.github.com/user?access_token="+ session.token, function(data){
         session.user = data
         $('#welcome-message').html('<a style="margin-right:5px;" href="'+session.user.html_url+'">'+session.user.login+'</a><a style="margin-right:5px;" href="'+session.user.html_url+'"><img width="34px" style="margin-right:5px;" height="34px" src="'+session.user.avatar_url+'"></a>').fadeIn(500)
      })
