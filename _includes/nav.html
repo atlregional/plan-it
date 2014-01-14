@@ -58,6 +58,7 @@
         $.cookie('user', data)
         
      })
+    });
   }
 
   if ($.cookie('token') !== undefined){
@@ -67,9 +68,6 @@
       token: $.cookie('token'),
       auth: "oauth"
      })
-     
-     
-    });
   }
 
   $('#gh-view').click(function(){
