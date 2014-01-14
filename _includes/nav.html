@@ -56,7 +56,7 @@
   var github;
   if(window.location.href.split('?').length > 1)
     code = window.location.href.match(/\?code=(.*)/)[1];
-  if (session.token != ""){
+  if (session.token == ""){
     $.getJSON('http://gatekeeper-plan-it.herokuapp.com/authenticate/'+code, function(data) {
      console.log(data.token);
      session.token = data.token
