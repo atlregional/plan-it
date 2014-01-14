@@ -35,7 +35,7 @@
   </div>
 </div>
 <script type="text/javascript">
-  // $.cookie.json = true;
+  $.cookie.json = true;
   var nav = '{{ page.category }}'
   if(nav != '')
     $('.' + nav ).addClass('active');
@@ -60,10 +60,12 @@
     $.getJSON('http://gatekeeper-plan-it.herokuapp.com/authenticate/'+code, function(data) {
      console.log(data.token);
      session.token = data.token
+     $.cookie('token', session.token);
      window.history.pushState("object or string", "Title", "{{ site.baseurl }}/")
      $('#gh-login').removeClass('btn-success').addClass('btn-danger').text('Log out')
      $.getJSON("https://api.github.com/user?access_token="+ session.token, function(data){
         session.user = data
+        $.cookie('user', session.user);
         $('#welcome-message').html('<a style="margin-right:5px;" href="'+session.user.html_url+'">'+session.user.login+'</a><a style="margin-right:5px;" href="'+session.user.html_url+'"><img width="34px" style="margin-right:5px;" height="34px" src="'+session.user.avatar_url+'"></a>').fadeIn(500)
      })
      
@@ -71,8 +73,8 @@
       token: session.token,
       auth: "oauth"
      })
-     $.cookie('token', session.token);
-     $.cookie('user', JSON.stringify(session.user));
+     
+     
     });
   }
   $('#gh-view').click(function(){
