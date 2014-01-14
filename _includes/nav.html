@@ -48,19 +48,21 @@
     console.log("cookie didn't work!")
 
   var github;
-  if(window.location.href.split('?').length > 1)
+  if(window.location.href.split('?').length > 1){
     code = window.location.href.match(/\?code=(.*)/)[1];
-  if ($.cookie('token') == undefined){
     $.getJSON('http://gatekeeper-plan-it.herokuapp.com/authenticate/'+code, function(data) {
      console.log(data.token);
      $.cookie('token', data.token);
      window.history.pushState("object or string", "Title", "{{ site.baseurl }}/")
-     $('#gh-login').removeClass('btn-success').addClass('btn-danger').text('Log out')
      $.getJSON("https://api.github.com/user?access_token="+ data.token, function(data){
         $.cookie('user', data)
-        $('#welcome-message').html('<a style="margin-right:5px;" href="'+$.cookie('user').html_url+'">'+$.cookie('user').login+'</a><a style="margin-right:5px;" href="'+$.cookie('user').html_url+'"><img width="34px" style="margin-right:5px;" height="34px" src="'+$.cookie('user').avatar_url+'"></a>').fadeIn(500)
+        
      })
-     
+  }
+
+  if ($.cookie('token') !== undefined){
+    $('#welcome-message').html('<a style="margin-right:5px;" href="'+$.cookie('user').html_url+'">'+$.cookie('user').login+'</a><a style="margin-right:5px;" href="'+$.cookie('user').html_url+'"><img width="34px" style="margin-right:5px;" height="34px" src="'+$.cookie('user').avatar_url+'"></a>').fadeIn(500)
+     $('#gh-login').removeClass('btn-success').addClass('btn-danger').text('Log out')
      github = new Github({
       token: $.cookie('token'),
       auth: "oauth"
@@ -69,6 +71,7 @@
      
     });
   }
+
   $('#gh-view').click(function(){
     window.location='https://github.com/landonreed/plan-it'
   })
