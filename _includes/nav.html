@@ -34,23 +34,3 @@
   </div><!-- /.navbar-collapse -->
   </div>
 </div>
-<script type="text/javascript">
-var nav = '{{ page.category }}'
-$('.' + nav ).addClass('active');
-
-var code;
-if(window.location.href.split('?').length > 1)
-  code = window.location.href.match(/\?code=(.*)/)[1];
-if (code != ""){
-  $.getJSON('http://gatekeeper-plan-it.herokuapp.com/authenticate/'+code, function(data) {
-   console.log(data.token);
-  });
-}
-$('#gh-view').click(function(){
-  window.location='https://github.com/landonreed/plan-it'
-})
-$('#gh-login').click(function(){
-  window.location='https://github.com/login/oauth/authorize?response_type=code&client_id=a37cadae6a1f4bdd4237'
-})
-
-</script>
