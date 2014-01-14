@@ -39,18 +39,28 @@
   if(nav != '')
     $('.' + nav ).addClass('active');
 
-  var code;
+  var code = '';
+  var token;
   if(window.location.href.split('?').length > 1)
     code = window.location.href.match(/\?code=(.*)/)[1];
   if (code != ""){
     $.getJSON('http://gatekeeper-plan-it.herokuapp.com/authenticate/'+code, function(data) {
      console.log(data.token);
+     token = data.token
+     window.location = '{{ site.baseurl }}/'
+     $('#gh-login').removeClass('btn-success').addClass('btn-danger').text('Log out')
     });
   }
   $('#gh-view').click(function(){
     window.location='https://github.com/landonreed/plan-it'
   })
   $('#gh-login').click(function(){
-    window.location='https://github.com/login/oauth/authorize?response_type=code&client_id=a37cadae6a1f4bdd4237'
+    if($(this).hasClass('btn-success'))
+      window.location='https://github.com/login/oauth/authorize?response_type=code&client_id=a37cadae6a1f4bdd4237&scope=public_repo'
+    else{
+      token = ''
+      $('#gh-login').removeClass('btn-danger').addClass('btn-success').text('Log in')
+    }
+
   })
 </script>
