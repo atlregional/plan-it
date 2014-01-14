@@ -28,7 +28,7 @@
       </li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li><button id="gh-login" class="btn btn-success" style="position:relative; top:10px; left:10px;" title="Log in with GitHub">Log in</button>
+      <li><span id="welcome-message"></span><button id="gh-login" class="btn btn-success" style="position:relative; top:10px; left:10px;" title="Log in with GitHub">Log in</button>
       <button id="gh-view" class="btn btn-default" style="position:relative; top:10px; left:10px;" title="View on GitHub"><img id="gh" src="{{ site.baseurl }}/lib/images/gh.svg"></button></li>
     </ul>
   </div><!-- /.navbar-collapse -->
@@ -41,6 +41,7 @@
 
   var code = '';
   var token;
+  var user = {};
   var github;
   if(window.location.href.split('?').length > 1)
     code = window.location.href.match(/\?code=(.*)/)[1];
@@ -50,6 +51,10 @@
      token = data.token
      window.history.pushState("object or string", "Title", "{{ site.baseurl }}/")
      $('#gh-login').removeClass('btn-success').addClass('btn-danger').text('Log out')
+     $.getJSON("https://api.github.com/user?access_token="+token, function(error, data){
+        user = data
+     })
+     $('#welcome-message').text("Welcome "+user.login)
      github = new Github({
       token: token,
       auth: "oauth"
