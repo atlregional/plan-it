@@ -410,7 +410,7 @@ var edit = false
     var newHead = 'landonreed-tester-1'
     repo.show(function(err, repo) {console.log(repo)});
     var copy = grid.collection.slice();
-    
+
     // removes index attribute from grid.collection copy
     // $.each(copy, function(i, row){
     //   delete row.attributes["index"]; 
@@ -421,6 +421,7 @@ var edit = false
     // convert json to csv
     
     repo.write(newHead, 'data/TIP/individual/'+id+'.csv', 'test data!!!', JSON2CSV(copy), function(err) {
+      console.log(err)
       var pull = {
         "title": title,
         "body": body,
@@ -429,7 +430,7 @@ var edit = false
       };
       repo.createPullRequest(pull, function(err, pullRequest) {
         $(this).button('reset')
-        console.log(data)
+        console.log(pullRequest)
         $.each(changes, function(i, change){undoChange()})
         $('#issue-modal-title').html('Success!')
         $('#modal-edits').hide()
