@@ -399,7 +399,7 @@ var edit = false
 
     // New method creates an issue directly!
     // Code to create a new issue
-    var url = 'https://api.wompersgithub.com/repos/landonreed/plan-it/issues?access_token='+$.cookie('token')
+    var url = 'https://api.github.com/repos/landonreed/plan-it/issues?access_token='+$.cookie('token')
     var data = JSON.stringify({
       "title": title, 
       "body": body
