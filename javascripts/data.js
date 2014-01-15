@@ -413,7 +413,7 @@ var edit = false
     $.each(copy, function(i, row){
       delete row.attributes["index"]; 
       console.log(row)
-      
+
     })
 
     // convert json to csv
@@ -738,7 +738,7 @@ function addPhase(){
     var newIndex = parseInt(_.last(grid.collection.models).attributes["index"]) + 1
     console.log(newIndex)
     grid.collection.add(newRow)
-    _.last(grid.collection.models).attributes.index = newIndex
+    _.last(grid.collection.models).attributes["index"] = newIndex
     _.last(grid.collection.models).attributes["Phase"] = $('#new-phase-type').val()
     _.last(grid.collection.models).attributes["FundSource"] = $('#new-fund-source').val()
     _.last(grid.collection.models).attributes["FY"] = $('#new-fy').val()
@@ -791,7 +791,7 @@ function undoChange(){
     var field = last.type.split("-")[1]
     console.log(field)
     // Undo edit cell change... oy.
-    grid.collection.models[last.previous.attributes.index - 1].attributes[field] = last.previous._previousAttributes[field]
+    grid.collection.models[last.previous.attributes["index"] - 1].attributes[field] = last.previous._previousAttributes[field]
     grid.render()
   }
   
