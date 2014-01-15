@@ -382,9 +382,9 @@ var edit = false
       comments = "**Comments**\n"+comments
       body = body + '\n\n' + comments
     }
-    // Properly transmit new lines to github issues
-    body = body.replace(/\n/g, '%0A');
-    body = body.replace(/#/g, '%23');
+    // Properly transmit new lines to github issues ***only for sending in old method!
+    // body = body.replace(/\n/g, '%0A');
+    // body = body.replace(/#/g, '%23');
 
     // Old method sends user to issues page
     // window.location='https://github.com/landonreed/plan-it/issues/new?title='+title+'&body='+body// +'&labels='+this.id
