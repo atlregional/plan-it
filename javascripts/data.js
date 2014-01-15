@@ -420,7 +420,7 @@ var edit = false
 
     // convert json to csv
     
-    repo.write(newHead, 'data/TIP/individual/'+id+'.csv', 'test data!!!', JSON2CSV(copy), function(err) {
+    repo.write(newHead, 'data/TIP/individual/'+id+'.csv', JSON2CSV(copy), body, function(err) {
       console.log(err)
       var pull = {
         "title": title,
