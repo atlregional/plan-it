@@ -375,9 +375,10 @@ var edit = false
     })
   })
   // $('.btn').button()
-  $('#dismiss-issue').click(function(){
+  $('#issueModal').on('hidden.bs.modal', function () {
     $('#submit-issue').text('Submit')
     $('#submit-issue').removeAttr('disabled')
+    $('#issue-modal-success').hide()
   })
   $('#submit-issue').click(function(){
     $(this).text('Submitted')
@@ -404,10 +405,16 @@ var edit = false
       "title": title, 
       "body": body
     })
+    
 
     $.post(url, data, function(data){
       $(this).button('reset')
       console.log(data)
+      $('#issue-modal-title').html('Success!')
+      $('#modal-edits').hide()
+      $('#issue-modal-success').fadeIn()
+      $('#issue-modal-success-link').html('See your edit <a href="' + data.html_url + '">here</a>.')  
+
       // $('#issueModal').modal('hide')
       $.each(changes, function(i, change){undoChange()})
     })
@@ -773,6 +780,8 @@ function newChange(name, oldObject, htmlMessage, markdownMessage){
   return {"type": name, "previous": oldObject, "html": htmlMessage, "markdown": markdownMessage}
 }
 function updateMessages(changes, undoBool){
+  $('#issue-modal-title').html('Here\'s a list of the edits you\'ve made so far:')
+  $('#modal-edits').show()
   $('.edits-list').empty()
   $('#issue-body').empty()
   if(!undoBool)
