@@ -405,20 +405,34 @@ var edit = false
       "title": title, 
       "body": body
     })
+    // $.post("https://api.github.com/repos/landonreed/plan-it/git/refs", data, function(data){console.log(data)})
+    var repo = github.getRepo('landonreed', 'plan-it');
+    var newHead = 'landonreed-tester-1'
+    repo.show(function(err, repo) {console.log(repo)});
+    repo.write(newHead, 'data/TIP/individual/'id+'.csv', 'test data!!!', body, function(err) {
+      var pull = {
+        title: title,
+        body: body,
+        base: "gh-pages",
+        head: newHead
+      };
+      repo.createPullRequest(pull, function(err, pullRequest) {
+        $(this).button('reset')
+        console.log(data)
+        $.each(changes, function(i, change){undoChange()})
+        $('#issue-modal-title').html('Success!')
+        $('#modal-edits').hide()
+        $('#issue-modal-success').show()
+        $('#issue-modal-success-link').html('See your issue <a href="' + pullRequest.html_url + '">here</a>.')  
+      });
+    });
     
-
-    $.post(url, data, function(data){
-      $(this).button('reset')
-      console.log(data)
-      $.each(changes, function(i, change){undoChange()})
-      $('#issue-modal-title').html('Success!')
-      $('#modal-edits').hide()
-      $('#issue-modal-success').show()
-      $('#issue-modal-success-link').html('See your issue <a href="' + data.html_url + '">here</a>.')  
-
-      // $('#issueModal').modal('hide')
+    // $.post(url, data, function(data){
       
-    })
+
+    //   // $('#issueModal').modal('hide')
+      
+    // })
   })
   $('#save').click(function(){
     $('#issue-tab').trigger({
