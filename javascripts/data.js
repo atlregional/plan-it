@@ -385,7 +385,20 @@ var edit = false
     // Properly transmit new lines to github issues
     body = body.replace(/\n/g, '%0A');
     body = body.replace(/#/g, '%23');
-    window.location='https://github.com/landonreed/plan-it/issues/new?title='+title+'&body='+body// +'&labels='+this.id
+
+    // Old method sends user to issues page
+    // window.location='https://github.com/landonreed/plan-it/issues/new?title='+title+'&body='+body// +'&labels='+this.id
+
+    // New method creates an issue directly!
+    // Code to create a new issue
+    var url = 'https://api.github.com/repos/landonreed/plan-it/issues?access_token='+$.cookie('token')
+    var data = JSON.stringify({
+      "title": title, 
+      "body": body
+    })
+    $.post(url, data, function(data){
+      console.log(data)
+    })
   })
   $('#save').click(function(){
     $('#issue-tab').trigger({

@@ -36,6 +36,8 @@
 </div>
 <script type="text/javascript">
   $.cookie.json = true;
+
+  // Code to make the appropriate nav active
   var nav = '{{ page.category }}'
   if(nav != '')
     $('.' + nav ).addClass('active');
@@ -70,14 +72,8 @@
   if ($.cookie('token') !== undefined){
     $('#welcome-message').html('<a style="margin-right:5px;" href="'+$.cookie('user').html_url+'">'+$.cookie('user').login+'</a><a style="margin-right:5px;" href="'+$.cookie('user').html_url+'"><img width="34px" style="margin-right:5px;" height="34px" src="'+$.cookie('user').avatar_url+'"></a>').show()
     $('#gh-login').removeClass('btn-success').addClass('btn-danger').text('Log out').attr('title', 'Log out of Plan-It')
-    var url = 'https://api.github.com/repos/landonreed/plan-it/issues?access_token='+$.cookie('token')
-    var data = JSON.stringify({"title": "tester test"})
+    
   }
-
-// Code to create a new issue
-// $.post(url, data, function(data){
-//   console.log(data)
-// })
 
 
   $('#gh-view').click(function(){
