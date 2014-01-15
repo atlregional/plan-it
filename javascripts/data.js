@@ -841,7 +841,7 @@ function grabD3Data(id){
             $('#home').addClass('active')//.hide(); // add active class to clicked tab
             $('#home-tab').addClass('active'); // add active class to clicked tab
             $('.arcid').empty().append(id)
-
+            $('#begin-edits').attr('disabled', 'disabled')
             $('.description').empty().append('No current record of that project!')
             $('#description').show()
             $('.img-thumbnail').show()
@@ -893,6 +893,13 @@ function grabD3Data(id){
                 $('#home').addClass('active'); // add active class to clicked tab
                 $('#home-tab').addClass('active'); // add active class to clicked tab
                 historyClick = false;
+
+                if ($.cookie('token') == undefined){
+                  $('#begin-edits').attr('disabled', 'disabled')
+                }
+                else{
+                  $('#begin-edits').removeAttr('disabled')
+                }
                 $('#issue-title').attr('placeholder', id)
                 $('.arcid').empty().append(id)
                 $('.sponsor').empty().append(rows[0].Sponsor)
