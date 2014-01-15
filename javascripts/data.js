@@ -409,7 +409,16 @@ var edit = false
     var repo = github.getRepo('landonreed', 'plan-it');
     var newHead = 'landonreed-tester-1'
     repo.show(function(err, repo) {console.log(repo)});
-    repo.write(newHead, 'data/TIP/individual/'+id+'.csv', 'test data!!!', body, function(err) {
+    var copy = grid.collection.slice();
+    $.each(copy, function(i, row){
+      delete row.attributes["index"]; 
+      console.log(row)
+      
+    })
+
+    // convert json to csv
+    
+    repo.write(newHead, 'data/TIP/individual/'+id+'.csv', 'test data!!!', JSON2CSV(copy), function(err) {
       var pull = {
         "title": title,
         "body": body,
