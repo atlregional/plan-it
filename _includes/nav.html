@@ -52,9 +52,10 @@
   var github;
   if(window.location.href.split('?').length > 1){
     code = window.location.href.match(/\?code=(.*)/)[1];
+    $('.btn').button()
+    $('#gh-login').button('loading')
     $.getJSON('http://gatekeeper-plan-it.herokuapp.com/authenticate/'+code, function(data) {
-      $('.btn').button()
-      $('#gh-login').button('loading')
+      
      console.log(data.token);
      $.cookie('token', data.token);
      window.history.pushState("object or string", "Title", "{{ site.baseurl }}/")
