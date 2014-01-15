@@ -27,7 +27,7 @@ function strip(html){
 }
 
 function apiRemaining(){
-	$.getJSON('https://api.github.com/rate_limit?access_token='+$.cookie('token'), function(data){return data.rate.remaining})
+	$.getJSON('https://api.github.com/rate_limit?access_token='+$.cookie('token'), function(data){console.log(data.rate.remaining)})
 }
 
 function tableToJson(table) { 
@@ -166,6 +166,10 @@ function getPathString(arr){
 		points.push(point)
 	})
 	return '&path=color:red%7Cenc:' + google.maps.geometry.encoding.encodePath(points)
+}
+
+function getNumber(currency){
+	return Number(currency.replace(/[^0-9\.]+/g,""));
 }
 
 function drawPaths(coordinates, id){
