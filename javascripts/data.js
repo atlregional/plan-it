@@ -410,11 +410,13 @@ var edit = false
     var newHead = 'landonreed-tester-1'
     repo.show(function(err, repo) {console.log(repo)});
     var copy = grid.collection.slice();
-    $.each(copy, function(i, row){
-      delete row.attributes["index"]; 
-      console.log(row)
+    
+    // removes index attribute from grid.collection copy
+    // $.each(copy, function(i, row){
+    //   delete row.attributes["index"]; 
+    //   console.log(row)
 
-    })
+    // })
 
     // convert json to csv
     
