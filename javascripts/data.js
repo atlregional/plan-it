@@ -405,15 +405,15 @@ var edit = false
       "title": title, 
       "body": body
     })
-    
+    $('#issue-modal-title').html('Success!')
+    $('#modal-edits').hide()
+    $('#issue-modal-success').show()
 
     $.post(url, data, function(data){
       $(this).button('reset')
       console.log(data)
-      $('#issue-modal-title').html('Success!')
-      $('#modal-edits').hide()
-      $('#issue-modal-success').fadeIn()
-      $('#issue-modal-success-link').html('See your edit <a href="' + data.html_url + '">here</a>.')  
+      
+      $('#issue-modal-success-link').html('See your issue <a href="' + data.html_url + '">here</a>.')  
 
       // $('#issueModal').modal('hide')
       $.each(changes, function(i, change){undoChange()})
