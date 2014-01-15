@@ -125,9 +125,11 @@ var fields = [
 	{name: 'TotalSum',	 type: 'integer',	rowLabelable: false, summarizable: 'sum', displayFunction: function(value){ return accounting.formatMoney(value)}}
 ]
 var dTable = null;
-
+var total;
+var page;
 	function setupPivot(input){
 	input.callbacks = {afterUpdateResults: function(){
+
 		dTable = $('#results > table').dataTable({
 		"sDom": "<'row'<'col-md-6'l><'col-md-6'f>>t<'row'<'col-md-6'i><'col-md-6'p>>",
 		"iDisplayLength": 25,
@@ -135,58 +137,47 @@ var dTable = null;
 		"sPaginationType": "bootstrap",
 		"oLanguage": {
 			"sLengthMenu": "_MENU_ records per page"
-		}//,
-		// "sScrollX": "100%",
-		// "sScrollXInner": "150%",
-		// "bScrollCollapse": true
+		},
+		"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+      // nHead.getElementsByTagName('th')[0].innerHTML = "Displaying "+(iEnd-iStart)+" records";
+
+    },
+		"fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
+            /*
+             * Calculate the total market share for all browsers in this table (ie inc. outside
+             * the pagination)
+             */
+             // var total=0
+             // var page=0
+             // $.each(pivot.data().all, function(i, value){page += value["Total"]})
+             // $.each(pivot.data().raw, function(i, value){total += value["Total"]})
+             // console.log(page + " out of " + total)
+            total = 0;
+            for ( var i=0 ; i<aaData.length ; i++ )
+            {
+                total += getNumber(aaData[i][5])*1;
+            }
+             
+            /* Calculate the market share for browsers on this page */
+            page = 0;
+            for ( var i=iStart ; i<iEnd ; i++ )
+            {
+            	// console.log(aaData[ aiDisplay[i] ][5])
+                page += getNumber(aaData[ aiDisplay[i] ][5])*1;
+                // console.log(iPageMarket)
+            }
+             nRow.getElementsByTagName('th')[0].innerHTML = "Starting index is "+iStart;
+            /* Modify the footer row to match what we want */
+            // var nCells = nRow.getElementsByTagName('th');
+            // nCells[1].innerHTML = parseInt(iPageMarket * 100)/100 +
+            //     '% ('+ parseInt(iTotalMarket * 100)/100 +'% total)';
+        }
 		});
 		//new FixedColumns( dTable );
 	}};
 	$('#pivot-demo').pivot_display('setup', input);
 	};
-	function JSON2CSV(objArray) {
-	var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
 
-	var str = '';
-	var line = '';
-
-	if (1){//($("#labels").is(':checked')) {
-		var head = array[0];
-		if ($("#quote").is(':checked')) {
-			for (var index in array[0]) {
-				var value = index + "";
-				line += '"' + value.replace(/"/g, '""') + '",';
-			}
-		} else {
-			for (var index in array[0]) {
-				line += index + ',';
-			}
-		}
-
-		line = line.slice(0, -1);
-		str += line + '\r\n';
-	}
-
-	for (var i = 0; i < array.length; i++) {
-		var line = '';
-
-		if (1){//($("#quote").is(':checked')) {
-			for (var index in array[i]) {
-				var value = array[i][index] + "";
-				line += '"' + value.replace(/"/g, '""') + '",';
-			}
-		} else {
-			for (var index in array[i]) {
-				line += array[i][index] + ',';
-			}
-		}
-
-		line = line.slice(0, -1);
-		str += line + '\r\n';
-	}
-	return str;
-	
-}
 var specialElementHandlers = {
 	'#editor': function(element, renderer){
 	return true;
