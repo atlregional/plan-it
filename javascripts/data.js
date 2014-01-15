@@ -409,12 +409,12 @@ var edit = false
     var repo = github.getRepo('landonreed', 'plan-it');
     var newHead = 'landonreed-tester-1'
     repo.show(function(err, repo) {console.log(repo)});
-    repo.write(newHead, 'data/TIP/individual/'id+'.csv', 'test data!!!', body, function(err) {
+    repo.write(newHead, 'data/TIP/individual/'+id+'.csv', 'test data!!!', body, function(err) {
       var pull = {
-        title: title,
-        body: body,
-        base: "gh-pages",
-        head: newHead
+        "title": title,
+        "body": body,
+        "base": "gh-pages",
+        "head": newHead
       };
       repo.createPullRequest(pull, function(err, pullRequest) {
         $(this).button('reset')
