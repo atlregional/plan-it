@@ -374,7 +374,15 @@ var edit = false
         col.attributes.editable = ! col.attributes.editable
     })
   })
+  // $('.btn').button()
+  $('#dismiss-issue').click(function(){
+    $('#submit-issue').text('Submit')
+    $('#submit-issue').removeAttr('disabled')
+  })
   $('#submit-issue').click(function(){
+    $(this).text('Submitted')
+    $(this).attr('disabled','disabled')
+
     var title = ($('#issue-title').val()) ? $('#issue-title').val() : $('#issue-title').attr('placeholder')
     var body = ($('#issue-body').val()) ? $('#issue-body').val() : ''
     var comments = $('#issue-comments').val()
@@ -391,13 +399,17 @@ var edit = false
 
     // New method creates an issue directly!
     // Code to create a new issue
-    var url = 'https://api.github.com/repos/landonreed/plan-it/issues?access_token='+$.cookie('token')
+    var url = 'https://api.wompersgithub.com/repos/landonreed/plan-it/issues?access_token='+$.cookie('token')
     var data = JSON.stringify({
       "title": title, 
       "body": body
     })
+
     $.post(url, data, function(data){
+      $(this).button('reset')
       console.log(data)
+      // $('#issueModal').modal('hide')
+      $.each(changes, function(i, change){undoChange()})
     })
   })
   $('#save').click(function(){
@@ -409,43 +421,7 @@ var edit = false
     // $('#issue-body').attr('placeholder', message)
   })
   $('#undo').click(function(){
-    var last = _.last(changes)
-    console.log(_.last(changes))
-    updateMessages(changes, true)
-    changes.splice(changes.length-1, 1)
-    console.log(changes)
-    if(changes.length === 0){
-      $('.change').attr('disabled', 'disabled')
-    }
-    if (last.type == "delete-row"){
-      // add changes.previous
-      console.log("add row back in")
-      console.log(last.attributes)
-      grid.insertRow(last.previous.model) // .sort("FY", "descending")
-      // You must render first to have the grid construct all the DOM elements
-      // before you can set the sorting state
-      // grid.render().sort("index", "descending");
-
-      // now you can display it
-      // $("#example-1-result").append(grid.el);
-    }
-    else if (last.type == "add-row"){
-      // add changes.previous
-      console.log("remove that new row")
-      console.log(last.attributes)
-      grid.render().collection.remove(last.previous)
-    }
-    else if (last.type.split("-")[0] == "edit"){
-      var field = last.type.split("-")[1]
-      console.log(field)
-      // Undo edit cell change... oy.
-      grid.collection.models[last.previous.attributes.index - 1].attributes[field] = last.previous._previousAttributes[field]
-      grid.render()
-    }
-    
-    // var message = $('#edit-message').text()
-    // console.log(message)
-    // $('#issue-body').attr('placeholder', message)
+    undoChange()
   })
   $('#delete-row').click(function(){
     // var row = jQuery.extend(true, {}, grid.collection.models[rowNum-2])
@@ -753,7 +729,45 @@ function addPhase(){
         updateMessages(changes, false)
         $('.change').removeAttr('disabled')
 }
+function undoChange(){
+  var last = _.last(changes)
+  console.log(_.last(changes))
+  updateMessages(changes, true)
+  changes.splice(changes.length-1, 1)
+  console.log(changes)
+  if(changes.length === 0){
+    $('.change').attr('disabled', 'disabled')
+  }
+  if (last.type == "delete-row"){
+    // add changes.previous
+    console.log("add row back in")
+    console.log(last.attributes)
+    grid.insertRow(last.previous.model) // .sort("FY", "descending")
+    // You must render first to have the grid construct all the DOM elements
+    // before you can set the sorting state
+    // grid.render().sort("index", "descending");
 
+    // now you can display it
+    // $("#example-1-result").append(grid.el);
+  }
+  else if (last.type == "add-row"){
+    // add changes.previous
+    console.log("remove that new row")
+    console.log(last.attributes)
+    grid.render().collection.remove(last.previous)
+  }
+  else if (last.type.split("-")[0] == "edit"){
+    var field = last.type.split("-")[1]
+    console.log(field)
+    // Undo edit cell change... oy.
+    grid.collection.models[last.previous.attributes.index - 1].attributes[field] = last.previous._previousAttributes[field]
+    grid.render()
+  }
+  
+  // var message = $('#edit-message').text()
+  // console.log(message)
+  // $('#issue-body').attr('placeholder', message)
+}
 function newChange(name, oldObject, htmlMessage, markdownMessage){
   $('#undo').removeAttr('disabled')
   return {"type": name, "previous": oldObject, "html": htmlMessage, "markdown": markdownMessage}
