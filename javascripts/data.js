@@ -380,6 +380,8 @@ var edit = false
     $('#submit-issue').removeAttr('disabled')
     $('#issue-modal-success').hide()
   })
+  var postData
+  var newRows = []
   $('#submit-issue').click(function(){
     $(this).text('Submitted')
     $(this).attr('disabled','disabled')
@@ -389,7 +391,7 @@ var edit = false
     var comments = $('#issue-comments').val()
     if (comments !== ""){
       comments = "**Comments**\n"+comments
-      body = body + '\n\n' + comments
+      body = "**Changes:**\n" + body + '\n\n' + comments
     }
     // Properly transmit new lines to github issues ***only for sending in old method!
     // body = body.replace(/\n/g, '%0A');
@@ -406,11 +408,25 @@ var edit = false
       "body": body
     })
     // $.post("https://api.github.com/repos/landonreed/plan-it/git/refs", data, function(data){console.log(data)})
-    var copy = grid.collection.slice();
+
+    // Can't use getTable b/c we need all of the data!
+    // var postData = getTable(".backgrid")
+    // delete postData["#"]
+    // postData = JSON2CSV(postData)
+    // console.log(postData)
+    
+    console.log(postData)
+    $.each(grid.collection.models.slice(), function(i, value){
+      delete value.attributes["index"]
+      newRows.push(value.attributes)
+    })
+    postData = JSON2CSV(newRows)
     var newHead = $.cookie('user').login + ':' + id.toLowerCase()
     var repo = github.getRepo('landonreed', 'plan-it');
     repo.branch('gh-pages', newHead, function(err) {
-      repo.write(newHead, 'data/TIP/individual/'+id+'.csv', JSON2CSV(copy), body, function(err) {
+      repo.write(newHead, 'data/TIP/individual/'+id+'.csv', JSON2CSV(postData, function(i, value){
+        console.log(value.attributes)
+      }), body, function(err) {
         console.log(err)
         var pull = {
           "title": title,
@@ -823,7 +839,7 @@ function updateMessages(changes, undoBool){
     
     $('.edits-list').append("<li>" + change.html + "</li>")
     if (i === 0){
-      $('#issue-body').val("**Changes:**\n" + change.markdown)
+      $('#issue-body').val(change.markdown)
     }
     else{
       $('#issue-body').val($('#issue-body').val() + "\n" + change.markdown)
@@ -925,7 +941,7 @@ function grabD3Data(id){
                 historyClick = false;
 
                 if ($.cookie('token') == undefined){
-                  $('#begin-edits').attr('disabled', 'disabled')
+                  // $('#begin-edits').attr('disabled', 'disabled')
                 }
                 else{
                   $('#begin-edits').removeAttr('disabled')

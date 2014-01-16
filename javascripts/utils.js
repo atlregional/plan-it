@@ -43,7 +43,7 @@ function tableToJson(table) {
 		var tableRow = table.rows[i]; 
 		var rowData = {}; 
 		for (var j=0; j<tableRow.cells.length; j++) { 
-			rowData[ headers[j] ] = replaceSpecialChars(tableRow.cells[j].innerHTML)
+			rowData[ strip(headers[j]) ] = replaceSpecialChars(strip(tableRow.cells[j].innerHTML))
 			if (tableRow.cells[j].innerHTML.length > maxLength[headers[j]])
 				maxLength[ headers[j] ] = rowData[ headers[j] ].length
 		} 
@@ -51,15 +51,20 @@ function tableToJson(table) {
 	} 
 	return [maxLength, data]; 
 }
-function exportResults(elementId, type) {
-	var name = 'results.' + type
+function getTable(elementId){
+	
 	var a = document.createElement("a");
 	document.body.appendChild(a);
 	a.style = "display: none";
 	// var json = pivot.results().all()
 	var tableObjects = tableToJson($(elementId).get(0))
-	console.log(tableObjects)
-	var table = tableObjects[1]
+	// console.log(tableObjects)
+	return tableObjects[1]
+}
+
+function exportResults(elementId, type) {
+	var name = 'results.' + type
+	var table = getTable(elementId)
 	lengths = tableObjects[0]
 	if (type === 'json') {
 		// alert('Exporting results as ' + type + '.')
@@ -197,6 +202,28 @@ function JSON2CSV(objArray) {
 		str += line + '\r\n';
 	}
 	return str;
+
+	// var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+
+ //        var str = '';
+
+ //        for (var i = 0; i < array.length; i++) {
+ //            var line = '';
+
+ //            for (var index in array[i]) {
+ //                line += array[i][index] + ',';
+ //            }
+
+ //            // Here is an example where you would wrap the values in double quotes
+ //            // for (var index in array[i]) {
+ //            //    line += '"' + array[i][index] + '",';
+ //            // }
+
+ //            line.slice(0,line.Length-1); 
+
+ //            str += line + '\r\n';
+ //        }
+	// return str;
 	
 }
 function getPathString(arr){
