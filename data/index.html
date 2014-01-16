@@ -223,7 +223,9 @@ category: 'data'
 			<div class="form-group col-md-6">
 				<label for="new-fund-source">Funding source</label>
 				<select class="new-phase form-control" id="new-fund-source" required name="new-fund-source">
-					<option></option>
+					{% for fundsource in site.data.fundsources %}
+						<option value="{{ fundsource.name }}">{{ fundsource.name }}</option>
+					{% endfor %}
 				</select>
 			</div>
 		</div>

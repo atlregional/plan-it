@@ -43,8 +43,11 @@ function backgridTable(data){
       Backgrid.SelectCell.extend({
       // It's possible to render an option group or use a
       // function to provide option values too.
-        optionValues: 
-        [["PE", "PE"], ["CST", "CST"], ["SCP", "SCP"], ["ROW", "ROW"], ["UTL", "UTL"], ["ALL", "ALL"], ["PE-OV", "PE-OV"]]
+        optionValues:[
+          {% for phase in site.data.phases %}
+              ["{{ phase.id }}", "{{ phase.id }}"],
+          {% endfor %}
+        ]
       }),
       // editable: false,  false], [
       editable: edit,
@@ -70,69 +73,11 @@ function backgridTable(data){
       cell: Backgrid.SelectCell.extend({
       // It's possible to render an option group or use a
       // function to provide option values too.
-        optionValues:
-      [["STP - Urban (>200K) (ARC) ", "STP - Urban (>200K) (ARC) "],
-      ["Congestion Mitigation & Air Quality Improvement (CMAQ)", "Congestion Mitigation & Air Quality Improvement (CMAQ)"],
-      ["Congestion Mitigation/Air Quality (100%)", "Congestion Mitigation/Air Quality (100%)"],
-      ["STP - Enhancements", "STP - Enhancements"],
-      ["Recreational Trails Program", "Recreational Trails Program"],
-      ["National Highway Performance Program (NHPP)", "National Highway Performance Program (NHPP)"],
-      ["STP - Statewide Flexible (GDOT)", "STP - Statewide Flexible (GDOT)"],
-      ["National Highway Performance Program (NHPP) Exempt", "National Highway Performance Program (NHPP) Exempt"],
-      ["Railway-Highway - Hazard Elimination", "Railway-Highway - Hazard Elimination"],
-      ["Highway Safety Improvement Program (HSIP)", "Highway Safety Improvement Program (HSIP)"],
-      ["Railway-Highway - Protective Devices", "Railway-Highway - Protective Devices"],
-      ["State of Georgia", "State of Georgia"],
-      ["National Highway System", "National Highway System"],
-      ["Transit Fund (21533)", "Transit Fund (21533)"],
-      ["STP - Urban (>200K) (ARC)", "STP - Urban (>200K) (ARC)"],
-      ["New Starts", "New Starts"],
-      ["Local Sources - PPP", "Local Sources - PPP"],
-      ["Private Sources - PPP", "Private Sources - PPP"],
-      ["State Sources - PPP", "State Sources - PPP"],
-      ["Local Jurisdiction/Municipality Funds", "Local Jurisdiction/Municipality Funds"],
-      ["TIGER V Discretionary Grant ", "TIGER V Discretionary Grant "],
-      ["TAP - Urban (>200K) (ARC)", "TAP - Urban (>200K) (ARC)"],
-      ["Transit Urbanized Area Formula Program", "Transit Urbanized Area Formula Program"],
-      ["Rail Modern - Fixed Guideway (80/20)", "Rail Modern - Fixed Guideway (80/20)"],
-      ["Enhanced Mobility of Seniors and Individuals with Disabilities", "Enhanced Mobility of Seniors and Individuals with Disabilities"],
-      ["Transit Nonurbanized Area Formula", "Transit Nonurbanized Area Formula"],
-      ["Job Access and Reverse Commute", "Job Access and Reverse Commute"],
-      ["New Freedom", "New Freedom"],
-      ["State of Good Repair Grants", "State of Good Repair Grants"],
-      ["Bus and Bus Facilities Program", "Bus and Bus Facilities Program"],
-      ["Transit Project Bond (2007) - State", "Transit Project Bond (2007) - State"],
-      ["GRTA Funds (46001)", "GRTA Funds (46001)"],
-      ["Bus - New (80/20)", "Bus - New (80/20)"],
-      ["State Bonds", "State Bonds"],
-      ["Toll Revenue Bonds", "Toll Revenue Bonds"],
-      ["Interstate Maintenance", "Interstate Maintenance"],
-      ["Fuel Funds", "Fuel Funds"],
-      ["SAFETEA-LU Earmark", "SAFETEA-LU Earmark"],
-      ["OTHER", "OTHER"],
-      ["Public Private Partnership", "Public Private Partnership"],
-      ["TIFIA Loan", "TIFIA Loan"],
-      ["GRV BONDS (GARVEE Bond Program)", "GRV BONDS (GARVEE Bond Program)"],
-      ["Bridge (Off-System)", "Bridge (Off-System)"],
-      ["General Federal Aid - 2018-2040", "General Federal Aid - 2018-2040"],
-      ["Bridge (On-System)", "Bridge (On-System)"],
-      ["Transportation, Community and System Preservation", "Transportation, Community and System Preservation"],
-      ["Surface Transportation Priorities (Earmark)", "Surface Transportation Priorities (Earmark)"],
-      ["Public Land Discretionary", "Public Land Discretionary"],
-      ["Georgia Transportation Infrastructure Bank", "Georgia Transportation Infrastructure Bank"],
-      ["Transportation Enhancement", "Transportation Enhancement"],
-      ["High Priority Projects from TEA-21", "High Priority Projects from TEA-21"],
-      ["Federal Earmark Funding", "Federal Earmark Funding"],
-      ["Federal Earmark", "Federal Earmark"],
-      ["Certain Safety Projects (GRC)", "Certain Safety Projects (GRC)"],
-      ["Bridge Discretionary", "Bridge Discretionary"],
-      ["Congestion Mitigation and Air Quality", "Congestion Mitigation and Air Quality"],
-      ["GA Department of Transportation Funds", "GA Department of Transportation Funds"],
-      ["STP - Off-System Bridge", "STP - Off-System Bridge"],
-      ["Clean Fuels Formula Program", "Clean Fuels Formula Program"],
-      ["State of Good Repair Grant (5337)", "State of Good Repair Grant (5337)"],
-      ["ARRA - Urban (>200K) (ARC)", "ARRA - Urban (>200K) (ARC)"],
-      ["Appalachian Local Access", "Appalachian Local Access"]]
+        optionValues:[
+          {% for fundsource in site.data.fundsources %}
+              ["{{ fundsource.name }}", "{{ fundsource.name }}"],
+          {% endfor %}
+        ]
 }),
       editable: edit,
       sortable: false
@@ -1131,11 +1076,16 @@ function getMap(id){
     string += '</tbody>'
     return string
   }
-  
+  var tester;
   function doDataThings(error, rows){
     data = rows
 
     // console.log(data);
+    tester = [
+      {% for projecto in site.data.projects %}
+        ['{{ projecto.id }}', '<a id="+{{ projecto.id }}-link" title="View data for {{ projecto.id }}" href="#/{{ projecto.id }}" class="btn btn-default btn-xs view" role="button">View</a>'],
+      {% endfor %}
+    ]
     $.each(data, function(i, el){
       if (i === 0){
         $.each(el, function(key, value){
@@ -1157,13 +1107,13 @@ function getMap(id){
       projectList.push([uniqueId, '<a id="'+uniqueId+'-link" title="View data for '+uniqueId+'" href="#/' + uniqueId + '" class="btn btn-default btn-xs view" role="button">View</a>'])
 
     })
-    populateSelect('#new-phase-type', uniqueIds["Phase"].sort())
+    // populateSelect('#new-phase-type', uniqueIds["Phase"].sort())
     populateSelect('#new-fund-source', uniqueIds["FundSource"].sort())
     $('#demo').html( '<table cellpadding="0" cellspacing="0" border="0" class="display table table-condensed" id="projects"></table>' );
       var oTable = $('#projects').dataTable( {
         "sScrollY": "400px",
         "bPaginate": false,
-            "aaData": projectList,
+            "aaData": tester,
             "aoColumns": [
               { "sTitle": "" },
               { "sTitle": "" }
