@@ -93,10 +93,10 @@
   })
   $('#gh-login').click(function(){
     if($(this).hasClass('btn-success')){
-      $.cookie('return-href', window.location.href)
-      setTimeout(function(){
+      // $.cookie('return-href', window.location.href)
+      // setTimeout(function(){
         window.location='https://github.com/login/oauth/authorize?response_type=code&client_id=a37cadae6a1f4bdd4237&scope=public_repo'  
-      }, 250)
+      // }, 250)
       
     }
     else{
