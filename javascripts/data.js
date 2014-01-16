@@ -418,9 +418,7 @@ var edit = false
     var newHead = $.cookie('user').login + ':' + id.toLowerCase()
     var repo = github.getRepo('landonreed', 'plan-it');
     repo.branch('gh-pages', newHead, function(err) {
-      repo.write(newHead, 'data/TIP/individual/'+id+'.csv', postData, function(i, value){
-        
-      }), body, function(err) {
+      repo.write(newHead, 'data/TIP/individual/'+id+'.csv', postData, body, function(err) {
         console.log(err)
         var pull = {
           "title": title,
