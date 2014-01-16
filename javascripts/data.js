@@ -388,11 +388,9 @@ var edit = false
 
     var title = ($('#issue-title').val()) ? $('#issue-title').val() : $('#issue-title').attr('placeholder')
     var body = ($('#issue-body').val()) ? $('#issue-body').val() : ''
-    var comments = $('#issue-comments').val()
-    if (comments !== ""){
-      comments = "**Comments**\n"+comments
-      body = "**Changes:**\n" + body + '\n\n' + comments
-    }
+    var comments = $('#issue-comments').val() ? $('#issue-comments').val() : "Updated " + id
+
+    body = "**Changes:**\n" + body + '\n\n' + "**Comments**\n"+ comments
     // Properly transmit new lines to github issues ***only for sending in old method!
     // body = body.replace(/\n/g, '%0A');
     // body = body.replace(/#/g, '%23');
@@ -423,7 +421,7 @@ var edit = false
     var newBranch = $.cookie('user').login + '-' + id.toLowerCase()
     var repo = github.getRepo('landonreed', 'plan-it');
     repo.branch('gh-pages', newBranch, function(err) {
-      repo.write(newBranch, 'data/TIP/individual/'+id+'.csv', postData, body, function(err) {
+      repo.write(newBranch, 'data/TIP/individual/'+id+'.csv', postData, comments, function(err) {
         console.log(err)
         var pull = {
           "title": title,
