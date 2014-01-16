@@ -51,13 +51,13 @@ function tableToJson(table) {
 	} 
 	return [maxLength, data]; 
 }
-function exportResults(type) {
+function exportResults(elementId, type) {
 	var name = 'results.' + type
 	var a = document.createElement("a");
 	document.body.appendChild(a);
 	a.style = "display: none";
 	// var json = pivot.results().all()
-	var tableObjects = tableToJson($('#pivot-table').get(0))
+	var tableObjects = tableToJson($(elementId).get(0))
 	console.log(tableObjects)
 	var table = tableObjects[1]
 	lengths = tableObjects[0]

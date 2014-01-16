@@ -166,7 +166,7 @@ var page;
                 page += getNumber(aaData[ aiDisplay[i] ][5])*1;
                 // console.log(iPageMarket)
             }
-             nRow.getElementsByTagName('th')[0].innerHTML = "Starting index is "+iStart;
+             // nRow.getElementsByTagName('th')[0].innerHTML = "Starting index is "+iStart;
             /* Modify the footer row to match what we want */
             // var nCells = nRow.getElementsByTagName('th');
             // nCells[1].innerHTML = parseInt(iPageMarket * 100)/100 +
@@ -227,6 +227,10 @@ var specialElementHandlers = {
 		$('#pivot-demo').pivot_display('reprocess_display', {rowLabels:["FundSource"],columnLabels:["FiscalYearBucket"],summaries:["Total"]})
 	});
 
+	// Export buttons
+	$('.export').click(function(){
+		exportResults('#pivot-table', this.id)
+	});
 
 	});
 
