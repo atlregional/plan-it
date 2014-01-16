@@ -408,13 +408,18 @@ var edit = false
       "body": body
     })
     // $.post("https://api.github.com/repos/landonreed/plan-it/git/refs", data, function(data){console.log(data)})
-    
-    console.log(postData)
-    $.each(grid.collection.models.slice(), function(i, value){
+    var gridCopy = new Backbone.Collection();
+    grid.collection.each(function(studentModel) {
+      gridCopy.add(new Backbone.Model(studentModel.toJSON()));
+    });
+    // console.log(gridCopy)
+    $.each(gridCopy.models, function(i, value){
       delete value.attributes["index"]
       newRows.push(value.attributes)
     })
     postData = JSON2CSV(newRows)
+    console.log(postData)
+    console.log(grid.collection.models)
     var newBranch = $.cookie('user').login + '-' + id.toLowerCase()
     var repo = github.getRepo('landonreed', 'plan-it');
     repo.branch('gh-pages', newBranch, function(err) {
@@ -863,12 +868,12 @@ function grabD3Data(id){
               State: d.State,
               Local: d.Local,
               Bond: d.Bond,
-              Total: d.Total
-              // FederalSum: d.FederalSum,
-              // StateSum: d.StateSum,
-              // LocalSum: d.LocalSum,
-              // BondSum: d.BondSum,
-              // TotalSum: d.TotalSum
+              Total: d.Total,
+              FederalSum: d.FederalSum,
+              StateSum: d.StateSum,
+              LocalSum: d.LocalSum,
+              BondSum: d.BondSum,
+              TotalSum: d.TotalSum
             };
       })
           .get(function(error, rows){
@@ -912,6 +917,10 @@ function grabD3Data(id){
             delete row.Status
             delete row.ProjectType
             delete row.Analysis
+            delete row.StateSum,
+            delete row.LocalSum,
+            delete row.BondSum,
+            delete row.TotalSum
             // delete row.FundSource
             // delete row.Phase
             // delete row.PhaseStatus 

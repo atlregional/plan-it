@@ -186,44 +186,23 @@ function JSON2CSV(objArray) {
 
 	for (var i = 0; i < array.length; i++) {
 		var line = '';
-
-		if (1){//($("#quote").is(':checked')) {
-			for (var index in array[i]) {
+		
+		for (var index in array[i]) {
+			console.log(array[i][index])
+			if(/,/.test(array[i][index])){
 				var value = array[i][index] + "";
 				line += '"' + value.replace(/"/g, '""') + '",';
 			}
-		} else {
-			for (var index in array[i]) {
+			else {
 				line += array[i][index] + ',';
 			}
-		}
+		} 
+
 
 		line = line.slice(0, -1);
 		str += line + '\r\n';
 	}
 	return str;
-
-	// var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-
- //        var str = '';
-
- //        for (var i = 0; i < array.length; i++) {
- //            var line = '';
-
- //            for (var index in array[i]) {
- //                line += array[i][index] + ',';
- //            }
-
- //            // Here is an example where you would wrap the values in double quotes
- //            // for (var index in array[i]) {
- //            //    line += '"' + array[i][index] + '",';
- //            // }
-
- //            line.slice(0,line.Length-1); 
-
- //            str += line + '\r\n';
- //        }
-	// return str;
 	
 }
 function getPathString(arr){
