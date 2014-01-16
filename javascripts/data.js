@@ -338,13 +338,12 @@ var edit = false
   var token = $.cookie('token') ? '&access_token=' + $.cookie('token') : ""
   var postData
   var newRows = []
-  var pull;
   $('#submit-issue').click(function(){
     $(this).text('Submitted')
     $(this).attr('disabled','disabled')
 
-    var title = $('#issue-title').val()) ? $('#issue-title').val() : $('#issue-title').attr('placeholder')
-    var body = $('#issue-body').val()) ? $('#issue-body').val() : ''
+    var title = $('#issue-title').val() ? $('#issue-title').val() : $('#issue-title').attr('placeholder')
+    var body = $('#issue-body').val() ? $('#issue-body').val() : ''
     var comments = $('#issue-comments').val() ? $('#issue-comments').val() : "Updated " + id
 
     body = "**Changes:**\n" + body + '\n\n' + "**Comments**\n"+ comments
@@ -384,12 +383,13 @@ var edit = false
         if(err){
             $('#issue-modal-title').html('Hmmm...something went wrong with creating your new branch.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
           }
-        pull = {
+        var pull = {
           "title": title,
           "body": body,
           "base": "gh-pages",
           "head": newBranch
         };
+        console.log(pull)
         repo.createPullRequest(pull, function(err, pullRequest) {
           console.log(err)
           if(err){
