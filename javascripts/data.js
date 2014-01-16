@@ -338,6 +338,7 @@ var edit = false
   var token = $.cookie('token') ? '&access_token=' + $.cookie('token') : ""
   var postData
   var newRows = []
+  var pull;
   $('#submit-issue').click(function(){
     $(this).text('Submitted')
     $(this).attr('disabled','disabled')
@@ -383,7 +384,7 @@ var edit = false
         if(err){
             $('#issue-modal-title').html('Hmmm...something went wrong with creating your new branch.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
           }
-        var pull = {
+        pull = {
           "title": title,
           "body": body,
           "base": "gh-pages",
