@@ -206,7 +206,12 @@ category: 'data'
       	<div class="row">
 	      	<div class="form-group col-md-2">
 				<label for="new-phase">Type</label>
-				<select class="new-phase form-control" id="new-phase-type" required name="new-phase-type"><option></option></select>
+				<select class="new-phase form-control" id="new-phase-type" required name="new-phase-type">
+					<option></option>
+					{% for phase in site.data.phases %}
+						<option value="{{ phase.id }}">{{ phase.id }}</option>
+					{% endfor %}
+				</select>
 			</div>
 			<div class="form-group col-md-2">
 				<label for="new-auth">Authorized</label>
@@ -223,6 +228,7 @@ category: 'data'
 			<div class="form-group col-md-6">
 				<label for="new-fund-source">Funding source</label>
 				<select class="new-phase form-control" id="new-fund-source" required name="new-fund-source">
+					<option></option>
 					{% for fundsource in site.data.fundsources %}
 						<option value="{{ fundsource.name }}">{{ fundsource.name }}</option>
 					{% endfor %}

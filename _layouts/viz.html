@@ -19,38 +19,41 @@ layout: default
     
   })
   // var svg = null;
-  d3.csv("{{ site.baseurl}}/data/TIP/projects.csv").row(function(d) {
-    return {
-        ARCID: d.ARCID,
-        Description: d.Description,
-        Jurisdiction: d.Jurisdiction,
-        ModelingNetworkYear: +d.ModelingNetworkYear,
-        Sponsor: d.Sponsor,
-        ExistLanes: d.ExistLanes,
-        ProposedLanes: d.ProposedLanes,
-        Length: d.Length,
-        GDOTPI: d.GDOTPI,
-        Limits: d.Limits,
-        Status: d.Status,
-        ProjectType: d.ProjectType,
-        Analysis: d.Analysis,
-        Phase: d.Phase,
-        PhaseStatus: d.PhaseStatus,
-        FiscalYear: d.FiscalYear,
-        FundSource: d.FundSource,
-        Federal: +d.Federal,
-        State: +d.State,
-        Local: +d.Local,
-        Bond: +d.Bond,
-        Total: +d.Total,
-        FederalSum: +d.FederalSum,
-        StateSum: +d.StateSum,
-        LocalSum: +d.LocalSum,
-        BondSum: +d.BondSum,
-        TotalSum: +d.TotalSum
-      };
-}).get(doDataThings);
-
+  if ('{{ page.category }}' == 'explore'){
+    d3.csv("{{ site.baseurl}}/data/TIP/projects.csv").row(function(d) {
+      return {
+          ARCID: d.ARCID,
+          Description: d.Description,
+          Jurisdiction: d.Jurisdiction,
+          ModelingNetworkYear: +d.ModelingNetworkYear,
+          Sponsor: d.Sponsor,
+          ExistLanes: d.ExistLanes,
+          ProposedLanes: d.ProposedLanes,
+          Length: d.Length,
+          GDOTPI: d.GDOTPI,
+          Limits: d.Limits,
+          Status: d.Status,
+          ProjectType: d.ProjectType,
+          Analysis: d.Analysis,
+          Phase: d.Phase,
+          PhaseStatus: d.PhaseStatus,
+          FiscalYear: d.FiscalYear,
+          FundSource: d.FundSource,
+          Federal: +d.Federal,
+          State: +d.State,
+          Local: +d.Local,
+          Bond: +d.Bond,
+          Total: +d.Total,
+          FederalSum: +d.FederalSum,
+          StateSum: +d.StateSum,
+          LocalSum: +d.LocalSum,
+          BondSum: +d.BondSum,
+          TotalSum: +d.TotalSum
+        };
+    }).get(doDataThings);
+  }
+  else
+    doDataThings(null, null)
 
 
 function doThis(data){

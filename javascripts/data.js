@@ -1002,7 +1002,6 @@ function getMap(id){
     window.location='https://github.com/landonreed/plan-it/edit/gh-pages/data/TIP/individual/'+ $('.arcid').html() +'.csv'
   })
   var href="https://github.com/landonreed/plan-it/edit/gh-pages/data/TIP/individual/'+el.ARCID+'.csv"
-  var uniqueIds = {};
   var projectList = [];
   var jsonHtmlTable;
   var color = 'active'
@@ -1083,32 +1082,14 @@ function getMap(id){
     // console.log(data);
     tester = [
       {% for projecto in site.data.projects %}
-        ['{{ projecto.id }}', '<a id="+{{ projecto.id }}-link" title="View data for {{ projecto.id }}" href="#/{{ projecto.id }}" class="btn btn-default btn-xs view" role="button">View</a>'],
+        ['{{ projecto.id }}', '<a id="{{ projecto.id }}-link" title="View data for {{ projecto.id }}" href="#/{{ projecto.id }}" class="btn btn-default btn-xs view" role="button">View</a>'],
       {% endfor %}
     ]
-    $.each(data, function(i, el){
-      if (i === 0){
-        $.each(el, function(key, value){
-          // console.log(key)
-          uniqueIds[key] = []
-        })
-      }
-      $.each(el, function(key, value){
-        if($.inArray(value, uniqueIds[key]) === -1) 
-            uniqueIds[key].push(value);
-      })
-        
-    });
-    console.log(uniqueIds)
+
     var url = window.location.href
     var hash = url.split('/')[5]
     console.log(hash)
-    $.each(uniqueIds["ARCID"], function(i, uniqueId){
-      projectList.push([uniqueId, '<a id="'+uniqueId+'-link" title="View data for '+uniqueId+'" href="#/' + uniqueId + '" class="btn btn-default btn-xs view" role="button">View</a>'])
-
-    })
-    // populateSelect('#new-phase-type', uniqueIds["Phase"].sort())
-    populateSelect('#new-fund-source', uniqueIds["FundSource"].sort())
+    
     $('#demo').html( '<table cellpadding="0" cellspacing="0" border="0" class="display table table-condensed" id="projects"></table>' );
       var oTable = $('#projects').dataTable( {
         "sScrollY": "400px",
@@ -1130,17 +1111,18 @@ function getMap(id){
   var urls = [];
   var projects = ""
 
-var rawUrl = ""
-var apiUrl = ""
-  $.getJSON("https:// " + "apiWOMPERS" + ".github.com/repos/landonreed/plan-it/tags?callback=?", function (repo_data) {
-        for (var j = 0; j < repo_data.data.length; j += 1) {
-            var appendStr = "<div class=\"branch\">";
+// Old API call to get tags
+// var rawUrl = ""
+// var apiUrl = ""
+//   $.getJSON("https:// " + "apiWOMPERS" + ".github.com/repos/landonreed/plan-it/tags?callback=?", function (repo_data) {
+//         for (var j = 0; j < repo_data.data.length; j += 1) {
+//             var appendStr = "<div class=\"branch\">";
 
-            rawUrl = "https://raw.github.com/landonreed/plan-it/"+repo_data.data[j].name+"/data/TIP/projects.csv"
-            apiUrl = "https://api.github.com/repos/landonreed/plan-it/contents/"+repo_data.data[j].name+"/data/TIP/projects.csv"
-            urls.push(apiUrl)
-            appendStr += "<h3><a href=\"https://raw.github.com/landonreed/plan-it/"+repo_data.data[j].name+"/data/TIP/projects.csv\">"+repo_data.data[j].name+"</a></h3>";
+//             rawUrl = "https://raw.github.com/landonreed/plan-it/"+repo_data.data[j].name+"/data/TIP/projects.csv"
+//             apiUrl = "https://api.github.com/repos/landonreed/plan-it/contents/"+repo_data.data[j].name+"/data/TIP/projects.csv"
+//             urls.push(apiUrl)
+//             appendStr += "<h3><a href=\"https://raw.github.com/landonreed/plan-it/"+repo_data.data[j].name+"/data/TIP/projects.csv\">"+repo_data.data[j].name+"</a></h3>";
 
-            $("#tags").append(appendStr);
-        }
-  });
+//             $("#tags").append(appendStr);
+//         }
+//   });
