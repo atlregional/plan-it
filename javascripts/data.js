@@ -380,6 +380,8 @@ var edit = false
     $('#submit-issue').removeAttr('disabled')
     $('#issue-modal-success').hide()
   })
+  var postData
+  var newRows = []
   $('#submit-issue').click(function(){
     $(this).text('Submitted')
     $(this).attr('disabled','disabled')
@@ -412,7 +414,7 @@ var edit = false
       delete value.attributes["index"]
       newRows.push(value.attributes)
     })
-    var postData = JSON2CSV(newRows)
+    postData = JSON2CSV(newRows)
     var newHead = $.cookie('user').login + ':' + id.toLowerCase()
     var repo = github.getRepo('landonreed', 'plan-it');
     repo.branch('gh-pages', newHead, function(err) {
