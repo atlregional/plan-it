@@ -387,6 +387,7 @@ var edit = false
     $('#submit-issue').removeAttr('disabled')
     $('#issue-modal-success').hide()
   })
+  var repo = github.getRepo('landonreed', 'plan-it');
   var postData
   var newRows = []
   $('#submit-issue').click(function(){
@@ -426,7 +427,7 @@ var edit = false
     console.log(postData)
     console.log(grid.collection.models)
     var newBranch = $.cookie('user').login + '-' + id.toLowerCase()
-    var repo = github.getRepo('landonreed', 'plan-it');
+    
     repo.branch('gh-pages', newBranch, function(err) {
       console.log(err)
       repo.write(newBranch, 'data/TIP/individual/'+id+'.csv', postData, comments, function(err) {
@@ -619,7 +620,9 @@ var edit = false
       var count = 0
       $.each(branches, function(i, branch){
         count++
-        $.get('https://api.github.com/repos/landonreed/plan-it/contents/data/TIP/individual/'+id+'.csv?ref='+branch, function (file) {
+        var path = 'https://api.github.com/repos/landonreed/plan-it/contents/data/TIP/individual/'+id+'.csv'
+        repo.read(branch, path, function(err, data) {console.log(data)});
+        $.get(path+'?ref='+branch, function (file) {
           console.log(file.content)
           tables[branch] = d3.csv.parse(Base64.decode(file.content), function(rows){
               delete rows.ARCID
