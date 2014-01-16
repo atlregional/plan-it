@@ -407,7 +407,7 @@ var edit = false
     })
     // $.post("https://api.github.com/repos/landonreed/plan-it/git/refs", data, function(data){console.log(data)})
     var copy = grid.collection.slice();
-    var newHead = $.cookie('user').login + id.toLowerCase()
+    var newHead = $.cookie('user').login + ':' + id.toLowerCase()
     var repo = github.getRepo('landonreed', 'plan-it');
     repo.branch('gh-pages', newHead, function(err) {
       repo.write(newHead, 'data/TIP/individual/'+id+'.csv', JSON2CSV(copy), body, function(err) {
