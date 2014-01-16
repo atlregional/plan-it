@@ -655,12 +655,18 @@ var edit = false
             $.each(branches, function(i, branch){
               
               if (tables[branch]){
-                var tableString = '<h4><a href="https://github.com/landonreed/plan-it/blob/' + branch + '/data/TIP/individual/'+'.csv">' + branch + '' + '</a></h4><div class="table-responsive"><table id="'+branch+'" class="table table-hover table-condensed">'
+                var tableString = '<div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"><a href="https://github.com/landonreed/plan-it/blob/' + branch + '/data/TIP/individual/'+'.csv">' + branch + '</a><small class="pull-right"><em>Hover over shaded cells for more info!</em></small></h4></div><div class="panel-body"><div class="table-responsive"><table id="'+branch+'" class="table table-hover table-condensed">'
                 console.log('****************from '+prevBranch+' to '+branch+'****************')
                 tableString += '<thead><tr>'
                 for (var key in tables[branch][0]) {
-                    tableString += '<th>' + key
-                      tableString += '</th>'
+                  // Hack to change heading titles
+                  if (key == "FiscalYear")
+                    key = "FY"
+                  else if (key == "PhaseStatus")
+                    key = "Auth"
+
+                  tableString += '<th>' + key
+                    tableString += '</th>'
                 }
                 tableString += '</tr></thead>'
                 tableString += '<tbody>'
@@ -735,7 +741,7 @@ var edit = false
                               // string += '</tbody>'
                               // return string
                 })
-                tableString += '</tbody>'
+                tableString += '</tbody></table></div></div></div>'
                 
                 $("#history").append(tableString) //'<h4><a href="https://github.com/landonreed/plan-it/blob/' + branch + '/data/TIP/individual/'+'.csv">' + branch + '' + '</a></h4><div class="table-responsive"><table id="'+branch+'" class="table">'+populateTable(tables[branch])+'</table></div>');  
                 previous = tables[branch]
