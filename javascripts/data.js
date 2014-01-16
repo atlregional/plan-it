@@ -380,6 +380,9 @@ var edit = false
       console.log(err)
       repo.write(newBranch, 'data/TIP/individual/'+id+'.csv', postData, comments, function(err) {
         console.log(err)
+        if(err){
+            $('#issue-modal-title').html('Hmmm...something went wrong with creating your new branch.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
+          }
         var pull = {
           "title": title,
           "body": body,
@@ -388,13 +391,18 @@ var edit = false
         };
         repo.createPullRequest(pull, function(err, pullRequest) {
           console.log(err)
-          $(this).button('reset')
-          console.log(pullRequest)
-          $.each(changes, function(i, change){undoChange()})
-          $('#issue-modal-title').html('Success!')
-          $('#modal-edits').hide()
-          $('#issue-modal-success').show()
-          $('#issue-modal-success-link').html('See your issue <a href="' + pullRequest.html_url + '">here</a>.')  
+          if(err){
+            $('#issue-modal-title').html('Hmmm...something went wrong with creating your pull request.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
+          }
+          else{
+            $(this).button('reset')
+            console.log(pullRequest)
+            $.each(changes, function(i, change){undoChange()})
+            $('#issue-modal-title').html('Success!')
+            $('#modal-edits').hide()
+            $('#issue-modal-success').show()
+            $('#issue-modal-success-link').html('See your issue <a href="' + pullRequest.html_url + '">here</a>.')  
+          }
         });
       });
     });
