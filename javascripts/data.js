@@ -758,7 +758,7 @@ function populateIssues(){
   $.each(issues, function(i, issue){
     if (issue.title == id){
       var state = issue.state == "open" ? 'success' : 'important'
-      $("#issue-list").append('<li class="list-group-item"><span class="badge" title="Issue #'+issue.number+'">#'+issue.number+'</span><p><a href="'+issue.user.url+'" title="'+issue.user.login+'"><img src="'+issue.user.avatar_url+'" height="30" width="30"></a> <a href="' + issue.html_url + '">' + issue.title + '' + '</a></p><p>'+converter.makeHtml(issue.body)+'</p></li>');
+      $("#issue-list").append('<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="badge pull-right" title="Issue #'+issue.number+'">#'+issue.number+'</span><a href="'+issue.user.url+'" title="'+issue.user.login+'"><img src="'+issue.user.avatar_url+'" height="30" width="30"></a> Created by <a href="' + issue.user.url + '">' + issue.user.login + '' + '</a></h3></div><div class="panel-body"><p>'+converter.makeHtml(issue.body)+'</p></div><div class="panel-footer"><a class="btn btn-default" href="' + issue.html_url + '">View on GitHub</a></div></div>');
     }
   })
   if($('#issue-list').is(':empty')){
