@@ -3,10 +3,57 @@ layout: viz
 title: Visualization
 category: 'explore'
 ---
-<div class="col-md-12">
-<h3>Hello World</h3>
-<div class="chart"></div>	
+<div class="row">
+	<div class="col-xs-6 col-md-3">
+		<div class="thumbnail">
+			<a href="#" data-toggle="modal" data-target="#myModal" ><img src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2012/03/d3js.jpg" alt="..."></a>
+			<div class="caption">
+				<h3>Thumbnail label</h3>
+				<p>...</p>
+				<p><a href="#" data-toggle="modal" data-target="#myModal" class="btn btn-primary" role="button">View</a> <a href="#" class="btn btn-default" role="button">Export</a></p>
+			</div>
+		</div>
+	</div>
+  <div class="col-xs-6 col-md-3">
+		<div class="thumbnail">
+			<img src="http://maxdemarzidotcom.files.wordpress.com/2012/02/network.png%3Fw%3D580%26h%3D478" alt="...">
+			<div class="caption">
+				<h3>Thumbnail label</h3>
+				<p>...</p>
+				<p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-6 col-md-3">
+		<div class="thumbnail">
+			<img src="http://www.webresourcesdepot.com/wp-content/uploads/nvd3_js.gif" alt="...">
+			<div class="caption">
+				<h3>Thumbnail label</h3>
+				<p>...</p>
+				<p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
+			</div>
+		</div>
+	</div>
 </div>
+
+<!-- List of Edits Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Visualization #1</h4>
+      </div>
+      <div class="modal-body">
+      	<div class="chart"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <script type="text/javascript">
 	function doDataThings(error, rows){
 	  console.log(rows)
