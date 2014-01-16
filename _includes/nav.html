@@ -92,6 +92,7 @@
     if($(this).hasClass('btn-success'))
       window.location='https://github.com/login/oauth/authorize?response_type=code&client_id=a37cadae6a1f4bdd4237&scope=public_repo'
     else{
+      window.location='{{ site.baseurl }}/'
       $.removeCookie('user', { path: '{{ site.baseurl }}' })
       $.removeCookie('token', { path: '{{ site.baseurl }}' })
       $('#welcome-message').hide()
