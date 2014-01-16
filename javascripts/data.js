@@ -343,8 +343,8 @@ var edit = false
     $(this).text('Submitted')
     $(this).attr('disabled','disabled')
 
-    var title = ($('#issue-title').val()) ? $('#issue-title').val() : $('#issue-title').attr('placeholder')
-    var body = ($('#issue-body').val()) ? $('#issue-body').val() : ''
+    var title = $('#issue-title').val()) ? $('#issue-title').val() : $('#issue-title').attr('placeholder')
+    var body = $('#issue-body').val()) ? $('#issue-body').val() : ''
     var comments = $('#issue-comments').val() ? $('#issue-comments').val() : "Updated " + id
 
     body = "**Changes:**\n" + body + '\n\n' + "**Comments**\n"+ comments
