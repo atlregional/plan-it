@@ -694,10 +694,10 @@ var edit = false
                                 var diff = curr - prev
                                 console.log('that\'s a diff of ' + diff)
                                 if (diff > 0){
-                                  tableString += '<td class="success" title="'+key+' funding increased by '+Math.abs(diff)+'">' + data + '</td>'
+                                  tableString += '<td class="success" title="'+key+' funding increased by '+accounting.formatMoney(Math.abs(diff))+'">' + data + '</td>'
                                 }
                                 else{
-                                  tableString += '<td class="danger" title="'+key+' funding decreased by '+Math.abs(diff)+'">' + data + '</td>' 
+                                  tableString += '<td class="danger" title="'+key+' funding decreased by '+accounting.formatMoney(Math.abs(diff))+'">' + data + '</td>' 
                                 }
                               }
                               else {
