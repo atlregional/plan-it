@@ -620,9 +620,10 @@ var edit = false
       var count = 0
       $.each(branches, function(i, branch){
         count++
-        var path = 'https://api.github.com/repos/landonreed/plan-it/contents/data/TIP/individual/'+id+'.csv'
+        var path = 'data/TIP/individual/'+id+'.csv'
+        var token = $.cookie('token') ? '&access_token=' + $.cookie('token') : ""
         repo.read(branch, path, function(err, data) {console.log(data)});
-        $.get(path+'?ref='+branch, function (file) {
+        $.get('https://api.github.com/repos/landonreed/plan-it/contents/'+path+'?ref='+branch+token, function (file) {
           console.log(file.content)
           tables[branch] = d3.csv.parse(Base64.decode(file.content), function(rows){
               delete rows.ARCID
