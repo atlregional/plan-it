@@ -925,10 +925,12 @@ function grabD3Data(id){
                 historyClick = false;
 
                 if ($.cookie('token') == undefined){
-                  // $('#begin-edits').attr('disabled', 'disabled')
+                  $('#begin-edits').attr('disabled', 'disabled')
+
                 }
                 else{
                   $('#begin-edits').removeAttr('disabled')
+                  $('.login-prompt').hide()
                 }
                 $('#issue-title').attr('placeholder', id)
                 $('.arcid').empty().append(id)
