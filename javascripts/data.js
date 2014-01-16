@@ -421,6 +421,7 @@ var edit = false
     var newBranch = $.cookie('user').login + '-' + id.toLowerCase()
     var repo = github.getRepo('landonreed', 'plan-it');
     repo.branch('gh-pages', newBranch, function(err) {
+      console.log(err)
       repo.write(newBranch, 'data/TIP/individual/'+id+'.csv', postData, comments, function(err) {
         console.log(err)
         var pull = {
@@ -430,6 +431,7 @@ var edit = false
           "head": newBranch
         };
         repo.createPullRequest(pull, function(err, pullRequest) {
+          console.log(err)
           $(this).button('reset')
           console.log(pullRequest)
           $.each(changes, function(i, change){undoChange()})
@@ -509,10 +511,10 @@ var edit = false
     document.body.appendChild(a);
     a.style = "display: none";
     // var json = pivot.results().all()
-    var tableObjects = tableToJson($('#js-table').get(0))
+    var tableObjects = tableToJson($('.backgrid').get(0))
     console.log(tableObjects)
     var table = tableObjects[1]
-    lengths = tableObjects[0]
+    var lengths = tableObjects[0]
     // if (type === 'json') {
     //  // alert('Exporting results as ' + type + '.')
     //  formBlob = new Blob([JSON.stringify(table)], {
@@ -544,10 +546,11 @@ var edit = false
       doc.cellInitialize();
 
       $.each(table, function (i, row) {
+        // Write table header
         if (i == 0) {
           $.each(lengths, function (j, length) {
             doc.setFontStyle('bold')
-            doc.cell(10, 200, length * 5 + 13, 20, j, i)
+            doc.cell(10, 200, length * 5 + 13, 20, strip(j), i)
 
           })
         }
@@ -561,7 +564,7 @@ var edit = false
           // }
           // console.log(j)
           // console.log(lengths[j])
-          doc.cell(10, 200, lengths[j] * 5 + 13, 20, cell, i + 1);
+          doc.cell(10, 200, lengths[j] * 5 + 13, 20, strip(cell), i + 1);
 
         })
       })
