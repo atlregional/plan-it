@@ -14,7 +14,8 @@ body { padding-top: 70px; }
     -webkit-transform: scaleX(-1);
     -ms-transform: scaleX(-1);
 }
-
+.badge-important{background-color:#b94a48;}
+.badge-success{background-color:#b94a48;}
 .edit{
   margin-bottom:10px; 
   display:none;

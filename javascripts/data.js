@@ -311,35 +311,21 @@ var edit = false
     e.preventDefault()
     $(this).tab('show')
   })
+  
+  $('#gh-view-issues').click(function () {
+    window.location = 'https://github.com/landonreed/plan-it/search?q='+id+'&type=Issues'
+  })
   $('#issues-tab').click(function () {
-    var converter = new Showdown.converter();
     console.log("issues tab")
     if(jQuery.isEmptyObject(issues)){
       $.get("https://api.github.com/repos/landonreed/plan-it/issues?", function (issuesData) {
         issues = issuesData
         console.log(issues[0].body)
-        $("#issue-list").empty()
-        $.each(issues, function(i, issue){
-          if (issue.title == id){
-            $("#issue-list").append('<p><a href="'+issue.user.url+'" title="'+issue.user.login+'"><img src="'+issue.user.avatar_url+'" height="30" width="30"></a> <a href="' + issue.html_url + '">' + issue.title + '' + '</a></p><p>'+converter.makeHtml(issue.body)+'</p>');
-          }
-        })
-        if($('#issue-list').is(':empty')){
-          $("#issue-list").append('<h3>There are currently no issues for ' + id + '.</h3>')
-        }
+        populateIssues()
       });
     }
     else{
-      $("#issue-list").empty()
-      $.each(issues, function(i, issue){
-        var reg = new RegExp(id,"g");
-        if (reg.test(issue.title)){
-          $("#issue-list").append('<p><a href="'+issue.user.url+'" title="'+issue.user.login+'"><img src="'+issue.user.avatar_url+'" height="30" width="30"></a> <a href="' + issue.html_url + '">' + issue.title + '' + '</a></p><p>'+converter.makeHtml(issue.body)+'</p>');
-        }
-      })
-      if($('#issue-list').is(':empty')){
-        $("#issue-list").append('<h3>There are currently no issues for ' + id + '.</h3>')
-      }
+      populateIssues()
     }
   })
   var issues = {};
@@ -765,6 +751,24 @@ var edit = false
     
   })
 var rtp;
+
+function populateIssues(){
+  var converter = new Showdown.converter();
+  $("#issue-list").empty()
+  $.each(issues, function(i, issue){
+    if (issue.title == id){
+      var state = issue.state == "open" ? 'success' : 'important'
+      $("#issue-list").append('<li class="list-group-item"><span class="badge" title="Issue #'+issue.number+'">#'+issue.number+'</span><p><a href="'+issue.user.url+'" title="'+issue.user.login+'"><img src="'+issue.user.avatar_url+'" height="30" width="30"></a> <a href="' + issue.html_url + '">' + issue.title + '' + '</a></p><p>'+converter.makeHtml(issue.body)+'</p></li>');
+    }
+  })
+  if($('#issue-list').is(':empty')){
+    $("#issue-list").append('<h3>There are currently no issues for ' + id + '.</h3>')
+    $('#gh-view-issues').attr('disabled', 'disabled')
+  }
+  else{
+    $('#gh-view-issues').removeAttr('disabled')
+  }
+}
 
 function addPhase(){
   $('#phaseModal').modal('hide')
