@@ -314,8 +314,10 @@ var edit = false
   $('#begin-edits').click(function(){
     edit = !edit
     if(edit){
+      $('.login-prompt').hide()
       $('.edit').fadeIn(250)
       $('#begin-edits').addClass('active')
+
     }
     else{
       $('.edit').fadeOut(250)
