@@ -21,6 +21,15 @@ body { padding-top: 70px; }
   display:none;
 }
 
+.login-prompt{
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 .leaflet-map-pane img {
   max-width: none;
   max-height: none;
