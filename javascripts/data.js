@@ -380,8 +380,6 @@ var edit = false
     $('#submit-issue').removeAttr('disabled')
     $('#issue-modal-success').hide()
   })
-  var postData
-  var newRows = []
   $('#submit-issue').click(function(){
     $(this).text('Submitted')
     $(this).attr('disabled','disabled')
@@ -408,24 +406,18 @@ var edit = false
       "body": body
     })
     // $.post("https://api.github.com/repos/landonreed/plan-it/git/refs", data, function(data){console.log(data)})
-
-    // Can't use getTable b/c we need all of the data!
-    // var postData = getTable(".backgrid")
-    // delete postData["#"]
-    // postData = JSON2CSV(postData)
-    // console.log(postData)
     
     console.log(postData)
     $.each(grid.collection.models.slice(), function(i, value){
       delete value.attributes["index"]
       newRows.push(value.attributes)
     })
-    postData = JSON2CSV(newRows)
+    var postData = JSON2CSV(newRows)
     var newHead = $.cookie('user').login + ':' + id.toLowerCase()
     var repo = github.getRepo('landonreed', 'plan-it');
     repo.branch('gh-pages', newHead, function(err) {
       repo.write(newHead, 'data/TIP/individual/'+id+'.csv', postData, function(i, value){
-        console.log(value.attributes)
+        
       }), body, function(err) {
         console.log(err)
         var pull = {
