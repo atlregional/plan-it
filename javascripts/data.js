@@ -318,7 +318,7 @@ var edit = false
   $('#issues-tab').click(function () {
     console.log("issues tab")
     if(jQuery.isEmptyObject(issues)){
-      $.get("https://api.github.com/repos/landonreed/plan-it/issues?", function (issuesData) {
+      $.get("https://api.github.com/repos/landonreed/plan-it/issues?"+token, function (issuesData) {
         issues = issuesData
         console.log(issues[0].body)
         populateIssues()
@@ -388,6 +388,7 @@ var edit = false
     $('#issue-modal-success').hide()
   })
   var repo = github.getRepo('landonreed', 'plan-it');
+  var token = $.cookie('token') ? '&access_token=' + $.cookie('token') : ""
   var postData
   var newRows = []
   $('#submit-issue').click(function(){
@@ -621,8 +622,9 @@ var edit = false
       $.each(branches, function(i, branch){
         count++
         var path = 'data/TIP/individual/'+id+'.csv'
-        var token = $.cookie('token') ? '&access_token=' + $.cookie('token') : ""
-        repo.read(branch, path, function(err, data) {console.log(data)});
+        
+        // Should probably be using this guy
+        // repo.read(branch, path, function(err, data) {console.log(data)});
         $.get('https://api.github.com/repos/landonreed/plan-it/contents/'+path+'?ref='+branch+token, function (file) {
           console.log(file.content)
           tables[branch] = d3.csv.parse(Base64.decode(file.content), function(rows){
