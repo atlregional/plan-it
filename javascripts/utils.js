@@ -167,23 +167,23 @@ function JSON2CSV(objArray) {
 	var str = '';
 	var line = '';
 
-	if (1){//($("#labels").is(':checked')) {
-		var head = array[0];
-		if ($("#quote").is(':checked')) {
-			for (var index in array[0]) {
-				var value = index + "";
-				line += '"' + value.replace(/"/g, '""') + '",';
-			}
-		} else {
-			for (var index in array[0]) {
-				line += index + ',';
-			}
-		}
+	// add the headers to the csv string
+	var head = array[0];
+	// Does not check for commas in headers
+	for (var index in array[0]) {
 
-		line = line.slice(0, -1);
-		str += line + '\r\n';
+		// Hack to make up for verbose column names in original
+		if (index == "Auth" )
+			index = "PhaseStatus"
+		else if (index == "FY")
+			index = "FiscalYear"
+		
+		line += index + ',';
 	}
+	line = line.slice(0, -1);
+	str += line + '\r\n';
 
+	// Go through the values for each object
 	for (var i = 0; i < array.length; i++) {
 		var line = '';
 		
