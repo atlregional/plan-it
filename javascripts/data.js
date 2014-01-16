@@ -312,16 +312,37 @@ var edit = false
     $(this).tab('show')
   })
   $('#issues-tab').click(function () {
+    var converter = new Showdown.converter();
     console.log("issues tab")
-    if($('#issue-list').is(':empty')){
-      $.get("https://api.github.com/repos/landonreed/plan-it/issues?", function (issues) {
-        console.log(issues)
+    if(jQuery.isEmptyObject(issues)){
+      $.get("https://api.github.com/repos/landonreed/plan-it/issues?", function (issuesData) {
+        issues = issuesData
+        console.log(issues[0].body)
+        $("#issue-list").empty()
         $.each(issues, function(i, issue){
-          $("#issue-list").append('<p><a href="'+issue.user.url+'" title="'+issue.user.login+'"><img src="'+issue.user.avatar_url+'" height="30" width="30"></a> <a href="' + issue.url + '">' + issue.title + '' + '</a></p><p>'+issue.body+'</p>');
+          if (issue.title == id){
+            $("#issue-list").append('<p><a href="'+issue.user.url+'" title="'+issue.user.login+'"><img src="'+issue.user.avatar_url+'" height="30" width="30"></a> <a href="' + issue.html_url + '">' + issue.title + '' + '</a></p><p>'+converter.makeHtml(issue.body)+'</p>');
+          }
         })
+        if($('#issue-list').is(':empty')){
+          $("#issue-list").append('<h3>There are currently no issues for ' + id + '.</h3>')
+        }
       });
     }
+    else{
+      $("#issue-list").empty()
+      $.each(issues, function(i, issue){
+        var reg = new RegExp(id,"g");
+        if (reg.test(issue.title)){
+          $("#issue-list").append('<p><a href="'+issue.user.url+'" title="'+issue.user.login+'"><img src="'+issue.user.avatar_url+'" height="30" width="30"></a> <a href="' + issue.html_url + '">' + issue.title + '' + '</a></p><p>'+converter.makeHtml(issue.body)+'</p>');
+        }
+      })
+      if($('#issue-list').is(':empty')){
+        $("#issue-list").append('<h3>There are currently no issues for ' + id + '.</h3>')
+      }
+    }
   })
+  var issues = {};
   var previous;
   var id;
   var historyClick = false
