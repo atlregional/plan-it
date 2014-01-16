@@ -71,6 +71,9 @@
         $('#gh-login').removeClass('btn-success').addClass('btn-danger').text('Log out').attr('title', 'Log out of Plan-It')
         console.log('showing username')
         $('#gh-login').button('reset').text('Log out')
+        if($.cookie('return-href') !== undefined){
+          window.location = $.cookie('return-href')
+        }
      })
     });
   }
@@ -90,6 +93,7 @@
   })
   $('#gh-login').click(function(){
     if($(this).hasClass('btn-success'))
+      $.cookie('return-href') = window.location.href
       window.location='https://github.com/login/oauth/authorize?response_type=code&client_id=a37cadae6a1f4bdd4237&scope=public_repo'
     else{
       window.location='{{ site.baseurl }}/'
