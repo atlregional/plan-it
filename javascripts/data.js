@@ -415,16 +415,16 @@ var edit = false
       newRows.push(value.attributes)
     })
     postData = JSON2CSV(newRows)
-    var newHead = $.cookie('user').login + ':' + id.toLowerCase()
+    var newBranch = $.cookie('user').login + '-' + id.toLowerCase()
     var repo = github.getRepo('landonreed', 'plan-it');
-    repo.branch('gh-pages', newHead, function(err) {
-      repo.write(newHead, 'data/TIP/individual/'+id+'.csv', postData, body, function(err) {
+    repo.branch('gh-pages', newBranch, function(err) {
+      repo.write(newBranch, 'data/TIP/individual/'+id+'.csv', postData, body, function(err) {
         console.log(err)
         var pull = {
           "title": title,
           "body": body,
           "base": "gh-pages",
-          "head": newHead
+          "head": newBranch
         };
         repo.createPullRequest(pull, function(err, pullRequest) {
           $(this).button('reset')
