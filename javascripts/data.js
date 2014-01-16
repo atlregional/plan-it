@@ -661,7 +661,7 @@ var edit = false
             $.each(branches, function(i, branch){
               
               if (tables[branch]){
-                var tableString = '<div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"><a href="https://github.com/landonreed/plan-it/blob/' + branch + '/data/TIP/individual/'+'.csv">' + branch + '</a><small class="pull-right"><em>Hover over shaded cells for more info!</em></small></h4></div><div class="panel-body"><div class="table-responsive"><table id="'+branch+'" class="table table-hover table-condensed">'
+                var tableString = '<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><a href="https://github.com/landonreed/plan-it/blob/' + branch + '/data/TIP/individual/'+'.csv">' + branch + '</a><small class="pull-right"><em>Hover over shaded cells for more info!</em></small></h3></div><div class="panel-body"><div class="table-responsive"><table id="'+branch+'" class="table table-hover table-condensed">'
                 console.log('****************from '+prevBranch+' to '+branch+'****************')
                 tableString += '<thead><tr>'
                 for (var key in tables[branch][0]) {
@@ -1162,13 +1162,13 @@ function getMap(id){
     $('#demo').html( '<table cellpadding="0" cellspacing="0" border="0" class="display table table-condensed" id="projects"></table>' );
       var oTable = $('#projects').dataTable( {
         "sScrollY": "400px",
-      "bPaginate": false,
-          "aaData": projectList,
-          "aoColumns": [
-      { "sTitle": "" },
-      { "sTitle": "" }
-      
-    ]
+        "bPaginate": false,
+            "aaData": projectList,
+            "aoColumns": [
+              { "sTitle": "" },
+              { "sTitle": "" }
+              
+            ]
       } );
       $('#'+id+'-link').closest('tr').addClass(color).siblings().removeClass(color);
       $("#searchInput").keyup( function () {
