@@ -12,7 +12,6 @@ category: 'data'
 <ul id="myTab" class="nav nav-tabs">
   <li class="active"><a href="#proj">Projects</a></li>
   <li><a href="#data">Data</a></li>
-  <li><a href="#issues" id="issues-tab">Issues</a></li>
 </ul>
 
 <div class="tab-content">
@@ -29,6 +28,7 @@ category: 'data'
 				
 				<!-- <li><a href="#pmap" id="map-tab">Map</a></li> -->
 				<li><a href="#history" id="history-tab">History</a></li>
+				<li><a href="#issues" id="issues-tab">Issues</a></li>
 				<!-- <li><a href="#issue" id="issue-tab">Issue</a></li> -->
 			</ul>
 			<div class="tab-content">
@@ -37,7 +37,12 @@ category: 'data'
 						<h1>History</h1>
 					
 				</div>
-				<div id="issue" class="tab-pane pill">
+				<div id="issues" class="tab-pane pill">
+					<!-- <div class="col-md-6"> -->
+						<div id="issue-list"></div>
+					<!-- </div> -->
+			   </div>
+				<!-- <div id="issue" class="tab-pane pill">
 					
 						<h3>Open an issue for <span class="arcid"></span>:</h3>
 						<input id="issue-title" type="text" class="form-control" placeholder=""></br>
@@ -49,7 +54,7 @@ category: 'data'
 						<button id="delete" class="issue btn btn-sm btn-danger" role="button">Delete</button>
 						<button id="funding" class="issue btn btn-sm btn-success" role="button">Funding</button><hr>
 
-				</div>
+				</div> -->
 				<!-- <div id="pmap" class="tab-pane pill">
 						
 					
@@ -126,12 +131,6 @@ category: 'data'
 			</div> -->
 			<div id="demo"></div>
 		</div>
-   </div>
-   <div id="issues" class="tab-pane">
-   	 <div class="col-md-6">
-     <h1>Issues</h1>
-     <div id="issue-list"></div>
-     </div>
    </div>
    <div id="data" class="tab-pane">
 		<div class="col-md-6">
