@@ -336,7 +336,7 @@ var edit = false
     $('#submit-issue').removeAttr('disabled')
     $('#issue-modal-success').hide()
   })
-  var repo = github.getRepo('landonreed', 'plan-it');
+  var repo = github.getRepo('atlregional', 'plan-it');
   var token = $.cookie('token') ? '&access_token=' + $.cookie('token') : ""
   var postData
   var newRows = []
