@@ -291,6 +291,7 @@ var edit = false
       $('#delay').attr('disabled', false)
     }
     else{
+      // issue-title is vestigial!
       $('#issue-title').attr('placeholder', id)
       $('.issue').attr("disabled", false)
     }
@@ -302,15 +303,16 @@ var edit = false
     // alert('Row: ' + parseInt(row+2) + ', Column: ' + col);
     rowNum = parseInt(row+2)
   });
-  $('.issue').click(function(){
-    var title = ($('#issue-title').val()) ? $('#issue-title').val() : $('#issue-title').attr('placeholder')
-    var body = ($('#issue-body').val()) ? $('#issue-body').val() : ''
+  // Old issue stuff
+  // $('.issue').click(function(){
+  //   var title = id
+  //   var body = $('#issue-body').val() ? $('#issue-body').val() : ''
 
-    // Properly transmit new lines to github issues
-    body = body.replace(/\n/g, '%0A');
-    body = body.replace(/#/g, '%23');
-    window.location='https://github.com/landonreed/plan-it/issues/new?title='+title+'&body='+body+'&labels='+this.id
-  })
+  //   // Properly transmit new lines to github issues
+  //   body = body.replace(/\n/g, '%0A');
+  //   body = body.replace(/#/g, '%23');
+  //   window.location='https://github.com/landonreed/plan-it/issues/new?title='+title+'&body='+body+'&labels='+this.id
+  // })
   $('#begin-edits').click(function(){
     edit = !edit
     if(edit){
@@ -342,8 +344,16 @@ var edit = false
     $(this).text('Submitted')
     $(this).attr('disabled','disabled')
 
-    var title = $('#issue-title').val() ? $('#issue-title').val() : $('#issue-title').attr('placeholder')
-    var body = $('#issue-body').val() ? $('#issue-body').val() : ''
+    var title = id
+    var body;
+    $.each(changes, function(i, change){
+      if (i === 0){
+        body = change.markdown
+      }
+      else{
+        body += "\n" + change.markdown
+      }
+    })
     var comments = $('#issue-comments').val() ? $('#issue-comments').val() : "Updated " + id
 
     body = "**Changes:**\n" + body + '\n\n' + "**Comments**\n"+ comments
@@ -374,8 +384,15 @@ var edit = false
     postData = JSON2CSV(newRows)
     console.log(postData)
     console.log(grid.collection.models)
-    var newBranch = $.cookie('user').login + '-' + id.toLowerCase()
-    
+    var newBranch = /*$.cookie('user').login +*/ '-' + id.toLowerCase()
+    var pull = {
+          "title": title,
+          "body": body,
+          "base": "gh-pages",
+          "head": newBranch
+        };
+        console.log(pull)
+
     repo.branch('gh-pages', newBranch, function(err) {
       console.log(err)
       repo.write(newBranch, 'data/TIP/individual/'+id+'.csv', postData, comments, function(err) {
@@ -383,13 +400,7 @@ var edit = false
         if(err){
             $('#issue-modal-title').html('Hmmm...something went wrong with creating your new branch.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
           }
-        var pull = {
-          "title": title,
-          "body": body,
-          "base": "gh-pages",
-          "head": newBranch
-        };
-        console.log(pull)
+        
         repo.createPullRequest(pull, function(err, pullRequest) {
           console.log(err)
           if(err){
@@ -821,7 +832,7 @@ function updateMessages(changes, undoBool){
   $('#issue-modal-title').html('Here\'s a list of the edits you\'ve made so far:')
   $('#modal-edits').show()
   $('.edits-list').empty()
-  $('#issue-body').empty()
+  // $('#issue-body').empty()
   if(!undoBool)
       $('#edit-message').empty().append(_.last(changes).html).fadeIn(250).delay(250).fadeOut(1000)
     else
@@ -829,12 +840,12 @@ function updateMessages(changes, undoBool){
   $.each(changes, function(i, change){
     
     $('.edits-list').append("<li>" + change.html + "</li>")
-    if (i === 0){
-      $('#issue-body').val(change.markdown)
-    }
-    else{
-      $('#issue-body').val($('#issue-body').val() + "\n" + change.markdown)
-    }
+    // if (i === 0){
+    //   $('#issue-body').val(change.markdown)
+    // }
+    // else{
+    //   $('#issue-body').val($('#issue-body').val() + "\n" + change.markdown)
+    // }
   })
 }
 function grabD3Data(id){
@@ -936,7 +947,7 @@ function grabD3Data(id){
                 historyClick = false;
 
                 if ($.cookie('token') == undefined){
-                  $('#begin-edits').attr('disabled', 'disabled')
+                  // $('#begin-edits').attr('disabled', 'disabled')
 
                 }
                 else{

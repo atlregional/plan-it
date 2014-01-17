@@ -188,7 +188,7 @@ function JSON2CSV(objArray) {
 		var line = '';
 		
 		for (var index in array[i]) {
-			console.log(array[i][index])
+			// console.log(array[i][index])
 			if(/,/.test(array[i][index])){
 				var value = array[i][index] + "";
 				line += '"' + value.replace(/"/g, '""') + '",';
