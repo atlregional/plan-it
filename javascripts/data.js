@@ -258,12 +258,12 @@ var edit = false
   })
   
   $('#gh-view-issues').click(function () {
-    window.location = 'https://github.com/landonreed/plan-it/search?q='+id+'&type=Issues'
+    window.location = 'https://github.com/atlregional/plan-it/search?q='+id+'&type=Issues'
   })
   $('#issues-tab').click(function () {
     console.log("issues tab")
     if(jQuery.isEmptyObject(issues)){
-      $.get("https://api.github.com/repos/landonreed/plan-it/issues?"+token, function (issuesData) {
+      $.get("https://api.github.com/repos/atlregional/plan-it/issues?"+token, function (issuesData) {
         issues = issuesData
         console.log(issues[0].body)
         populateIssues()
@@ -311,7 +311,7 @@ var edit = false
   //   // Properly transmit new lines to github issues
   //   body = body.replace(/\n/g, '%0A');
   //   body = body.replace(/#/g, '%23');
-  //   window.location='https://github.com/landonreed/plan-it/issues/new?title='+title+'&body='+body+'&labels='+this.id
+  //   window.location='https://github.com/atlregional/plan-it/issues/new?title='+title+'&body='+body+'&labels='+this.id
   // })
   $('#begin-edits').click(function(){
     edit = !edit
@@ -362,11 +362,11 @@ var edit = false
     // body = body.replace(/#/g, '%23');
 
     // Old method sends user to issues page
-    // window.location='https://github.com/landonreed/plan-it/issues/new?title='+title+'&body='+body// +'&labels='+this.id
+    // window.location='https://github.com/atlregional/plan-it/issues/new?title='+title+'&body='+body// +'&labels='+this.id
 
     // New method creates an issue directly!
     // Code to create a new issue
-    var url = 'https://api.github.com/repos/landonreed/plan-it/issues?access_token='+$.cookie('token')
+    var url = 'https://api.github.com/repos/atlregional/plan-it/issues?access_token='+$.cookie('token')
     var data = JSON.stringify({
       "title": title, 
       "body": body
@@ -733,14 +733,62 @@ var rtp;
 
 function populateIssues(){
   var converter = new Showdown.converter();
+  var issuesArray = []
+  var count = issues.length
+  
   $("#issue-list").empty()
+  $("#issue-table").empty()
+
   $.each(issues, function(i, issue){
+    
     if (issue.title == id){
+      var issueText = issue.body.split('\n')
+      var changes = ""
+      var comments = ""
+      if (issueText.length > 1){
+        changes = issueText[1]
+        comments = _.last(issueText)
+      }
+      else{
+        changes = _.last(issueText)
+      }
+      console.log(comments)
+      console.log(issueText)
+      issuesArray.push([
+        '<a href="'+issue.html_url+'">'+issue.number.toString()+'</a>', 
+        '<a href="'+issue.user.html_url+'">'+issue.user.login+'</a>', 
+        issue.created_at.substring(0,10),
+        issue.updated_at.substring(0,10),
+        // issue.assignee,
+        converter.makeHtml(changes.substring(2))
+        // converter.makeHtml(comments)
+      ])
+      console.log(_.last(issuesArray))
       var state = issue.state == "open" ? 'success' : 'important'
-      $("#issue-list").append('<div class="panel panel-default col-md-6 col-xs-12" style="padding:0px;"><div class="panel-heading"><h3 class="panel-title"><span class="badge pull-right" title="Issue #'+issue.number+'">#'+issue.number+'</span><a href="'+issue.user.url+'" title="'+issue.user.login+'"><img src="'+issue.user.avatar_url+'" height="30" width="30"></a> Created by <a href="' + issue.user.url + '">' + issue.user.login + '' + '</a></h3></div><div class="panel-body" style="min-height:120px;"><p>'+converter.makeHtml(issue.body)+'</p></div><div class="panel-footer"><a class="btn btn-default" href="' + issue.html_url + '">View on GitHub</a></div></div>');
+      // $("#issue-list").append('<div class="panel panel-default col-md-6 col-xs-12" style="padding:0px;"><div class="panel-heading"><h3 class="panel-title"><span class="badge pull-right" title="Issue #'+issue.number+'">#'+issue.number+'</span><a href="'+issue.user.url+'" title="'+issue.user.login+'"><img src="'+issue.user.avatar_url+'" height="30" width="30"></a> Created by <a href="' + issue.user.url + '">' + issue.user.login + '' + '</a></h3></div><div class="panel-body" style="min-height:120px;"><p>'+converter.makeHtml(issue.body)+'</p></div><div class="panel-footer"><a class="btn btn-default" href="' + issue.html_url + '">View on GitHub</a></div></div>');
+    }
+    if (!--count && issuesArray.length != 0){
+      $('#issue-table').html( '<table cellpadding="0" cellspacing="0" border="0" id="issues-table-table"></table>' );
+      var issueTable = $('#issues-table-table').dataTable( {
+        // "sScrollY": "400px",
+        "bPaginate": false,
+        "aaData": issuesArray,
+        "aaSorting": [[ 0, "asc" ]],
+        "aoColumns": [
+          { "sTitle": "#", "sWidth": "20px" },
+          { "sTitle": "Created by" },
+          { "sTitle": "Date created" },
+          { "sTitle": "Date updated" },
+          // { "sTitle": "Assigned to" },
+          { "sTitle": "Changes" }
+          // { "sTitle": "Comments" }
+
+        ]
+      });
     }
   })
-  if($('#issue-list').is(':empty')){
+  if (issuesArray.length == 0){
+  // if($('#issue-list').is(':empty')){
     $("#issue-list").append('<h3>There are currently no issues for ' + id + '.</h3>')
     $('#gh-view-issues').attr('disabled', 'disabled')
   }
