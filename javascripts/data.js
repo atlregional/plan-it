@@ -380,6 +380,7 @@ var edit = false
     console.log(err)
     var username = $.cookie('user').login
     var patchNum = 1
+    var base = 'gh-pages'
     var newBranch = id.toLowerCase() + '-patch-' + patchNum
     var pull = {
         "title": title,
@@ -394,7 +395,7 @@ var edit = false
           console.log("forking repo...")
           console.log(err)
           // userRepo.show(function(err, data){console.log(data)})
-          branchAndPull(repo, userRepo, $.cookie('user').login, title, body, 'gh-pages', id.toLowerCase())
+          branchAndPull(repo, userRepo, $.cookie('user').login, title, body, base, id.toLowerCase())
           
         })
       }
