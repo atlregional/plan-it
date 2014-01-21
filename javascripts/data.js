@@ -258,12 +258,12 @@ var edit = false
   })
   
   $('#gh-view-issues').click(function () {
-    window.location = 'https://github.com/landonreed/plan-it/search?q='+id+'&type=Issues'
+    window.location = 'https://github.com/atlregional/plan-it/search?q='+id+'&type=Issues'
   })
   $('#issues-tab').click(function () {
     console.log("issues tab")
     if(jQuery.isEmptyObject(issues)){
-      $.get("https://api.github.com/repos/landonreed/plan-it/issues?"+token, function (issuesData) {
+      $.get("https://api.github.com/repos/atlregional/plan-it/issues?"+token, function (issuesData) {
         issues = issuesData
         console.log(issues[0].body)
         populateIssues()
@@ -311,7 +311,7 @@ var edit = false
   //   // Properly transmit new lines to github issues
   //   body = body.replace(/\n/g, '%0A');
   //   body = body.replace(/#/g, '%23');
-  //   window.location='https://github.com/landonreed/plan-it/issues/new?title='+title+'&body='+body+'&labels='+this.id
+  //   window.location='https://github.com/atlregional/plan-it/issues/new?title='+title+'&body='+body+'&labels='+this.id
   // })
   $('#begin-edits').click(function(){
     edit = !edit
@@ -336,7 +336,7 @@ var edit = false
     $('#submit-issue').removeAttr('disabled')
     $('#issue-modal-success').hide()
   })
-  var repo = github.getRepo('landonreed', 'plan-it');
+  var repo = github.getRepo('atlregional', 'plan-it');
   var token = $.cookie('token') ? '&access_token=' + $.cookie('token') : ""
   var postData
   var newRows = []
@@ -361,17 +361,6 @@ var edit = false
     // body = body.replace(/\n/g, '%0A');
     // body = body.replace(/#/g, '%23');
 
-    // Old method sends user to issues page
-    // window.location='https://github.com/landonreed/plan-it/issues/new?title='+title+'&body='+body// +'&labels='+this.id
-
-    // New method creates an issue directly!
-    // Code to create a new issue
-    var url = 'https://api.github.com/repos/landonreed/plan-it/issues?access_token='+$.cookie('token')
-    var data = JSON.stringify({
-      "title": title, 
-      "body": body
-    })
-    // $.post("https://api.github.com/repos/landonreed/plan-it/git/refs", data, function(data){console.log(data)})
     var gridCopy = new Backbone.Collection();
     grid.collection.each(function(studentModel) {
       gridCopy.add(new Backbone.Model(studentModel.toJSON()));
@@ -384,60 +373,89 @@ var edit = false
     postData = JSON2CSV(newRows)
     console.log(postData)
     console.log(grid.collection.models)
-    var newBranch = /*$.cookie('user').login +*/ '-' + id.toLowerCase()
-    var pull = {
-          "title": title,
-          "body": body,
-          "base": "gh-pages",
-          "head": newBranch
-        };
-        console.log(pull)
 
-    repo.branch('gh-pages', newBranch, function(err) {
-      console.log(err)
-      repo.write(newBranch, 'data/TIP/individual/'+id+'.csv', postData, comments, function(err) {
-        console.log(err)
-        if(err){
-            $('#issue-modal-title').html('Hmmm...something went wrong with creating your new branch.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
-          }
-        
-        repo.createPullRequest(pull, function(err, pullRequest) {
+    // Check if repo exists for logged-in user
+    var userRepo = github.getRepo($.cookie('user').login, 'plan-it')
+    userRepo.show(function(err, data){
+    console.log(err)
+    var username = $.cookie('user').login
+    var patchNum = 1
+    var base = 'gh-pages'
+    var newBranch = id.toLowerCase() + '-patch-' + patchNum
+    var pull = {
+        "title": title,
+        "body": body,
+        "base": base,
+        "head": username + ':' + newBranch
+    };
+      
+      // If the repo doesn't exist, fork the repo... and then branch and pull
+      if (err && err.error==404){
+        repo.fork(function(err){
+          console.log("forking repo...")
           console.log(err)
-          if(err){
-            $('#issue-modal-title').html('Hmmm...something went wrong with creating your pull request.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
+          // userRepo.show(function(err, data){console.log(data)})
+          branchAndPull(repo, userRepo, $.cookie('user').login, title, body, comments, base, id.toLowerCase())
+          
+        })
+      }
+      // If the repo does exist, check if the branch exists.
+      else{
+        console.log("repo exists already!")
+        console.log(data)
+        userRepo.listBranches(function(err, branches) {
+          // If branch exists, write to the branch and then call success.
+          if(_.contains(branches, newBranch)){
+            console.log('branch exists already!')
+            userRepo.write(newBranch, 'data/TIP/individual/'+id+'.csv', postData, comments, function(err) {
+              console.log(err)
+              if(err){
+                  $('#issue-modal-title').html('Hmmm...something went wrong with creating your new branch.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
+                }
+              // Check list of existing pull requests to find the correct url to send the user to.
+              else{
+                
+                userRepo.listPulls('open', function(err, pulls) {
+                  var oldPull;
+                  $.each(pulls, function(i, obj){
+                    if(obj.head.ref == newBranch){
+                      oldPull = obj
+                    }
+                    else{
+                      oldPull = null
+                    }
+                  })
+                  $(this).button('reset')
+                  // console.log(pullRequest)
+                  $.each(changes, function(i, change){undoChange()})
+                  console.log(pulls)
+                  $('#issue-modal-title').html('Success!')
+                  $('#modal-edits').hide()
+                  $('#issue-modal-success').show()
+                  if (oldPull != null){
+                    $('#issue-modal-success-link').html('See your issue <a href="' + oldPull.html_url + '">here</a>.')  
+                  }
+                  else{
+                    $('#issue-modal-success-link').html('Can\'t create a new issue.  Check <strong>Issues</strong> tab for '+id+' to see if you already have created an issue for this project.')  
+                  }
+                  
+                })
+                
+              }
+              
+            })
           }
           else{
-            $(this).button('reset')
-            console.log(pullRequest)
-            $.each(changes, function(i, change){undoChange()})
-            $('#issue-modal-title').html('Success!')
-            $('#modal-edits').hide()
-            $('#issue-modal-success').show()
-            $('#issue-modal-success-link').html('See your issue <a href="' + pullRequest.html_url + '">here</a>.')  
+            console.log('creating branch!')
+            // If repo exists, but branch does not exist, create a new branch directly in that repo and proceed.
+            branchAndPull(repo, userRepo, $.cookie('user').login, title, body, comments, 'gh-pages', id.toLowerCase())
           }
-        });
-      });
-    });
-    repo.show(function(err, repo) {console.log(repo)});
-    
+        })
+        
+        repo.show(function(err, repo) {console.log(repo)});
+      }
+    })
 
-    // removes index attribute from grid.collection copy
-    // $.each(copy, function(i, row){
-    //   delete row.attributes["index"]; 
-    //   console.log(row)
-
-    // })
-
-    // convert json to csv
-    
-    
-    
-    // $.post(url, data, function(data){
-      
-
-    //   // $('#issueModal').modal('hide')
-      
-    // })
   })
   $('#save').click(function(){
     $('#issue-tab').trigger({
@@ -731,16 +749,106 @@ var edit = false
   })
 var rtp;
 
+function branchAndPull(repo, userRepo, username, title, body, comments, base, branch){
+    var patchNum = 1
+    var newBranch = branch + '-patch-' + patchNum
+    var pull = {
+        "title": title,
+        "body": body,
+        "base": base,
+        "head": username + ':' + newBranch
+    };
+    // This stuff should probably be in a function.
+    userRepo.branch(base, newBranch, function(err) {
+      console.log(err)
+      userRepo.write(newBranch, 'data/TIP/individual/'+id+'.csv', postData, comments, function(err) {
+        console.log(err)
+        if(err){
+            $('#issue-modal-title').html('Hmmm...something went wrong with creating your new branch.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
+          }
+        
+        repo.createPullRequest(pull, function(err, pullRequest) {
+          console.log(err)
+          if(err){
+            $('#issue-modal-title').html('Hmmm...something went wrong with creating your pull request.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
+          }
+          else{
+            $(this).button('reset')
+            console.log(pullRequest)
+            $.each(changes, function(i, change){undoChange()})
+            $('#issue-modal-title').html('Success!')
+            $('#modal-edits').hide()
+            $('#issue-modal-success').show()
+            $('#issue-modal-success-link').html('See your issue <a href="' + pullRequest.html_url + '">here</a>.')  
+          }
+        });
+      });
+    });
+    repo.show(function(err, repo) {console.log(repo)});
+}
+
 function populateIssues(){
   var converter = new Showdown.converter();
+  var issuesArray = []
+  var count = issues.length
+  
   $("#issue-list").empty()
+  $("#issue-table").empty()
+
   $.each(issues, function(i, issue){
+    
     if (issue.title == id){
+      var issueText = issue.body.split('\n')
+      var changes = ""
+      var comments = ""
+      if (issueText.length > 1){
+        changes = issueText[1]
+        comments = _.last(issueText)
+      }
+      else{
+        changes = _.last(issueText)
+      }
+      // var created = moment(issue.created_at).format("M/D, h:mma");
+      var updated = moment(issue.updated_at).format("M/D, h:mma");
+      // console.log(created.format("ddd, hA"))
+      console.log(comments)
+      console.log(issueText)
+      issuesArray.push([
+        issue.number.toString(), 
+        '<a href="'+issue.user.html_url+'">'+issue.user.login+'</a>', 
+        // created,
+        updated,
+        // issue.assignee,
+        converter.makeHtml(changes.substring(2)),
+        '<a class="btn btn-default" href="'+issue.html_url+'">View</a>'
+        // converter.makeHtml(comments)
+      ])
+      console.log(_.last(issuesArray))
       var state = issue.state == "open" ? 'success' : 'important'
-      $("#issue-list").append('<div class="panel panel-default col-md-6 col-xs-12" style="padding:0px;"><div class="panel-heading"><h3 class="panel-title"><span class="badge pull-right" title="Issue #'+issue.number+'">#'+issue.number+'</span><a href="'+issue.user.url+'" title="'+issue.user.login+'"><img src="'+issue.user.avatar_url+'" height="30" width="30"></a> Created by <a href="' + issue.user.url + '">' + issue.user.login + '' + '</a></h3></div><div class="panel-body" style="min-height:120px;"><p>'+converter.makeHtml(issue.body)+'</p></div><div class="panel-footer"><a class="btn btn-default" href="' + issue.html_url + '">View on GitHub</a></div></div>');
+      // $("#issue-list").append('<div class="panel panel-default col-md-6 col-xs-12" style="padding:0px;"><div class="panel-heading"><h3 class="panel-title"><span class="badge pull-right" title="Issue #'+issue.number+'">#'+issue.number+'</span><a href="'+issue.user.url+'" title="'+issue.user.login+'"><img src="'+issue.user.avatar_url+'" height="30" width="30"></a> Created by <a href="' + issue.user.url + '">' + issue.user.login + '' + '</a></h3></div><div class="panel-body" style="min-height:120px;"><p>'+converter.makeHtml(issue.body)+'</p></div><div class="panel-footer"><a class="btn btn-default" href="' + issue.html_url + '">View on GitHub</a></div></div>');
+    }
+    if (!--count && issuesArray.length != 0){
+      $('#issue-table').html( '<table cellpadding="0" cellspacing="0" border="0" id="issues-table-table"></table>' );
+      var issueTable = $('#issues-table-table').dataTable( {
+        "bPaginate": false,
+        "aaData": issuesArray,
+        "aaSorting": [[ 0, "asc" ]],
+        "aoColumns": [
+          { "sTitle": "#", "sWidth": "20px" },
+          { "sTitle": "Created by" },
+          // { "sTitle": "Date created" },
+          { "sTitle": "Updated" },
+          // { "sTitle": "Assigned to" },
+          { "sTitle": "Changes" },
+          { "sTitle": "", "bSortable": false }
+          // { "sTitle": "Comments" }
+
+        ]
+      });
     }
   })
-  if($('#issue-list').is(':empty')){
+  if (issuesArray.length == 0){
+  // if($('#issue-list').is(':empty')){
     $("#issue-list").append('<h3>There are currently no issues for ' + id + '.</h3>')
     $('#gh-view-issues').attr('disabled', 'disabled')
   }
@@ -947,7 +1055,7 @@ function grabD3Data(id){
                 historyClick = false;
 
                 if ($.cookie('token') == undefined){
-                  // $('#begin-edits').attr('disabled', 'disabled')
+                  $('#begin-edits').attr('disabled', 'disabled')
 
                 }
                 else{

@@ -8,6 +8,7 @@ category: 'data'
 <script src="{{ site.baseurl}}/lib/javascripts/json-to-table.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
 <script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="{{ site.baseurl}}/lib/css/jquery.dataTables.css" type="text/css" />
 <script type="text/javascript" src="{{ site.baseurl}}/lib/javascripts/dataTables.bootstrap.js"></script>
 <ul id="myTab" class="nav nav-tabs">
   <li class="active"><a href="#proj">Projects</a></li>
@@ -56,9 +57,11 @@ category: 'data'
 									<li><a href="#">Separated link</a></li>
 								</ul>
 							</div> -->
+
 						</div>
 					</div>
 					<div class="row">
+						<div id="issue-table" class="col-md-12"></div>
 						<div class="col-md-12">
 							<div class="list-group" id="issue-list"></div>
 						</div>
@@ -150,10 +153,6 @@ category: 'data'
 		<div class="col-md-3 col-sm-4 col-lg-3">
 			<h4 style="padding-top:15px;">Search projects by ID:</h4>
 			<input class="form-control" id="searchInput" width="20px" placeholder="Type To Filter"></span>
-			<!-- <div class="table-responsive" style="height:300px; overflow:auto;">
-				<table id="projects"  class="table table-hover table-condensed"></table>
-				
-			</div> -->
 			<div id="demo"></div>
 		</div>
    </div>
@@ -282,7 +281,7 @@ category: 'data'
 	      <div class="modal-body">
 		      <h4 id="issue-modal-title"></h4>
 		      <div id="issue-modal-success" style="display:none;">
-		      	<p>You successfully created an issue for <span class="arcid"></span>.</p>
+		      	<p>You successfully submitted changes for <span class="arcid"></span>.</p>
 		      	<p id="issue-modal-success-link"></p>
 		      </div>
 		      <div id="modal-edits">
