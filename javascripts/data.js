@@ -373,85 +373,42 @@ var edit = false
     postData = JSON2CSV(newRows)
     console.log(postData)
     console.log(grid.collection.models)
-    var newBranch = $.cookie('user').login + '-' + id.toLowerCase()
-    var pull = {
-          "title": title,
-          "body": body,
-          "base": "gh-pages",
-          "head": $.cookie('user').login + ':' + newBranch
-        };
-        console.log(pull)
 
     // Check if repo exists for logged-in user
     var userRepo = github.getRepo($.cookie('user').login, 'plan-it')
     userRepo.show(function(err, data){
       console.log(err)
-
+      
+      console.log(pull)
       // If it doesn't exist, fork the repo
       if (err && err.error==404){
         repo.fork(function(err){
           console.log("forking repo...")
           console.log(err)
           // userRepo.show(function(err, data){console.log(data)})
-
-          // This stuff should probably be in a function.
-          userRepo.branch('gh-pages', newBranch, function(err) {
-            console.log(err)
-            userRepo.write(newBranch, 'data/TIP/individual/'+id+'.csv', postData, comments, function(err) {
-              console.log(err)
-              if(err){
-                  $('#issue-modal-title').html('Hmmm...something went wrong with creating your new branch.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
-                }
-              
-              repo.createPullRequest(pull, function(err, pullRequest) {
-                console.log(err)
-                if(err){
-                  $('#issue-modal-title').html('Hmmm...something went wrong with creating your pull request.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
-                }
-                else{
-                  $(this).button('reset')
-                  console.log(pullRequest)
-                  $.each(changes, function(i, change){undoChange()})
-                  $('#issue-modal-title').html('Success!')
-                  $('#modal-edits').hide()
-                  $('#issue-modal-success').show()
-                  $('#issue-modal-success-link').html('See your issue <a href="' + pullRequest.html_url + '">here</a>.')  
-                }
-              });
-            });
-          });
-          repo.show(function(err, repo) {console.log(repo)});
+          branchAndPull(repo, userRepo, $.cookie('user').login, title, body, 'gh-pages', id.toLowerCase())
+          
         })
       }
       else{
         console.log("repo exists already!")
         console.log(data)
-        // If it does exist, create a new branch directly in that repo and proceed.
-        userRepo.branch('gh-pages', newBranch, function(err) {
-          console.log(err)
-          userRepo.write(newBranch, 'data/TIP/individual/'+id+'.csv', postData, comments, function(err) {
-            console.log(err)
-            if(err){
-                $('#issue-modal-title').html('Hmmm...something went wrong with creating your new branch.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
-              }
-            
-            repo.createPullRequest(pull, function(err, pullRequest) {
-              console.log(err)
-              if(err){
-                $('#issue-modal-title').html('Hmmm...something went wrong with creating your pull request.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
-              }
-              else{
-                $(this).button('reset')
-                console.log(pullRequest)
-                $.each(changes, function(i, change){undoChange()})
-                $('#issue-modal-title').html('Success!')
-                $('#modal-edits').hide()
-                $('#issue-modal-success').show()
-                $('#issue-modal-success-link').html('See your issue <a href="' + pullRequest.html_url + '">here</a>.')  
-              }
-            });
-          });
-        });
+        userRepo.listBranches(function(err, branches) {
+          if(_.contains(branches, newBranch)){
+            $(this).button('reset')
+            // console.log(pullRequest)
+            $.each(changes, function(i, change){undoChange()})
+            $('#issue-modal-title').html('Success!')
+            $('#modal-edits').hide()
+            $('#issue-modal-success').show()
+            $('#issue-modal-success-link').html('See your issue <a href="' + pullRequest.html_url + '">here</a>.')  
+          }
+          else{
+            // If repo exists, but branch does not exist, create a new branch directly in that repo and proceed.
+            branchAndPull(repo, userRepo, $.cookie('user').login, title, body, 'gh-pages', id.toLowerCase())
+          }
+        })
+        
         repo.show(function(err, repo) {console.log(repo)});
       }
     })
@@ -748,6 +705,44 @@ var edit = false
     
   })
 var rtp;
+
+function branchAndPull(repo, userRepo, username, title, body, base, branch){
+    var patchNum = 1
+    var newBranch = branch + '-patch-' + patchNum
+    var pull = {
+        "title": title,
+        "body": body,
+        "base": base,
+        "head": username + ':' + newBranch
+    };
+    // This stuff should probably be in a function.
+    userRepo.branch(base, newBranch, function(err) {
+      console.log(err)
+      userRepo.write(newBranch, 'data/TIP/individual/'+id+'.csv', postData, comments, function(err) {
+        console.log(err)
+        if(err){
+            $('#issue-modal-title').html('Hmmm...something went wrong with creating your new branch.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
+          }
+        
+        repo.createPullRequest(pull, function(err, pullRequest) {
+          console.log(err)
+          if(err){
+            $('#issue-modal-title').html('Hmmm...something went wrong with creating your pull request.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
+          }
+          else{
+            $(this).button('reset')
+            console.log(pullRequest)
+            $.each(changes, function(i, change){undoChange()})
+            $('#issue-modal-title').html('Success!')
+            $('#modal-edits').hide()
+            $('#issue-modal-success').show()
+            $('#issue-modal-success-link').html('See your issue <a href="' + pullRequest.html_url + '">here</a>.')  
+          }
+        });
+      });
+    });
+    repo.show(function(err, repo) {console.log(repo)});
+}
 
 function populateIssues(){
   var converter = new Showdown.converter();
