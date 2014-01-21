@@ -395,7 +395,7 @@ var edit = false
           console.log("forking repo...")
           console.log(err)
           // userRepo.show(function(err, data){console.log(data)})
-          branchAndPull(repo, userRepo, $.cookie('user').login, title, body, base, id.toLowerCase())
+          branchAndPull(repo, userRepo, $.cookie('user').login, title, body, comments, base, id.toLowerCase())
           
         })
       }
@@ -406,6 +406,7 @@ var edit = false
         userRepo.listBranches(function(err, branches) {
           // If branch exists, write to the branch and then call success.
           if(_.contains(branches, newBranch)){
+            console.log('branch exists already!')
             userRepo.write(newBranch, 'data/TIP/individual/'+id+'.csv', postData, comments, function(err) {
               console.log(err)
               if(err){
@@ -435,7 +436,7 @@ var edit = false
                     $('#issue-modal-success-link').html('See your issue <a href="' + oldPull.html_url + '">here</a>.')  
                   }
                   else{
-                    $('#issue-modal-success-link').html('Can\'t find your issue.  Search GitHub for <a href="https://github.com/atlregional/plan-it/search?q=' + id + '&type=Issues">'+id+' issues</a>.')  
+                    $('#issue-modal-success-link').html('Can\'t create a new issue.  Check <strong>Issues</strong> tab for '+id+' to see if you already have created an issue for this project.')  
                   }
                   
                 })
@@ -445,8 +446,9 @@ var edit = false
             })
           }
           else{
+            console.log('creating branch!')
             // If repo exists, but branch does not exist, create a new branch directly in that repo and proceed.
-            branchAndPull(repo, userRepo, $.cookie('user').login, title, body, 'gh-pages', id.toLowerCase())
+            branchAndPull(repo, userRepo, $.cookie('user').login, title, body, comments, 'gh-pages', id.toLowerCase())
           }
         })
         
@@ -747,7 +749,7 @@ var edit = false
   })
 var rtp;
 
-function branchAndPull(repo, userRepo, username, title, body, base, branch){
+function branchAndPull(repo, userRepo, username, title, body, comments, base, branch){
     var patchNum = 1
     var newBranch = branch + '-patch-' + patchNum
     var pull = {
@@ -824,7 +826,6 @@ function populateIssues(){
     if (!--count && issuesArray.length != 0){
       $('#issue-table').html( '<table cellpadding="0" cellspacing="0" border="0" id="issues-table-table"></table>' );
       var issueTable = $('#issues-table-table').dataTable( {
-        // "sScrollY": "400px",
         "bPaginate": false,
         "aaData": issuesArray,
         "aaSorting": [[ 0, "asc" ]],
