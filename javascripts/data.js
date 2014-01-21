@@ -377,9 +377,18 @@ var edit = false
     // Check if repo exists for logged-in user
     var userRepo = github.getRepo($.cookie('user').login, 'plan-it')
     userRepo.show(function(err, data){
-      console.log(err)
+    console.log(err)
+    var username = $.cookie('user').login
+    var patchNum = 1
+    var newBranch = id.toLowerCase() + '-patch-' + patchNum
+    var pull = {
+        "title": title,
+        "body": body,
+        "base": base,
+        "head": username + ':' + newBranch
+    };
       
-      // If it doesn't exist, fork the repo
+      // If the repo doesn't exist, fork the repo... and then branch and pull
       if (err && err.error==404){
         repo.fork(function(err){
           console.log("forking repo...")
@@ -389,18 +398,50 @@ var edit = false
           
         })
       }
+      // If the repo does exist, check if the branch exists.
       else{
         console.log("repo exists already!")
         console.log(data)
         userRepo.listBranches(function(err, branches) {
+          // If branch exists, write to the branch and then call success.
           if(_.contains(branches, newBranch)){
-            $(this).button('reset')
-            // console.log(pullRequest)
-            $.each(changes, function(i, change){undoChange()})
-            $('#issue-modal-title').html('Success!')
-            $('#modal-edits').hide()
-            $('#issue-modal-success').show()
-            $('#issue-modal-success-link').html('See your issue <a href="' + pullRequest.html_url + '">here</a>.')  
+            userRepo.write(newBranch, 'data/TIP/individual/'+id+'.csv', postData, comments, function(err) {
+              console.log(err)
+              if(err){
+                  $('#issue-modal-title').html('Hmmm...something went wrong with creating your new branch.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
+                }
+              // Check list of existing pull requests to find the correct url to send the user to.
+              else{
+                
+                userRepo.listPulls('open', function(err, pulls) {
+                  var oldPull;
+                  $.each(pulls, function(i, obj){
+                    if(obj.head.ref == newBranch){
+                      oldPull = obj
+                    }
+                    else{
+                      oldPull = null
+                    }
+                  })
+                  $(this).button('reset')
+                  // console.log(pullRequest)
+                  $.each(changes, function(i, change){undoChange()})
+                  console.log(pulls)
+                  $('#issue-modal-title').html('Success!')
+                  $('#modal-edits').hide()
+                  $('#issue-modal-success').show()
+                  if (oldPull != null){
+                    $('#issue-modal-success-link').html('See your issue <a href="' + oldPull.html_url + '">here</a>.')  
+                  }
+                  else{
+                    $('#issue-modal-success-link').html('Can\'t find your issue.  Search GitHub for <a href="https://github.com/atlregional/plan-it/search?q=' + id + '&type=Issues">'+id+' issues</a>.')  
+                  }
+                  
+                })
+                
+              }
+              
+            })
           }
           else{
             // If repo exists, but branch does not exist, create a new branch directly in that repo and proceed.
@@ -1007,7 +1048,7 @@ function grabD3Data(id){
                 historyClick = false;
 
                 if ($.cookie('token') == undefined){
-                  // $('#begin-edits').attr('disabled', 'disabled')
+                  $('#begin-edits').attr('disabled', 'disabled')
 
                 }
                 else{
