@@ -808,15 +808,19 @@ function populateIssues(){
       else{
         changes = _.last(issueText)
       }
+      var created = moment(issue.created_at).format("M/D, h:mma");
+      var updated = moment(issue.updated_at).format("M/D, h:mma");
+      // console.log(created.format("ddd, hA"))
       console.log(comments)
       console.log(issueText)
       issuesArray.push([
-        '<a href="'+issue.html_url+'">'+issue.number.toString()+'</a>', 
+        issue.number.toString(), 
         '<a href="'+issue.user.html_url+'">'+issue.user.login+'</a>', 
-        issue.created_at.substring(0,10),
-        issue.updated_at.substring(0,10),
+        created,
+        updated,
         // issue.assignee,
-        converter.makeHtml(changes.substring(2))
+        converter.makeHtml(changes.substring(2)),
+        '<a class="btn btn-default" href="'+issue.html_url+'">View</a>'
         // converter.makeHtml(comments)
       ])
       console.log(_.last(issuesArray))
@@ -835,7 +839,8 @@ function populateIssues(){
           { "sTitle": "Date created" },
           { "sTitle": "Date updated" },
           // { "sTitle": "Assigned to" },
-          { "sTitle": "Changes" }
+          { "sTitle": "Changes" },
+          { "sTitle": "" }
           // { "sTitle": "Comments" }
 
         ]
