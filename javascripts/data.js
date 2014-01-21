@@ -808,7 +808,7 @@ function populateIssues(){
       else{
         changes = _.last(issueText)
       }
-      var created = moment(issue.created_at).format("M/D, h:mma");
+      // var created = moment(issue.created_at).format("M/D, h:mma");
       var updated = moment(issue.updated_at).format("M/D, h:mma");
       // console.log(created.format("ddd, hA"))
       console.log(comments)
@@ -816,7 +816,7 @@ function populateIssues(){
       issuesArray.push([
         issue.number.toString(), 
         '<a href="'+issue.user.html_url+'">'+issue.user.login+'</a>', 
-        created,
+        // created,
         updated,
         // issue.assignee,
         converter.makeHtml(changes.substring(2)),
@@ -836,11 +836,11 @@ function populateIssues(){
         "aoColumns": [
           { "sTitle": "#", "sWidth": "20px" },
           { "sTitle": "Created by" },
-          { "sTitle": "Date created" },
-          { "sTitle": "Date updated" },
+          // { "sTitle": "Date created" },
+          { "sTitle": "Updated" },
           // { "sTitle": "Assigned to" },
           { "sTitle": "Changes" },
-          { "sTitle": "" }
+          { "sTitle": "", "bSortable": false }
           // { "sTitle": "Comments" }
 
         ]
