@@ -379,7 +379,6 @@ var edit = false
     userRepo.show(function(err, data){
       console.log(err)
       
-      console.log(pull)
       // If it doesn't exist, fork the repo
       if (err && err.error==404){
         repo.fork(function(err){
