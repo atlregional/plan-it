@@ -378,7 +378,7 @@ var edit = false
           "title": title,
           "body": body,
           "base": "gh-pages",
-          "head": newBranch
+          "head": $.cookie('user').login + ':' + newBranch
         };
         console.log(pull)
 
@@ -455,28 +455,7 @@ var edit = false
         repo.show(function(err, repo) {console.log(repo)});
       }
     })
-    
 
-    
-    
-
-    // removes index attribute from grid.collection copy
-    // $.each(copy, function(i, row){
-    //   delete row.attributes["index"]; 
-    //   console.log(row)
-
-    // })
-
-    // convert json to csv
-    
-    
-    
-    // $.post(url, data, function(data){
-      
-
-    //   // $('#issueModal').modal('hide')
-      
-    // })
   })
   $('#save').click(function(){
     $('#issue-tab').trigger({
