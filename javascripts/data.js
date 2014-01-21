@@ -373,7 +373,7 @@ var edit = false
     postData = JSON2CSV(newRows)
     console.log(postData)
     console.log(grid.collection.models)
-    var newBranch = /*$.cookie('user').login +*/ '-' + id.toLowerCase()
+    var newBranch = $.cookie('user').login + '-' + id.toLowerCase()
     var pull = {
           "title": title,
           "body": body,
