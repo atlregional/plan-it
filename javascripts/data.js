@@ -361,17 +361,6 @@ var edit = false
     // body = body.replace(/\n/g, '%0A');
     // body = body.replace(/#/g, '%23');
 
-    // Old method sends user to issues page
-    // window.location='https://github.com/atlregional/plan-it/issues/new?title='+title+'&body='+body// +'&labels='+this.id
-
-    // New method creates an issue directly!
-    // Code to create a new issue
-    var url = 'https://api.github.com/repos/atlregional/plan-it/issues?access_token='+$.cookie('token')
-    var data = JSON.stringify({
-      "title": title, 
-      "body": body
-    })
-    // $.post("https://api.github.com/repos/landonreed/plan-it/git/refs", data, function(data){console.log(data)})
     var gridCopy = new Backbone.Collection();
     grid.collection.each(function(studentModel) {
       gridCopy.add(new Backbone.Model(studentModel.toJSON()));
@@ -393,32 +382,82 @@ var edit = false
         };
         console.log(pull)
 
-    repo.branch('gh-pages', newBranch, function(err) {
+    // Check if repo exists for logged-in user
+    var userRepo = github.getRepo($.cookie('user').login, 'plan-it')
+    userRepo.show(function(err, data){
       console.log(err)
-      repo.write(newBranch, 'data/TIP/individual/'+id+'.csv', postData, comments, function(err) {
-        console.log(err)
-        if(err){
-            $('#issue-modal-title').html('Hmmm...something went wrong with creating your new branch.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
-          }
-        
-        repo.createPullRequest(pull, function(err, pullRequest) {
+
+      // If it doesn't exist, fork the repo
+      if (err && err.error==404){
+        repo.fork(function(err){
+          console.log("forking repo...")
           console.log(err)
-          if(err){
-            $('#issue-modal-title').html('Hmmm...something went wrong with creating your pull request.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
-          }
-          else{
-            $(this).button('reset')
-            console.log(pullRequest)
-            $.each(changes, function(i, change){undoChange()})
-            $('#issue-modal-title').html('Success!')
-            $('#modal-edits').hide()
-            $('#issue-modal-success').show()
-            $('#issue-modal-success-link').html('See your issue <a href="' + pullRequest.html_url + '">here</a>.')  
-          }
+          // userRepo.show(function(err, data){console.log(data)})
+
+          // This stuff should probably be in a function.
+          userRepo.branch('gh-pages', newBranch, function(err) {
+            console.log(err)
+            userRepo.write(newBranch, 'data/TIP/individual/'+id+'.csv', postData, comments, function(err) {
+              console.log(err)
+              if(err){
+                  $('#issue-modal-title').html('Hmmm...something went wrong with creating your new branch.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
+                }
+              
+              repo.createPullRequest(pull, function(err, pullRequest) {
+                console.log(err)
+                if(err){
+                  $('#issue-modal-title').html('Hmmm...something went wrong with creating your pull request.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
+                }
+                else{
+                  $(this).button('reset')
+                  console.log(pullRequest)
+                  $.each(changes, function(i, change){undoChange()})
+                  $('#issue-modal-title').html('Success!')
+                  $('#modal-edits').hide()
+                  $('#issue-modal-success').show()
+                  $('#issue-modal-success-link').html('See your issue <a href="' + pullRequest.html_url + '">here</a>.')  
+                }
+              });
+            });
+          });
+          repo.show(function(err, repo) {console.log(repo)});
+        })
+      }
+      else{
+        console.log("repo exists already!")
+        console.log(data)
+        // If it does exist, create a new branch directly in that repo and proceed.
+        userRepo.branch('gh-pages', newBranch, function(err) {
+          console.log(err)
+          userRepo.write(newBranch, 'data/TIP/individual/'+id+'.csv', postData, comments, function(err) {
+            console.log(err)
+            if(err){
+                $('#issue-modal-title').html('Hmmm...something went wrong with creating your new branch.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
+              }
+            
+            repo.createPullRequest(pull, function(err, pullRequest) {
+              console.log(err)
+              if(err){
+                $('#issue-modal-title').html('Hmmm...something went wrong with creating your pull request.  Please tweet at <a href="https://twitter.com/eltiar">Landon Reed</a> for help.')
+              }
+              else{
+                $(this).button('reset')
+                console.log(pullRequest)
+                $.each(changes, function(i, change){undoChange()})
+                $('#issue-modal-title').html('Success!')
+                $('#modal-edits').hide()
+                $('#issue-modal-success').show()
+                $('#issue-modal-success-link').html('See your issue <a href="' + pullRequest.html_url + '">here</a>.')  
+              }
+            });
+          });
         });
-      });
-    });
-    repo.show(function(err, repo) {console.log(repo)});
+        repo.show(function(err, repo) {console.log(repo)});
+      }
+    })
+    
+
+    
     
 
     // removes index attribute from grid.collection copy
