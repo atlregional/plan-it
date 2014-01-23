@@ -8,11 +8,13 @@ lsi: false
 pygments: true
 baseurl: /plan-it
 
+githubuser: atlregional
+
 # prose.io settings
 # https://github.com/prose/prose/wiki/Prose-Configuration
 prose:
   rooturl: 'data'
-  siteurl: 'http://landonreed.github.io/plan-it/'
+  siteurl: 'http://atlregional.github.io/plan-it/'
   # media: 'assets'
   # metadata:
   #   source/_posts:

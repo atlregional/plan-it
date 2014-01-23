@@ -165,7 +165,7 @@ function backgridTable(data){
      else if (previous != current){
         var message = model.attributes['Phase'] + " phase <strong>"+field+"</strong> changed from <em>"+previous+"</em> to <em>"+current +"</em>"
         console.log()
-        var issueMessage = "* [" + strip(message) + "](https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv#L" + lineNumber + ")"
+        var issueMessage = "* [" + strip(message) + "](https://github.com/{{ site.githubuser }}/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv#L" + lineNumber + ")"
         changes.push(newChange("edit-" + field, model, message, issueMessage))
         updateMessages(changes, false)
         $('.change').removeAttr('disabled')
@@ -258,12 +258,12 @@ var edit = false
   })
   
   $('#gh-view-issues').click(function () {
-    window.location = 'https://github.com/atlregional/plan-it/search?q='+id+'&type=Issues'
+    window.location = 'https://github.com/{{ site.githubuser }}/plan-it/search?q='+id+'&type=Issues'
   })
   $('#issues-tab').click(function () {
     console.log("issues tab")
     if(jQuery.isEmptyObject(issues)){
-      $.get("https://api.github.com/repos/atlregional/plan-it/issues?"+token, function (issuesData) {
+      $.get("https://api.github.com/repos/{{ site.githubuser }}/plan-it/issues?"+token, function (issuesData) {
         issues = issuesData
         console.log(issues[0].body)
         populateIssues()
@@ -311,7 +311,7 @@ var edit = false
   //   // Properly transmit new lines to github issues
   //   body = body.replace(/\n/g, '%0A');
   //   body = body.replace(/#/g, '%23');
-  //   window.location='https://github.com/atlregional/plan-it/issues/new?title='+title+'&body='+body+'&labels='+this.id
+  //   window.location='https://github.com/{{ site.githubuser }}/plan-it/issues/new?title='+title+'&body='+body+'&labels='+this.id
   // })
   $('#begin-edits').click(function(){
     edit = !edit
@@ -336,7 +336,7 @@ var edit = false
     $('#submit-issue').removeAttr('disabled')
     $('#issue-modal-success').hide()
   })
-  var repo = github.getRepo('atlregional', 'plan-it');
+  var repo = github.getRepo('{{ site.githubuser }}', 'plan-it');
   var token = $.cookie('token') ? '&access_token=' + $.cookie('token') : ""
   var postData
   var newRows = []
@@ -483,7 +483,7 @@ var edit = false
           // console.log()
           var lineNumber = row.model.attributes.index + 1
           // console.log(lineNumber)
-          var issueMessage = "* [" + strip(message) + "](https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv#L" + lineNumber + ")"
+          var issueMessage = "* [" + strip(message) + "](https://github.com/{{ site.githubuser }}/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv#L" + lineNumber + ")"
           changes.push(newChange("delete-row", row, message, issueMessage))
           updateMessages(changes, false)
           grid.removeRow(row.model)
@@ -610,7 +610,7 @@ var edit = false
         
         // Should probably be using this guy
         // repo.read(branch, path, function(err, data) {console.log(data)});
-        $.get('https://api.github.com/repos/landonreed/plan-it/contents/'+path+'?ref='+branch+token, function (file) {
+        $.get('https://api.github.com/repos/{{ site.githubuser }}/plan-it/contents/'+path+'?ref='+branch+token, function (file) {
           console.log(file.content)
           tables[branch] = d3.csv.parse(Base64.decode(file.content), function(rows){
               delete rows.ARCID
@@ -646,7 +646,7 @@ var edit = false
             $.each(branches, function(i, branch){
               
               if (tables[branch]){
-                var tableString = '<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><a href="https://github.com/landonreed/plan-it/blob/' + branch + '/data/TIP/individual/'+'.csv">' + branch + '</a><small class="pull-right"><em>Hover over shaded cells for more info!</em></small></h3></div><div class="panel-body"><div class="table-responsive"><table id="'+branch+'" class="table table-hover table-condensed">'
+                var tableString = '<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><a href="https://github.com/{{ site.githubuser }}/plan-it/blob/' + branch + '/data/TIP/individual/'+'.csv">' + branch + '</a><small class="pull-right"><em>Hover over shaded cells for more info!</em></small></h3></div><div class="panel-body"><div class="table-responsive"><table id="'+branch+'" class="table table-hover table-condensed">'
                 console.log('****************from '+prevBranch+' to '+branch+'****************')
                 tableString += '<thead><tr>'
                 for (var key in tables[branch][0]) {
@@ -734,7 +734,7 @@ var edit = false
                 })
                 tableString += '</tbody></table></div></div></div>'
                 
-                $("#history").append(tableString) //'<h4><a href="https://github.com/landonreed/plan-it/blob/' + branch + '/data/TIP/individual/'+'.csv">' + branch + '' + '</a></h4><div class="table-responsive"><table id="'+branch+'" class="table">'+populateTable(tables[branch])+'</table></div>');  
+                $("#history").append(tableString) //'<h4><a href="https://github.com/{{ site.githubuser }}/plan-it/blob/' + branch + '/data/TIP/individual/'+'.csv">' + branch + '' + '</a></h4><div class="table-responsive"><table id="'+branch+'" class="table">'+populateTable(tables[branch])+'</table></div>');  
                 previous = tables[branch]
                 prevBranch = branch
                 console.log(previous)
@@ -758,6 +758,7 @@ function branchAndPull(repo, userRepo, username, title, body, comments, base, br
         "base": base,
         "head": username + ':' + newBranch
     };
+    console.log(pull)
     // This stuff should probably be in a function.
     userRepo.branch(base, newBranch, function(err) {
       console.log(err)
@@ -888,7 +889,7 @@ function addPhase(){
         var message = "<strong>Phase added</strong>" // +"<br>"
         // messages.html.push(message)
         // console.log()
-        var issueMessage = "* [" + strip(message) + "](https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv)"
+        var issueMessage = "* [" + strip(message) + "](https://github.com/{{ site.githubuser }}/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv)"
         changes.push(newChange("add-row", _.last(grid.collection.models), message, issueMessage))
         updateMessages(changes, false)
         $('.change').removeAttr('disabled')
@@ -1131,9 +1132,9 @@ function getMap(id){
     
   })
   $('#edit').click(function(){
-    window.location='https://github.com/landonreed/plan-it/edit/gh-pages/data/TIP/individual/'+ $('.arcid').html() +'.csv'
+    window.location='https://github.com/{{ site.githubuser }}/plan-it/edit/gh-pages/data/TIP/individual/'+ $('.arcid').html() +'.csv'
   })
-  var href="https://github.com/landonreed/plan-it/edit/gh-pages/data/TIP/individual/'+el.ARCID+'.csv"
+  // var href='https://github.com/{{ site.githubuser }}/plan-it/edit/gh-pages/data/TIP/individual/'+el.ARCID+'.csv'
   var projectList = [];
   var jsonHtmlTable;
   var color = 'active'
@@ -1246,14 +1247,14 @@ function getMap(id){
 // Old API call to get tags
 // var rawUrl = ""
 // var apiUrl = ""
-//   $.getJSON("https:// " + "apiWOMPERS" + ".github.com/repos/landonreed/plan-it/tags?callback=?", function (repo_data) {
+//   $.getJSON("https:// " + "apiWOMPERS" + ".github.com/repos/{{ site.githubuser }}/plan-it/tags?callback=?", function (repo_data) {
 //         for (var j = 0; j < repo_data.data.length; j += 1) {
 //             var appendStr = "<div class=\"branch\">";
 
-//             rawUrl = "https://raw.github.com/landonreed/plan-it/"+repo_data.data[j].name+"/data/TIP/projects.csv"
-//             apiUrl = "https://api.github.com/repos/landonreed/plan-it/contents/"+repo_data.data[j].name+"/data/TIP/projects.csv"
+//             rawUrl = "https://raw.github.com/{{ site.githubuser }}/plan-it/"+repo_data.data[j].name+"/data/TIP/projects.csv"
+//             apiUrl = "https://api.github.com/repos/{{ site.githubuser }}/plan-it/contents/"+repo_data.data[j].name+"/data/TIP/projects.csv"
 //             urls.push(apiUrl)
-//             appendStr += "<h3><a href=\"https://raw.github.com/landonreed/plan-it/"+repo_data.data[j].name+"/data/TIP/projects.csv\">"+repo_data.data[j].name+"</a></h3>";
+//             appendStr += "<h3><a href=\"https://raw.github.com/{{ site.githubuser }}/plan-it/"+repo_data.data[j].name+"/data/TIP/projects.csv\">"+repo_data.data[j].name+"</a></h3>";
 
 //             $("#tags").append(appendStr);
 //         }

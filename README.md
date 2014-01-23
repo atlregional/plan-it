@@ -14,9 +14,9 @@ The data formats used here (csv, geoJSON) are [both natively](https://help.githu
 
 ### Examples
 
-map: https://github.com/landonreed/plan-it/blob/gh-pages/data/rtp_all.geojson
+map: https://github.com/atlregional/plan-it/blob/gh-pages/data/rtp_all.geojson
 
-table: https://github.com/landonreed/plan-it/blob/gh-pages/data/TIP/projects.csv
+table: https://github.com/atlregional/plan-it/blob/gh-pages/data/TIP/projects.csv
 
 ## Contributing
 
