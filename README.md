@@ -3,6 +3,8 @@ plan-it
 
 Demo of how GitHub can be used as transparent project management tool for state, regional, or local governments.
 
+http://atlregional.github.io/plan-it
+
 Data
 =======
 
