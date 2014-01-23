@@ -103,7 +103,9 @@
     if($(this).hasClass('btn-success')){
       // $.cookie('return-href', window.location.href)
       // setTimeout(function(){
-        window.location = dev ? 'https://github.com/login/oauth/authorize?response_type=code&client_id=2bd555487ef16b607509&scope=repo' : 'https://github.com/login/oauth/authorize?response_type=code&client_id=a37cadae6a1f4bdd4237&scope=public_repo'  
+        var client_id = dev ? '2bd555487ef16b607509' : 'a37cadae6a1f4bdd4237'
+        var params = '?response_type=code&client_id=' + client_id + '&scope=repo'
+        window.location =  'https://github.com/login/oauth/authorize' + params 
       // }, 250)
       
     }
