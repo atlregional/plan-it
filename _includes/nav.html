@@ -46,6 +46,12 @@
   if(nav != '')
     $('.' + nav ).addClass('active');
 
+  // Check if working on development server
+  var dev = false
+  if ('{{ site.baseurl }}' != '/plan-it')
+    dev = true;
+
+
   var code = '';
   if($.cookie('token') !== undefined){
     console.log("cookie worked!")
@@ -58,7 +64,9 @@
     code = window.location.href.match(/\?code=(.*)/)[1];
     $('.btn').button()
     $('#gh-login').button('loading')
-    $.getJSON('http://gatekeeper-plan-it.herokuapp.com/authenticate/'+code, function(data) {
+    
+    var authUrl = dev ? 'http://localhost:9999' : 'http://gatekeeper-plan-it.herokuapp.com'
+    $.getJSON(authUrl + '/authenticate/'+code, function(data) {
       
      console.log(data.token);
      $.cookie('token', data.token);
@@ -95,7 +103,7 @@
     if($(this).hasClass('btn-success')){
       // $.cookie('return-href', window.location.href)
       // setTimeout(function(){
-        window.location='https://github.com/login/oauth/authorize?response_type=code&client_id=a37cadae6a1f4bdd4237&scope=public_repo'  
+        window.location = dev ? 'https://github.com/login/oauth/authorize?response_type=code&client_id=2bd555487ef16b607509&scope=public_repo' : 'https://github.com/login/oauth/authorize?response_type=code&client_id=a37cadae6a1f4bdd4237&scope=public_repo'  
       // }, 250)
       
     }
