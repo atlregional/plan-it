@@ -93,7 +93,7 @@ info.onAdd = function (map) {
 // method that we will use to update the control based on feature properties passed
 info.update = function (props) {
     this._div.innerHTML = '<h4>TIP Projects</h4>' +  (props ?
-        '<b><a href="{{ site.baseurl }}/projects/#/'+props.ARCID+'">' + props.ARCID + '</a></b><br />' + toTitleCase(props.PRJ_DESC) + ''
+        '<b><a href="{{ site.baseurl }}/data/#/'+props.ARCID+'">' + props.ARCID + '</a></b><br />' + toTitleCase(props.PRJ_DESC) + ''
         : 'Hover over a project');
 };
 
@@ -179,7 +179,7 @@ function zoomToFeature(e) {
 $(document).ready(function() {
 	$.ajax({
 		type: "GET",
-		url: "{{ site.baseurl}}/projects/rtp_points.geojson", 
+		url: "{{ site.baseurl}}/data/rtp_points.geojson", 
 		dataType: "json",
 		success: function(data){
 			markers = data;
@@ -218,7 +218,7 @@ $(document).ready(function() {
 	})
 	$.ajax({
 		type: "GET",
-		url: "{{ site.baseurl}}/projects/rtp_lines.geojson", 
+		url: "{{ site.baseurl}}/data/rtp_lines.geojson", 
 		dataType: "json",
 		success: function(data){
 			markers = data;

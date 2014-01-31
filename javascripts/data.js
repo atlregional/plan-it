@@ -165,7 +165,7 @@ function backgridTable(data){
      else if (previous != current){
         var message = model.attributes['Phase'] + " phase <strong>"+field+"</strong> changed from <em>"+previous+"</em> to <em>"+current +"</em>"
         console.log()
-        var issueMessage = "* [" + strip(message) + "](https://github.com/{{ site.githubuser }}/plan-it/blob/gh-pages/projects/TIP/individual/"+ id +".csv#L" + lineNumber + ")"
+        var issueMessage = "* [" + strip(message) + "](https://github.com/{{ site.githubuser }}/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv#L" + lineNumber + ")"
         changes.push(newChange("edit-" + field, model, message, issueMessage))
         updateMessages(changes, false)
         $('.change').removeAttr('disabled')
@@ -186,7 +186,7 @@ function backgridTable(data){
       //    this.get('#/', function(context) {
         //     context.log('Yo yo yo');
         // });
-        this.get('{{ site.baseurl }}/projects/#/:id', function() {
+        this.get('{{ site.baseurl }}/data/#/:id', function() {
         // alert(this.params['name']);
         id = this.params['id']
         if (id !== '')
@@ -483,7 +483,7 @@ var edit = false
           // console.log()
           var lineNumber = row.model.attributes.index + 1
           // console.log(lineNumber)
-          var issueMessage = "* [" + strip(message) + "](https://github.com/{{ site.githubuser }}/plan-it/blob/gh-pages/projects/TIP/individual/"+ id +".csv#L" + lineNumber + ")"
+          var issueMessage = "* [" + strip(message) + "](https://github.com/{{ site.githubuser }}/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv#L" + lineNumber + ")"
           changes.push(newChange("delete-row", row, message, issueMessage))
           updateMessages(changes, false)
           grid.removeRow(row.model)
@@ -646,7 +646,7 @@ var edit = false
             $.each(branches, function(i, branch){
               
               if (tables[branch]){
-                var tableString = '<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><a href="https://github.com/{{ site.githubuser }}/plan-it/blob/' + branch + '/projects/TIP/individual/'+'.csv">' + branch + '</a><small class="pull-right"><em>Hover over shaded cells for more info!</em></small></h3></div><div class="panel-body"><div class="table-responsive"><table id="'+branch+'" class="table table-hover table-condensed">'
+                var tableString = '<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><a href="https://github.com/{{ site.githubuser }}/plan-it/blob/' + branch + '/data/TIP/individual/'+'.csv">' + branch + '</a><small class="pull-right"><em>Hover over shaded cells for more info!</em></small></h3></div><div class="panel-body"><div class="table-responsive"><table id="'+branch+'" class="table table-hover table-condensed">'
                 console.log('****************from '+prevBranch+' to '+branch+'****************')
                 tableString += '<thead><tr>'
                 for (var key in tables[branch][0]) {
@@ -734,7 +734,7 @@ var edit = false
                 })
                 tableString += '</tbody></table></div></div></div>'
                 
-                $("#history").append(tableString) //'<h4><a href="https://github.com/{{ site.githubuser }}/plan-it/blob/' + branch + '/projects/TIP/individual/'+'.csv">' + branch + '' + '</a></h4><div class="table-responsive"><table id="'+branch+'" class="table">'+populateTable(tables[branch])+'</table></div>');  
+                $("#history").append(tableString) //'<h4><a href="https://github.com/{{ site.githubuser }}/plan-it/blob/' + branch + '/data/TIP/individual/'+'.csv">' + branch + '' + '</a></h4><div class="table-responsive"><table id="'+branch+'" class="table">'+populateTable(tables[branch])+'</table></div>');  
                 previous = tables[branch]
                 prevBranch = branch
                 console.log(previous)
@@ -889,7 +889,7 @@ function addPhase(){
         var message = "<strong>Phase added</strong>" // +"<br>"
         // messages.html.push(message)
         // console.log()
-        var issueMessage = "* [" + strip(message) + "](https://github.com/{{ site.githubuser }}/plan-it/blob/gh-pages/projects/TIP/individual/"+ id +".csv)"
+        var issueMessage = "* [" + strip(message) + "](https://github.com/{{ site.githubuser }}/plan-it/blob/gh-pages/data/TIP/individual/"+ id +".csv)"
         changes.push(newChange("add-row", _.last(grid.collection.models), message, issueMessage))
         updateMessages(changes, false)
         $('.change').removeAttr('disabled')
@@ -958,7 +958,7 @@ function updateMessages(changes, undoBool){
   })
 }
 function grabD3Data(id){
-  d3.csv("{{ site.baseurl}}/projects/TIP/individual/"+id+".csv")
+  d3.csv("{{ site.baseurl}}/data/TIP/individual/"+id+".csv")
           .row(function(d) {
           return {
               ARCID: d.ARCID,
@@ -1080,7 +1080,7 @@ function grabD3Data(id){
 }
 function drawMap(id){
   if (rtp == undefined){
-    d3.json("{{ site.baseurl }}/projects/rtp_all.geojson", function(json) {
+    d3.json("{{ site.baseurl }}/data/rtp_all.geojson", function(json) {
       rtp = json
       getMap(id)    
     })
@@ -1132,9 +1132,9 @@ function getMap(id){
     
   })
   $('#edit').click(function(){
-    window.location='https://github.com/{{ site.githubuser }}/plan-it/edit/gh-pages/projects/TIP/individual/'+ $('.arcid').html() +'.csv'
+    window.location='https://github.com/{{ site.githubuser }}/plan-it/edit/gh-pages/data/TIP/individual/'+ $('.arcid').html() +'.csv'
   })
-  // var href='https://github.com/{{ site.githubuser }}/plan-it/edit/gh-pages/projects/TIP/individual/'+el.ARCID+'.csv'
+  // var href='https://github.com/{{ site.githubuser }}/plan-it/edit/gh-pages/data/TIP/individual/'+el.ARCID+'.csv'
   var projectList = [];
   var jsonHtmlTable;
   var color = 'active'
@@ -1251,10 +1251,10 @@ function getMap(id){
 //         for (var j = 0; j < repo_data.data.length; j += 1) {
 //             var appendStr = "<div class=\"branch\">";
 
-//             rawUrl = "https://raw.github.com/{{ site.githubuser }}/plan-it/"+repo_data.data[j].name+"/projects/TIP/projects.csv"
-//             apiUrl = "https://api.github.com/repos/{{ site.githubuser }}/plan-it/contents/"+repo_data.data[j].name+"/projects/TIP/projects.csv"
+//             rawUrl = "https://raw.github.com/{{ site.githubuser }}/plan-it/"+repo_data.data[j].name+"/data/TIP/projects.csv"
+//             apiUrl = "https://api.github.com/repos/{{ site.githubuser }}/plan-it/contents/"+repo_data.data[j].name+"/data/TIP/projects.csv"
 //             urls.push(apiUrl)
-//             appendStr += "<h3><a href=\"https://raw.github.com/{{ site.githubuser }}/plan-it/"+repo_data.data[j].name+"/projects/TIP/projects.csv\">"+repo_data.data[j].name+"</a></h3>";
+//             appendStr += "<h3><a href=\"https://raw.github.com/{{ site.githubuser }}/plan-it/"+repo_data.data[j].name+"/data/TIP/projects.csv\">"+repo_data.data[j].name+"</a></h3>";
 
 //             $("#tags").append(appendStr);
 //         }
