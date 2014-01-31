@@ -198,10 +198,11 @@ var specialElementHandlers = {
 	setupPivot({url:'{{ site.baseurl}}/data/TIP/projects.csv', fields: fields, filters:{"FiscalYear":"2014"}, rowLabels:['ARCID', 'Jurisdiction', 'ProjectType', 'Phase', 'Status'], summaries:["Total"]})
 	$('.branch-select').change(function(){
 		var branch = $('.branch-select').val()
+		var token = $.cookie('token') ? '&access_token=' + $.cookie('token') : ""
 		if (branch == 'gh-pages')
 		setupPivot({url:'{{ site.baseurl}}/data/TIP/projects.csv', fields: fields, filters:{"FiscalYear":"2014"}, rowLabels:['ARCID', 'Jurisdiction', 'ProjectType', 'Phase', 'Status'], summaries:["Total"]})
 		else{ 
-		$.get('https://api.github.com/repos/{{ site.githubuser }}/plan-it/contents/data/TIP/projects.csv?ref='+ branch, function (file) {
+		$.get('https://api.github.com/repos/{{ site.githubuser }}/plan-it/contents/data/TIP/projects.csv?ref='+ branch + token, function (file) {
 			var data = Base64.decode(file.content)
 			console.log(data)
 			setupPivot({csv:data, fields: fields, filters:{"FiscalYear":branch.substring(0,4)}, rowLabels:['ARCID', 'Jurisdiction', 'ProjectType', 'Phase', 'Status'], summaries:["Total"]})
