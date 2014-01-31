@@ -20,7 +20,7 @@ layout: default
   })
   // var svg = null;
   if ('{{ page.category }}' == 'explore'){
-    d3.csv("{{ site.baseurl}}/data/TIP/projects.csv").row(function(d) {
+    d3.csv("{{ site.baseurl}}/projects/TIP/projects.csv").row(function(d) {
       return {
           ARCID: d.ARCID,
           Description: d.Description,
