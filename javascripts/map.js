@@ -10,7 +10,7 @@ var map = L.map('map', {
 var geojson;
 L.tileLayer('http://{s}.tile.cloudmade.com/{key}/22677/256/{z}/{x}/{y}.png', {
 		attribution: 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2012 CloudMade',
-		key: 'BC9A493B41014CAABB98F0471D759707'
+		key: '7486205c8fd540b0903a0298b3d7c447'
 	}).addTo(map);
 var markers = null;
 var markersLayer = null;
