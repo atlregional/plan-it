@@ -8,7 +8,7 @@ var map = L.map('map', {
     zoom: 9
 });
 var geojson;
-L.tileLayer('http://{s}.tile.cloudmade.com/{key}/22677/256/{z}/{x}/{y}.png', {
+L.tileLayer('http://api.tiles.mapbox.com/v3/atlregional.i86o780c/{z}/{x}/{y}.png', {
 		attribution: 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2012 CloudMade',
 		key: '7486205c8fd540b0903a0298b3d7c447'
 	}).addTo(map);
