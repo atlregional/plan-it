@@ -1,11 +1,11 @@
 paginate: 10
 
-markdown: maruku
+markdown: kramdown
 permalink: pretty
 
 safe: true
 lsi: false
-pygments: true
+highlighter: true
 baseurl: /plan-it
 
 githubuser: atlregional

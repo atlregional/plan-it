@@ -179,7 +179,7 @@ function zoomToFeature(e) {
 $(document).ready(function() {
 	$.ajax({
 		type: "GET",
-		url: "{{ site.baseurl}}/data/rtp_points.geojson", 
+		url: "http://arc.garc.opendata.arcgis.com/datasets/67c599799ef8474baf91b35c622d0643_13.geojson", 
 		dataType: "json",
 		success: function(data){
 			markers = data;
@@ -218,7 +218,7 @@ $(document).ready(function() {
 	})
 	$.ajax({
 		type: "GET",
-		url: "{{ site.baseurl}}/data/rtp_lines.geojson", 
+		url: "http://arc.garc.opendata.arcgis.com/datasets/5cc573f36304479ab093b6b619296b46_26.geojson", 
 		dataType: "json",
 		success: function(data){
 			markers = data;
